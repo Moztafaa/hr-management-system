@@ -1,0 +1,28 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class Auth {
+  private apiUrl = 'https://localhost:7005/api/Account'; // Backend API URL
+
+  constructor(private http: HttpClient) { }
+
+  login(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, data);
+  }
+
+  register(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register-employee`, data);
+  }
+
+  saveToken(token: string) {
+    localStorage.setItem('jwtToken', token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('jwtToken');
+  }
+}

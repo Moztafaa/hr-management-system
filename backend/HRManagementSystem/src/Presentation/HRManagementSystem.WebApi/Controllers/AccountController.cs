@@ -15,7 +15,7 @@ public class AccountController(IAccountService _accountService) : ControllerBase
         (bool Succeeded, AuthResponseDto? Response, IEnumerable<string> Errors) result = await _accountService.LoginAsync(loginDto);
         if (!result.Succeeded)
         {
-            return Unauthorized(result);
+            return Unauthorized(new { result.Succeeded, result.Response });
         }
         return Ok(new { result.Succeeded, result.Response });
     }
