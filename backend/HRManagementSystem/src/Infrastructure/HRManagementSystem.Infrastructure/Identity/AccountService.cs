@@ -1,3 +1,5 @@
+using HRManagementSystem.Application.Common;
+
 namespace HRManagementSystem.Infrastructure.Identity;
 
 
@@ -12,7 +14,7 @@ public class AccountService(
 
     #region Authentication
 
-    public async Task<(bool Succeeded, RegisterEmployeeResponseDto? Response, IEnumerable<string> Errors)> RegisterEmployeeAsync(RegisterEmployeeDto registerEmployeeDto)
+    public async Task<Response<RegisterEmployeeResponseDto>> RegisterEmployeeAsync(RegisterEmployeeDto registerEmployeeDto)
     {
         // TODO: Will be replaced with UnitOfWork pattern ...
         // Start a transaction to ensure both user and employee are created together
@@ -24,7 +26,7 @@ public class AccountService(
             ApplicationUser? existingUser = await _userManager.FindByEmailAsync(registerEmployeeDto.Email);
             if (existingUser != null)
             {
-                return (false, null, new[] { "User with this email already exists." });
+                return new Response<RegisterEmployeeResponseDto>(default!, "User with this email already exists.", true);
             }
 
             // 2. Create the ApplicationUser
@@ -40,7 +42,7 @@ public class AccountService(
             if (!userResult.Succeeded)
             {
                 await transaction.RollbackAsync();
-                return (false, null, userResult.Errors.Select(e => e.Description));
+                return new Response<RegisterEmployeeResponseDto>(default!, string.Join(", ", userResult.Errors.Select(e => e.Description)), true);
             }
 
             // 3. Assign roles if provided
@@ -96,21 +98,21 @@ public class AccountService(
                 Roles = roles.ToList()
             };
 
-            return (true, response, Array.Empty<string>());
+            return new Response<RegisterEmployeeResponseDto>(response, string.Empty, false);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            return (false, null, new[] { $"An error occurred while registering the employee: {ex.Message}" });
+            return new Response<RegisterEmployeeResponseDto>(default!, $"An error occurred while registering the employee: {ex.Message}", true);
         }
     }
 
-    public async Task<(bool Succeeded, AuthResponseDto? Response, IEnumerable<string> Errors)> LoginAsync(LoginDto loginDto)
+    public async Task<Response<AuthResponseDto>> LoginAsync(LoginDto loginDto)
     {
         ApplicationUser? user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null)
         {
-            return (false, null, new[] { "Invalid email or password." });
+            return new Response<AuthResponseDto>(default!, "Invalid email or password.", true);
         }
 
         SignInResult result = await _signInManager.PasswordSignInAsync(
@@ -123,23 +125,23 @@ public class AccountService(
         {
             if (result.IsLockedOut)
             {
-                return (false, null, new[] { "Account is locked out." });
+                return new Response<AuthResponseDto>(default!, "Account is locked out.", true);
             }
             if (result.IsNotAllowed)
             {
-                return (false, null, new[] { "Login is not allowed. Please confirm your email." });
+                return new Response<AuthResponseDto>(default!, "Login is not allowed. Please confirm your email.", true);
             }
             if (result.RequiresTwoFactor)
             {
-                return (false, null, new[] { "Two-factor authentication is required." });
+                return new Response<AuthResponseDto>(default!, "Two-factor authentication is required.", true);
             }
 
-            return (false, null, new[] { "Invalid email or password." });
+            return new Response<AuthResponseDto>(default!, "Invalid email or password.", true);
         }
 
         IList<string> roles = await _userManager.GetRolesAsync(user);
 
-        (var token, var expires) = _jwtGenerator.GenerateToken(user, roles);
+        (string? token, DateTime expires) = _jwtGenerator.GenerateToken(user, roles);
 
         var response = new AuthResponseDto
         {
@@ -148,28 +150,29 @@ public class AccountService(
             FullName = user.UserName!,
             EmployeeId = user.EmployeeId,
             Roles = roles.ToList(),
-            Token=token,
-            TokenExpiration= expires
+            Token = token,
+            TokenExpiration = expires
         };
 
-        return (true, response, Array.Empty<string>());
+        return new Response<AuthResponseDto>(response, string.Empty, false);
     }
 
-    public async Task LogoutAsync()
+    public async Task<Response<bool>> LogoutAsync()
     {
         await _signInManager.SignOutAsync();
+        return new Response<bool>(true, string.Empty, false);
     }
 
     #endregion
 
     #region Password Management
 
-    public async Task<(bool Succeeded, IEnumerable<string> Errors)> ChangePasswordAsync(Guid userId, ChangePasswordDto changePasswordDto)
+    public async Task<Response<bool>> ChangePasswordAsync(Guid userId, ChangePasswordDto changePasswordDto)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
-            return (false, new[] { "User not found." });
+            return new Response<bool>(false, "User not found.", true);
         }
 
         IdentityResult result = await _userManager.ChangePasswordAsync(
@@ -179,19 +182,19 @@ public class AccountService(
 
         if (!result.Succeeded)
         {
-            return (false, result.Errors.Select(e => e.Description));
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
         }
 
-        return (true, Array.Empty<string>());
+        return new Response<bool>(true, string.Empty, false);
     }
 
-    public async Task<(bool Succeeded, IEnumerable<string> Errors)> ForgotPasswordAsync(string email)
+    public async Task<Response<bool>> ForgotPasswordAsync(string email)
     {
         ApplicationUser? user = await _userManager.FindByEmailAsync(email);
         if (user == null)
         {
             // Don't reveal that the user does not exist
-            return (true, Array.Empty<string>());
+            return new Response<bool>(true, string.Empty, false);
         }
 
         // Generate password reset token
@@ -199,15 +202,15 @@ public class AccountService(
 
         // TODO: Send email with token
 
-        return (true, Array.Empty<string>());
+        return new Response<bool>(true, string.Empty, false);
     }
 
-    public async Task<(bool Succeeded, IEnumerable<string> Errors)> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+    public async Task<Response<bool>> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
     {
         ApplicationUser? user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
         if (user == null)
         {
-            return (false, new[] { "User not found." });
+            return new Response<bool>(false, "User not found.", true);
         }
 
         IdentityResult result = await _userManager.ResetPasswordAsync(
@@ -217,27 +220,27 @@ public class AccountService(
 
         if (!result.Succeeded)
         {
-            return (false, result.Errors.Select(e => e.Description));
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
         }
 
-        return (true, Array.Empty<string>());
+        return new Response<bool>(true, string.Empty, false);
     }
 
     #endregion
 
     #region User Management
 
-    public async Task<UserDto?> GetUserByIdAsync(Guid userId)
+    public async Task<Response<UserDto>> GetUserByIdAsync(Guid userId)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
-            return null;
+            return new Response<UserDto>(default!, "User not found.", true);
         }
 
         IList<string> roles = await _userManager.GetRolesAsync(user);
 
-        return new UserDto
+        var userDto = new UserDto
         {
             Id = user.Id,
             Email = user.Email!,
@@ -252,19 +255,21 @@ public class AccountService(
             EmployeeId = user.EmployeeId,
             Roles = roles.ToList()
         };
+
+        return new Response<UserDto>(userDto, string.Empty, false);
     }
 
-    public async Task<UserDto?> GetUserByEmailAsync(string email)
+    public async Task<Response<UserDto>> GetUserByEmailAsync(string email)
     {
         ApplicationUser? user = await _userManager.FindByEmailAsync(email);
         if (user == null)
         {
-            return null;
+            return new Response<UserDto>(default!, "User not found.", true);
         }
 
         IList<string> roles = await _userManager.GetRolesAsync(user);
 
-        return new UserDto
+        var userDto = new UserDto
         {
             Id = user.Id,
             Email = user.Email!,
@@ -279,9 +284,11 @@ public class AccountService(
             EmployeeId = user.EmployeeId,
             Roles = roles.ToList()
         };
+
+        return new Response<UserDto>(userDto, string.Empty, false);
     }
 
-    public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+    public async Task<Response<IEnumerable<UserDto>>> GetAllUsersAsync()
     {
         List<ApplicationUser> users = await _userManager.Users.ToListAsync();
         var userDtos = new List<UserDto>();
@@ -306,15 +313,15 @@ public class AccountService(
             });
         }
 
-        return userDtos;
+        return new Response<IEnumerable<UserDto>>(userDtos, string.Empty, false);
     }
 
-    public async Task<(bool Succeeded, IEnumerable<string> Errors)> UpdateUserAsync(Guid userId, UserDto userDto)
+    public async Task<Response<bool>> UpdateUserAsync(Guid userId, UserDto userDto)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
-            return (false, new[] { "User not found." });
+            return new Response<bool>(false, "User not found.", true);
         }
 
         user.Email = userDto.Email;
@@ -326,112 +333,113 @@ public class AccountService(
 
         if (!result.Succeeded)
         {
-            return (false, result.Errors.Select(e => e.Description));
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
         }
 
-        return (true, Array.Empty<string>());
+        return new Response<bool>(true, string.Empty, false);
     }
 
-    public async Task<(bool Succeeded, IEnumerable<string> Errors)> DeleteUserAsync(Guid userId)
+    public async Task<Response<bool>> DeleteUserAsync(Guid userId)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
-            return (false, new[] { "User not found." });
+            return new Response<bool>(false, "User not found.", true);
         }
 
         IdentityResult result = await _userManager.DeleteAsync(user);
 
         if (!result.Succeeded)
         {
-            return (false, result.Errors.Select(e => e.Description));
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
         }
 
-        return (true, Array.Empty<string>());
+        return new Response<bool>(true, string.Empty, false);
     }
 
-    public async Task<bool> UserExistsAsync(string email)
+    public async Task<Response<bool>> UserExistsAsync(string email)
     {
         ApplicationUser? user = await _userManager.FindByEmailAsync(email);
-        return user != null;
+        bool exists = user != null;
+        return new Response<bool>(exists, string.Empty, false);
     }
 
     #endregion
 
     #region Role Management
 
-    public async Task<(bool Succeeded, IEnumerable<string> Errors)> AssignRoleAsync(AssignRoleDto assignRoleDto)
+    public async Task<Response<bool>> AssignRoleAsync(AssignRoleDto assignRoleDto)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(assignRoleDto.UserId.ToString());
         if (user == null)
         {
-            return (false, new[] { "User not found." });
+            return new Response<bool>(false, "User not found.", true);
         }
 
         bool roleExists = await _roleManager.RoleExistsAsync(assignRoleDto.RoleName);
         if (!roleExists)
         {
-            return (false, new[] { $"Role '{assignRoleDto.RoleName}' does not exist." });
+            return new Response<bool>(false, $"Role '{assignRoleDto.RoleName}' does not exist.", true);
         }
 
         bool isInRole = await _userManager.IsInRoleAsync(user, assignRoleDto.RoleName);
         if (isInRole)
         {
-            return (false, new[] { $"User is already in role '{assignRoleDto.RoleName}'." });
+            return new Response<bool>(false, $"User is already in role '{assignRoleDto.RoleName}'.", true);
         }
 
         IdentityResult result = await _userManager.AddToRoleAsync(user, assignRoleDto.RoleName);
 
         if (!result.Succeeded)
         {
-            return (false, result.Errors.Select(e => e.Description));
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
         }
 
-        return (true, Array.Empty<string>());
+        return new Response<bool>(true, string.Empty, false);
     }
 
-    public async Task<(bool Succeeded, IEnumerable<string> Errors)> RemoveRoleAsync(Guid userId, string roleName)
+    public async Task<Response<bool>> RemoveRoleAsync(Guid userId, string roleName)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
-            return (false, new[] { "User not found." });
+            return new Response<bool>(false, "User not found.", true);
         }
 
         bool isInRole = await _userManager.IsInRoleAsync(user, roleName);
         if (!isInRole)
         {
-            return (false, new[] { $"User is not in role '{roleName}'." });
+            return new Response<bool>(false, $"User is not in role '{roleName}'.", true);
         }
 
         IdentityResult result = await _userManager.RemoveFromRoleAsync(user, roleName);
 
         if (!result.Succeeded)
         {
-            return (false, result.Errors.Select(e => e.Description));
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
         }
 
-        return (true, Array.Empty<string>());
+        return new Response<bool>(true, string.Empty, false);
     }
 
-    public async Task<IEnumerable<string>> GetUserRolesAsync(Guid userId)
+    public async Task<Response<IEnumerable<string>>> GetUserRolesAsync(Guid userId)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
-            return Array.Empty<string>();
+            return new Response<IEnumerable<string>>(Array.Empty<string>(), "User not found.", true);
         }
 
         IList<string> roles = await _userManager.GetRolesAsync(user);
-        return roles;
+        return new Response<IEnumerable<string>>(roles, string.Empty, false);
     }
 
-    public async Task<IEnumerable<UserDto>> GetUsersInRoleAsync(string roleName)
+    public async Task<Response<IEnumerable<UserDto>>> GetUsersInRoleAsync(string roleName)
     {
         bool roleExists = await _roleManager.RoleExistsAsync(roleName);
         if (!roleExists)
         {
-            return Array.Empty<UserDto>();
+            return new Response<IEnumerable<UserDto>>(Array.Empty<UserDto>(), $"Role '{roleName}' does not exist.", true);
         }
 
         IList<ApplicationUser> users = await _userManager.GetUsersInRoleAsync(roleName);
@@ -457,9 +465,10 @@ public class AccountService(
             });
         }
 
-        return userDtos;
+        return new Response<IEnumerable<UserDto>>(userDtos, string.Empty, false);
     }
 
     #endregion
 
 }
+

@@ -1,3 +1,5 @@
+using HRManagementSystem.Application.Common;
+
 namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
@@ -7,35 +9,35 @@ public class AccountController(IAccountService _accountService) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        (bool Succeeded, AuthResponseDto? Response, IEnumerable<string> Errors) result = await _accountService.LoginAsync(loginDto);
-        if (!result.Succeeded)
+        Response<AuthResponseDto> result = await _accountService.LoginAsync(loginDto);
+        if (result.HasError)
         {
-            return Unauthorized(new { result.Succeeded, result.Response });
+            return Unauthorized(new { hasError = result.HasError, errorMessage = result.ErrorMessage });
         }
-        return Ok(new { result.Succeeded, result.Response });
+        return Ok(new { hasError = result.HasError, data = result.Data });
     }
 
     [HttpPost("assign-role")]
     public async Task<IActionResult> AssignRole([FromBody] AssignRoleDto assignRoleDto)
     {
-        (bool Succeeded, IEnumerable<string> Errors) result = await _accountService.AssignRoleAsync(assignRoleDto);
-        if (!result.Succeeded)
+        Response<bool> result = await _accountService.AssignRoleAsync(assignRoleDto);
+        if (result.HasError)
         {
-            return BadRequest(result);
+            return BadRequest(new { hasError = result.HasError, errorMessage = result.ErrorMessage });
         }
-        return Ok(result);
+        return Ok(new { hasError = result.HasError, data = result.Data });
     }
 
     // Register
-   [HttpPost("register-employee")]
+    [HttpPost("register-employee")]
     public async Task<IActionResult> RegisterEmployee([FromBody] RegisterEmployeeDto registerEmployeeDto)
     {
-        (bool Succeeded, RegisterEmployeeResponseDto? Response, IEnumerable<string> Errors) result = await _accountService.RegisterEmployeeAsync(registerEmployeeDto);
-        if (!result.Succeeded)
+        Response<RegisterEmployeeResponseDto> result = await _accountService.RegisterEmployeeAsync(registerEmployeeDto);
+        if (result.HasError)
         {
-            return BadRequest(new { succeeded = result.Succeeded, errors = result.Errors });
+            return BadRequest(new { hasError = result.HasError, errorMessage = result.ErrorMessage });
         }
-        return Ok(new { succeeded = result.Succeeded, response = result.Response });
+        return Ok(new { hasError = result.HasError, data = result.Data });
     }
 
 }

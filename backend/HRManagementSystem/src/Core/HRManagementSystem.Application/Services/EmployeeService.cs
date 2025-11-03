@@ -53,9 +53,9 @@ public class EmployeeService(IRepository<Employee> employeeRepository) : IEmploy
     {
         try
         {
-            var employees = await employeeRepository.GetAllAsync(cancellationToken);
+            IEnumerable<Employee> employees = await employeeRepository.GetAllAsync(cancellationToken);
 
-            var dtoList = employees.Select(e => new EmployeeDto
+            IEnumerable<EmployeeDto> dtoList = employees.Select(e => new EmployeeDto
             {
                 Id = e.Id,
                 FirstName = e.FirstName,
@@ -80,12 +80,12 @@ public class EmployeeService(IRepository<Employee> employeeRepository) : IEmploy
         }
     }
 
-    public async Task<Response<EmployeeDto>> GetEmployeeByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Response<EmployeeDto>> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken = default)
 
     {
         try
         {
-            var employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
+            Employee? employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
             if (employee is null)
                 return new Response<EmployeeDto>(null, "Employee not found", true);
 
@@ -113,12 +113,12 @@ public class EmployeeService(IRepository<Employee> employeeRepository) : IEmploy
             return new Response<EmployeeDto>(null, ex.Message, true);
         }
     }
-    public async Task<Response<bool>> UpdateEmployeeAsync(Guid id, UpdateEmployeeDto updateEmployeeDto, CancellationToken cancellationToken = default)
+    public async Task<Response<bool>> UpdateEmployeeAsync(int id, UpdateEmployeeDto updateEmployeeDto, CancellationToken cancellationToken = default)
 
     {
         try
         {
-            var employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
+            Employee? employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
             if (employee is null)
                 return new Response<bool>(false, "Employee not found", true);
 
@@ -143,12 +143,12 @@ public class EmployeeService(IRepository<Employee> employeeRepository) : IEmploy
             return new Response<bool>(false, ex.Message, true);
         }
     }
-    public async Task<Response<bool>> DeleteEmployeeAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Response<bool>> DeleteEmployeeAsync(int id, CancellationToken cancellationToken = default)
 
     {
         try
         {
-            var employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
+            Employee? employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
             if (employee is null)
                 return new Response<bool>(false, "Employee not found", true);
 

@@ -22,8 +22,8 @@ public static class DependencyInjection
         //});
 
         // Add JWT Authentication
-        var jwtSettings = configuration.GetSection("Jwt");
-        var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+        IConfigurationSection jwtSettings = configuration.GetSection("Jwt");
+        byte[] key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
 
         services.AddAuthentication(options =>
         {

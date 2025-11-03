@@ -10,7 +10,7 @@ public class JwtTokenGenerator
 
     public (string Token, DateTime Expiration) GenerateToken(ApplicationUser user, IList<string> roles)
     {
-        var jwtSettings = _configuration.GetSection("Jwt");
+        IConfigurationSection jwtSettings = _configuration.GetSection("Jwt");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -22,7 +22,7 @@ public class JwtTokenGenerator
             };
 
         // Add roles as claims
-        foreach (var role in roles)
+        foreach (string role in roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
@@ -34,7 +34,7 @@ public class JwtTokenGenerator
             signingCredentials: creds
         );
 
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+        string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
         return (tokenString,token.ValidTo);
     }

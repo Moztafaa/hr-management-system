@@ -9,7 +9,7 @@ namespace HRManagementSystem.Application.Services
         {
             try
             {
-                await Task.CompletedTask; 
+                await Task.CompletedTask;
                 var data = new List<string> { "Sample1", "Sample2" };
                 return new Response<IEnumerable<string>>(data, string.Empty, false);
             }
@@ -23,8 +23,8 @@ namespace HRManagementSystem.Application.Services
         {
             try
             {
-                await Task.CompletedTask; 
-                var data = $"Sample-{id}";
+                await Task.CompletedTask;
+                string data = $"Sample-{id}";
                 return new Response<string>(data, string.Empty, false);
             }
             catch (Exception ex)
