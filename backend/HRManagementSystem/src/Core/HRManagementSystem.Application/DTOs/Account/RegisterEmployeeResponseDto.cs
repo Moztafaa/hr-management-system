@@ -1,5 +1,3 @@
-using System;
-
 namespace HRManagementSystem.Application.DTOs.Account;
 
 public class RegisterEmployeeResponseDto

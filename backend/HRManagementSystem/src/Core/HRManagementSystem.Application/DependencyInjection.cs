@@ -1,9 +1,3 @@
-using FluentValidation;
-using HRManagementSystem.Application.Interfaces;
-using HRManagementSystem.Application.Services;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-
 namespace HRManagementSystem.Application;
 
 public static class DependencyInjection

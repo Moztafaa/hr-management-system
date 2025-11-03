@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace HRManagementSystem.Application.DTOs.Account;
 
 public class ResetPasswordDto

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace HRManagementSystem.Infrastructure.Repositories;
 
-namespace HRManagementSystem.Infrastructure.Repositories;
-
-internal class EmployeeRepository
+public class EmployeeRepository:Repository<Employee>
 {
+    public EmployeeRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 }

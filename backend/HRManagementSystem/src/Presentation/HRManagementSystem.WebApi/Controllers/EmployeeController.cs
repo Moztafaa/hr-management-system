@@ -1,9 +1,3 @@
-using HRManagementSystem.Application.DTOs;
-using HRManagementSystem.Application.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
 namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]

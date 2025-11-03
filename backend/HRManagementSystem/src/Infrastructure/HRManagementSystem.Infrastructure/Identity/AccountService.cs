@@ -1,16 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HRManagementSystem.Application.DTOs.Account;
-using HRManagementSystem.Application.Interfaces;
-using HRManagementSystem.Domain.Entities;
-using HRManagementSystem.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Configuration;
-
 namespace HRManagementSystem.Infrastructure.Identity;
 
 

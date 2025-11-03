@@ -1,5 +1,9 @@
-﻿namespace HRManagementSystem.WebApi.Common;
-
-public class Global
-{
-}
+﻿global using HRManagementSystem.Application.DTOs.Account;
+global using HRManagementSystem.Application.Interfaces;
+global using Microsoft.AspNetCore.Mvc;
+global using HRManagementSystem.Application.DTOs;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Mvc.Filters;
+global using HRManagementSystem.Application;
+global using HRManagementSystem.Infrastructure;
+global using HRManagementSystem.Infrastructure.Identity;

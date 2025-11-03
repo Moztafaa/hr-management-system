@@ -1,8 +1,3 @@
-using HRManagementSystem.Domain.Entities;
-using HRManagementSystem.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-
 namespace HRManagementSystem.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>

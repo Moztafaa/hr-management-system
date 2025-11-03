@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Filters;
-
 namespace HRManagementSystem.WebApi.Filters;
 
 /// <summary>

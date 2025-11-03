@@ -1,16 +1,3 @@
-using System.Text;
-using HRManagementSystem.Application.Interfaces;
-using HRManagementSystem.Domain.Interfaces;
-using HRManagementSystem.Infrastructure.Data;
-using HRManagementSystem.Infrastructure.Identity;
-using HRManagementSystem.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-
 namespace HRManagementSystem.Infrastructure;
 
 public static class DependencyInjection

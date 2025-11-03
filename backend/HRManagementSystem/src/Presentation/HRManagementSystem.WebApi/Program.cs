@@ -1,8 +1,3 @@
-using HRManagementSystem.Application;
-using HRManagementSystem.Application.Interfaces;
-using HRManagementSystem.Infrastructure;
-using HRManagementSystem.Infrastructure.Identity;
-
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container

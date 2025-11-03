@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-
 namespace HRManagementSystem.Application.DTOs.Account;
 
 public class AssignRoleDto

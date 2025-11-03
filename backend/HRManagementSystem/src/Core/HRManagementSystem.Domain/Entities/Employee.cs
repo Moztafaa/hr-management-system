@@ -1,5 +1,3 @@
-using System;
-
 namespace HRManagementSystem.Domain.Entities;
 
 public class Employee : BaseEntity

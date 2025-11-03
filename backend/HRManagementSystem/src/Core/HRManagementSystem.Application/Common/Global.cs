@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HRManagementSystem.Application.Common;
-
-internal class Global
-{
-}
+﻿global using HRManagementSystem.Application.Common;
+global using HRManagementSystem.Application.Interfaces;
+global using System.ComponentModel.DataAnnotations;
+global using HRManagementSystem.Application.DTOs.Account;
+global using HRManagementSystem.Application.DTOs;
+global using HRManagementSystem.Domain.Entities;
+global using HRManagementSystem.Domain.Interfaces;
+global using FluentValidation;
+global using HRManagementSystem.Application.Services;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Reflection;

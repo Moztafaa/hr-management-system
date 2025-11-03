@@ -1,11 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HRManagementSystem.Infrastructure.Common;
-
-internal class Global
-{
-}
+﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using HRManagementSystem.Domain.Entities;
+global using HRManagementSystem.Infrastructure.Identity;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using HRManagementSystem.Application.DTOs.Account;
+global using HRManagementSystem.Application.Interfaces;
+global using HRManagementSystem.Infrastructure.Data;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore.Storage;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.IdentityModel.Tokens;
+global using HRManagementSystem.Domain.Interfaces;
+global using HRManagementSystem.Infrastructure.Repositories;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.Extensions.DependencyInjection;

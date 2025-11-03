@@ -1,7 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using HRManagementSystem.Domain.Interfaces;
-using HRManagementSystem.Infrastructure.Data;
-
 namespace HRManagementSystem.Infrastructure.Repositories;
 
 public class Repository<T> : IRepository<T> where T : class

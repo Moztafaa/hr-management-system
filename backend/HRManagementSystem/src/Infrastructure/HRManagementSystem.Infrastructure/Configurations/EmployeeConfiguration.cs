@@ -1,8 +1,5 @@
 using System;
 using HRManagementSystem.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace HRManagementSystem.Infrastructure.Configurations;
 
 public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>

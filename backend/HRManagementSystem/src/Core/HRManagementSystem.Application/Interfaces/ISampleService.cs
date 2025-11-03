@@ -5,6 +5,6 @@ namespace HRManagementSystem.Application.Interfaces;
 /// </summary>
 public interface ISampleService
 {
-    Task<IEnumerable<string>> GetAllAsync();
-    Task<string?> GetByIdAsync(Guid id);
+    Task<Response<IEnumerable<string>>> GetAllAsync();
+    Task<Response<string>> GetByIdAsync(Guid id);
 }

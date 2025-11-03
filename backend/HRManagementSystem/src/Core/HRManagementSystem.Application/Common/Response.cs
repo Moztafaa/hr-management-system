@@ -1,11 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace HRManagementSystem.Application.Common;
 
-namespace HRManagementSystem.Application.Common;
-
-internal class Response
-{
-}
+public record Response<T>(T Data, string ErrorMessage, bool HasError);
