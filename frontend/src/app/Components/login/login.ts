@@ -18,7 +18,7 @@ export class Login {
   constructor(private authService: Auth, private router: Router) { }
 
   login() {
-    this.authService.login({ email: this.email, password: this.password })
+    this.authService.login({ email: this.email, password: this.password, rememberMe: true })
       .subscribe({
         next: res => {
           if (res.succeeded) {

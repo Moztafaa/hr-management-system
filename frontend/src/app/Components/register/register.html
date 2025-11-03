@@ -1,0 +1,29 @@
+<div class="login-container">
+    <h2>Register</h2>
+    <form (submit)="register(); $event.preventDefault()">
+        <input [(ngModel)]="payload.firstName" name="firstName" placeholder="First Name" required />
+        <input [(ngModel)]="payload.lastName" name="lastName" placeholder="Last Name" required />
+        <input [(ngModel)]="payload.email" name="email" type="email" placeholder="Email" required />
+        <input [(ngModel)]="payload.password" name="password" type="password" placeholder="Password" required />
+        <input [(ngModel)]="payload.confirmPassword" name="confirmPassword" type="password"
+            placeholder="Confirm Password" required />
+        <input [(ngModel)]="payload.phoneNumber" name="phoneNumber" placeholder="Phone Number" />
+        <input [(ngModel)]="payload.contactNumber" name="contactNumber" placeholder="Contact Number" />
+        <input [(ngModel)]="payload.address" name="address" placeholder="Address" />
+        <input [(ngModel)]="payload.gender" name="gender" placeholder="Gender" />
+        <input [(ngModel)]="payload.basicSalary" name="basicSalary" type="number" placeholder="Basic Salary" required />
+        <input [(ngModel)]="payload.dateOfBirth" name="dateOfBirth" type="date" placeholder="Date of Birth" required />
+        <input [(ngModel)]="payload.hireDate" name="hireDate" type="date" placeholder="Hire Date" required />
+        <input [(ngModel)]="payload.efF_Start" name="efF_Start" type="date" placeholder="EFF Start" />
+        <input [(ngModel)]="payload.efF_End" name="efF_End" type="date" placeholder="EFF End" />
+        <input [(ngModel)]="stringRoles" name="roles" placeholder="Roles (comma separated)" />
+
+        <button type="submit">Register</button>
+        @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+        }
+        @if (successMessage) {
+        <p class="success">{{ successMessage }}</p>
+        }
+    </form>
+</div>
