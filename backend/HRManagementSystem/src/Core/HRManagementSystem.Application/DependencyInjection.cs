@@ -9,6 +9,7 @@ public static class DependencyInjection
         // Add FluentValidation
         services.AddValidatorsFromAssembly(assembly);
         services.AddScoped<IEmployeeService, EmployeeService>();
+        services.AddScoped<IDepartmentService, DepartmentService>();
 
 
         return services;

@@ -48,6 +48,7 @@ public static class DependencyInjection
         // Register AccountService
         // Register repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
         return services;
     }

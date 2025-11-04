@@ -16,4 +16,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     }
 
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Department> Departments { get; set; }
 }
