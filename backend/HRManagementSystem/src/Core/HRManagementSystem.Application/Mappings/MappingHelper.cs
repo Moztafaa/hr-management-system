@@ -1,3 +1,5 @@
+using HRManagementSystem.Application.DTOs.Payslip;
+
 namespace HRManagementSystem.Application.Mappings;
 
 /// <summary>
@@ -23,6 +25,11 @@ public class MappingHelper:Profile
         CreateMap<Designation, DesignationDto>().ReverseMap();
         CreateMap<Designation, DesignationDetailsDto>().ReverseMap();
         CreateMap<Designation, DesignationWithEmployeesDto>().ReverseMap();
+        CreateMap<Payslip, PayslipDto>().ForMember(dest => dest.EmployeeName,opt => opt.MapFrom(src =>(src.Employee != null
+                                                   ? (src.Employee.FirstName + " " + src.Employee.LastName): string.Empty).Trim()))
+                                                   .ReverseMap();
+        CreateMap<CreatePayslipDto, Payslip>();
+
 
     }
 }

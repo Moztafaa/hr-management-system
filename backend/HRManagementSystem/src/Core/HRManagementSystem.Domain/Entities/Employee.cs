@@ -14,6 +14,6 @@ public class Employee : BaseEntity
     public string? Address { get; set; }
     public decimal BasicSalary { get; set; }
     public string? ApplicationUserId { get; set; }
+    public ICollection<Payslip>? Payslips { get; set; }
 
-    // TODO: Navigation property (e.g., Department, Designation, etc.) can be added here in the future
 }

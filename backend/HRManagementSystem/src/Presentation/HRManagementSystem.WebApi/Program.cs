@@ -1,3 +1,6 @@
+using HRManagementSystem.Application.Interfaces;
+using HRManagementSystem.Application.Services;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
@@ -36,18 +39,16 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IPayslipService, PayslipService>();
 // Add Application and Infrastructure layers
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 //link with angular
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngular",
+builder.Services.AddCors(options => options.AddPolicy("AllowAngular",
         policy => policy.AllowAnyOrigin()
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
-});
+                        .AllowAnyHeader()));
 
 WebApplication app = builder.Build();
 
@@ -57,7 +58,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//
+
 app.UseCors("AllowAngular");
 
 app.UseHttpsRedirection();

@@ -158,6 +158,48 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.ToTable("Employees", (string)null);
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Payslip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasicSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("NetSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalAllowances")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalDeductions")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Payslips");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Infrastructure.Identity.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -372,6 +414,17 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .HasForeignKey("DesignationId");
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Payslip", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("Payslips")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("HRManagementSystem.Infrastructure.Identity.ApplicationRole", null)
@@ -431,6 +484,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Designation", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Employee", b =>
+                {
+                    b.Navigation("Payslips");
                 });
 #pragma warning restore 612, 618
         }
