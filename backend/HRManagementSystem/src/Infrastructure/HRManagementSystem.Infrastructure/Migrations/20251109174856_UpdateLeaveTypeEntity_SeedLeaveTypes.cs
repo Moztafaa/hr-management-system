@@ -13,7 +13,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<bool>(
+    name: "IsPaid",
+    table: "LeaveTypes",
+    type: "bit",
+    nullable: false,
+    defaultValue: true // أو false حسب السياسة عندك
+);
+
             migrationBuilder.InsertData(
+
                 table: "LeaveTypes",
                 columns: new[] { "Id", "CanCarryForward", "CarryForwardLimit", "CreatedAt", "Description", "IsPaid", "MaxDays", "Name", "UpdatedAt" },
                 values: new object[,]
@@ -31,6 +40,10 @@ namespace HRManagementSystem.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+    name: "IsPaid",
+    table: "LeaveTypes"
+);
             migrationBuilder.DeleteData(
                 table: "LeaveTypes",
                 keyColumn: "Id",
