@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251105000658_AddDesignationTable")]
-    partial class AddDesignationTable
+    [Migration("20251110061053_newDB1")]
+    partial class newDB1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Designation", b =>
@@ -87,7 +87,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Designations");
+                    b.ToTable("Designations", (string)null);
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Employee", b =>
@@ -99,7 +99,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(max)");
@@ -108,7 +109,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ContactNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -139,7 +141,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("datetime2");
@@ -159,6 +162,244 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("DesignationId");
 
                     b.ToTable("Employees", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeLeaveBalance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LeaveTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RemainingDays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalAllocated")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsedDays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("LeaveTypeId");
+
+                    b.ToTable("EmployeeLeaveBalances", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveApproval", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ApproverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LeaveRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApproverId");
+
+                    b.HasIndex("LeaveRequestId");
+
+                    b.ToTable("LeaveApprovals", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LeaveTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ReviewedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("TotalDays")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("LeaveTypeId");
+
+                    b.HasIndex("ReviewedById");
+
+                    b.ToTable("LeaveRequests", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("CanCarryForward")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("CarryForwardLimit")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxDays")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LeaveTypes", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CanCarryForward = true,
+                            CarryForwardLimit = 5,
+                            CreatedAt = new DateTime(2025, 11, 10, 8, 10, 52, 692, DateTimeKind.Local).AddTicks(7208),
+                            Description = "Annual paid leave after completing the first year of work",
+                            IsPaid = true,
+                            MaxDays = 15,
+                            Name = "Annual Leave"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CanCarryForward = false,
+                            CreatedAt = new DateTime(2025, 11, 10, 8, 10, 52, 692, DateTimeKind.Local).AddTicks(7299),
+                            Description = "Medical leave based on a valid medical certificate",
+                            IsPaid = true,
+                            MaxDays = 30,
+                            Name = "Sick Leave"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CanCarryForward = false,
+                            CreatedAt = new DateTime(2025, 11, 10, 8, 10, 52, 692, DateTimeKind.Local).AddTicks(7318),
+                            Description = "Maternity leave for female employees, 90 days paid",
+                            IsPaid = true,
+                            MaxDays = 90,
+                            Name = "Maternity Leave"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CanCarryForward = false,
+                            CreatedAt = new DateTime(2025, 11, 10, 8, 10, 52, 692, DateTimeKind.Local).AddTicks(7337),
+                            Description = "Short paid leave for new fathers as per company policy",
+                            IsPaid = true,
+                            MaxDays = 3,
+                            Name = "Paternity Leave"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CanCarryForward = false,
+                            CreatedAt = new DateTime(2025, 11, 10, 8, 10, 52, 692, DateTimeKind.Local).AddTicks(7356),
+                            Description = "Leave without pay subject to management approval",
+                            IsPaid = false,
+                            MaxDays = 30,
+                            Name = "Unpaid Leave"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CanCarryForward = false,
+                            CreatedAt = new DateTime(2025, 11, 10, 8, 10, 52, 692, DateTimeKind.Local).AddTicks(7375),
+                            Description = "Leave for emergencies (death of a relative, special circumstances)",
+                            IsPaid = true,
+                            MaxDays = 5,
+                            Name = "Emergency Leave"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CanCarryForward = false,
+                            CreatedAt = new DateTime(2025, 11, 10, 8, 10, 52, 692, DateTimeKind.Local).AddTicks(7398),
+                            Description = "Hajj leave for Muslims, 10 days paid, once in a lifetime",
+                            IsPaid = true,
+                            MaxDays = 10,
+                            Name = "Hajj Leave"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Infrastructure.Identity.ApplicationRole", b =>
@@ -366,13 +607,83 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Employee", b =>
                 {
-                    b.HasOne("HRManagementSystem.Domain.Entities.Department", null)
+                    b.HasOne("HRManagementSystem.Domain.Entities.Department", "Department")
                         .WithMany("Employees")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("HRManagementSystem.Domain.Entities.Designation", null)
+                    b.HasOne("HRManagementSystem.Domain.Entities.Designation", "Designation")
                         .WithMany("Employees")
-                        .HasForeignKey("DesignationId");
+                        .HasForeignKey("DesignationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Designation");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeLeaveBalance", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("LeaveBalances")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.LeaveType", "LeaveType")
+                        .WithMany("EmployeeLeaveBalances")
+                        .HasForeignKey("LeaveTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("LeaveType");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveApproval", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Approver")
+                        .WithMany("LeaveApprovals")
+                        .HasForeignKey("ApproverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.LeaveRequest", "LeaveRequest")
+                        .WithMany("LeaveApprovals")
+                        .HasForeignKey("LeaveRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Approver");
+
+                    b.Navigation("LeaveRequest");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveRequest", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("LeaveRequests")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.LeaveType", "LeaveType")
+                        .WithMany("LeaveRequests")
+                        .HasForeignKey("LeaveTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Reviewer")
+                        .WithMany()
+                        .HasForeignKey("ReviewedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("LeaveType");
+
+                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -434,6 +745,27 @@ namespace HRManagementSystem.Infrastructure.Migrations
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Designation", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Employee", b =>
+                {
+                    b.Navigation("LeaveApprovals");
+
+                    b.Navigation("LeaveBalances");
+
+                    b.Navigation("LeaveRequests");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveRequest", b =>
+                {
+                    b.Navigation("LeaveApprovals");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveType", b =>
+                {
+                    b.Navigation("EmployeeLeaveBalances");
+
+                    b.Navigation("LeaveRequests");
                 });
 #pragma warning restore 612, 618
         }
