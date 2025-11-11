@@ -38,4 +38,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<LeaveRequest> LeaveRequests { get; set; }
     public DbSet<LeaveApproval> LeaveApprovals { get; set; }
     public DbSet<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
+    public DbSet<JobPosting> JobPostings { get; set; }
 }

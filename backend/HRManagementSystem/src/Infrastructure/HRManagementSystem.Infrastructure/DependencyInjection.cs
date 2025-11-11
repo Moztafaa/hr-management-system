@@ -57,6 +57,7 @@ public static class DependencyInjection
         services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
         services.AddScoped<IEmployeeLeaveBalanceRepository,EmployeeLeaveBalanceRepository>();
         services.AddScoped<ILeaveTypeRepository,LeaveTypeRepository>();
+        services.AddScoped<IJobPostingRepository, JobPostingRepository>();
         return services;
     }
 }
