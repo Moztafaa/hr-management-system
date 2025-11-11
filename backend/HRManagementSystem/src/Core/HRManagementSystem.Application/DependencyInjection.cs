@@ -17,6 +17,8 @@ public static class DependencyInjection
         services.AddScoped<ILeaveBalanceService, LeaveBalanceService>();
         services.AddScoped<ILeaveApprovalService, LeaveApprovalService>();
         services.AddScoped<IJobPostingService, JobPostingService>();
+        services.AddScoped<ICandidateService, CandidateService>();
+        services.AddScoped<IJobApplicationService, JobApplicationService>();
 
         // services.AddScoped<ILeaveService, LeaveService>();
         services.AddAutoMapper(x => x.AddProfile(new MappingHelper()));
@@ -25,6 +27,8 @@ public static class DependencyInjection
         services.AddAutoMapper(x => x.AddProfile(new EmployeeProfile()));
         services.AddAutoMapper(x => x.AddProfile(new DepartmentProfile()));
         services.AddAutoMapper(x => x.AddProfile(new JobPostingProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new CandidateProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new JobApplicationProfile()));
 
 
         return services;

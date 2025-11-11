@@ -55,9 +55,11 @@ public static class DependencyInjection
         services.AddScoped<IDesignationRepository, DesignationRepository>();
         services.AddScoped<ILeaveApprovalRepository, LeaveApprovalRepository>();
         services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
-        services.AddScoped<IEmployeeLeaveBalanceRepository,EmployeeLeaveBalanceRepository>();
-        services.AddScoped<ILeaveTypeRepository,LeaveTypeRepository>();
+        services.AddScoped<IEmployeeLeaveBalanceRepository, EmployeeLeaveBalanceRepository>();
+        services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
+        services.AddScoped<ICandidateRepository, CandidateRepository>();
+        services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
         return services;
     }
 }
