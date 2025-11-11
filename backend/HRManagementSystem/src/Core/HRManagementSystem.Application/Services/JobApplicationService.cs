@@ -51,7 +51,7 @@ public class JobApplicationService(
     {
         try
         {
-            JobApplication? jobApplication = await jobApplicationRepository.GetApplicationWithDetailsAsync(id);
+            JobApplication? jobApplication = await jobApplicationRepository.GetApplicationWithDetailsAsync(id, cancellationToken);
             if (jobApplication == null)
             {
                 return new Response<JobApplicationDetailDto>(null!, "Job application not found.", true);
@@ -70,7 +70,7 @@ public class JobApplicationService(
     {
         try
         {
-            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByCandidateAsync(candidateId);
+            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByCandidateAsync(candidateId, cancellationToken);
             IEnumerable<JobApplicationDto> jobApplicationDtos = mapper.Map<IEnumerable<JobApplicationDto>>(jobApplications);
 
             return new Response<IEnumerable<JobApplicationDto>>(jobApplicationDtos, string.Empty, false);
@@ -85,7 +85,7 @@ public class JobApplicationService(
     {
         try
         {
-            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByJobPostingAsync(jobPostingId);
+            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByJobPostingAsync(jobPostingId, cancellationToken);
             IEnumerable<JobApplicationDto> jobApplicationDtos = mapper.Map<IEnumerable<JobApplicationDto>>(jobApplications);
 
             return new Response<IEnumerable<JobApplicationDto>>(jobApplicationDtos, string.Empty, false);
@@ -100,7 +100,7 @@ public class JobApplicationService(
     {
         try
         {
-            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByStatusAsync(status);
+            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByStatusAsync(status, cancellationToken);
             IEnumerable<JobApplicationDto> jobApplicationDtos = mapper.Map<IEnumerable<JobApplicationDto>>(jobApplications);
 
             return new Response<IEnumerable<JobApplicationDto>>(jobApplicationDtos, string.Empty, false);
@@ -151,7 +151,7 @@ public class JobApplicationService(
             }
 
             // Check if candidate has already applied to this job
-            bool hasApplied = await jobApplicationRepository.HasCandidateAppliedAsync(candidateId, createJobApplicationDto.JobPostingId);
+            bool hasApplied = await jobApplicationRepository.HasCandidateAppliedAsync(candidateId, createJobApplicationDto.JobPostingId, cancellationToken);
             if (hasApplied)
             {
                 return new Response<JobApplicationDto>(null!, "This candidate has already applied to this job posting.", true);
@@ -218,7 +218,7 @@ public class JobApplicationService(
     {
         try
         {
-            int count = await jobApplicationRepository.GetApplicationCountByJobPostingAsync(jobPostingId);
+            int count = await jobApplicationRepository.GetApplicationCountByJobPostingAsync(jobPostingId, cancellationToken);
             return new Response<int>(count, string.Empty, false);
         }
         catch (Exception ex)
@@ -231,7 +231,7 @@ public class JobApplicationService(
     {
         try
         {
-            bool hasApplied = await jobApplicationRepository.HasCandidateAppliedAsync(candidateId, jobPostingId);
+            bool hasApplied = await jobApplicationRepository.HasCandidateAppliedAsync(candidateId, jobPostingId, cancellationToken);
             return new Response<bool>(hasApplied, string.Empty, false);
         }
         catch (Exception ex)
