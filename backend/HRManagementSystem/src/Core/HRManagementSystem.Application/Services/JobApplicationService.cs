@@ -160,6 +160,7 @@ public class JobApplicationService(
             // Create job application
             JobApplication jobApplication = mapper.Map<JobApplication>(createJobApplicationDto);
             jobApplication.CandidateId = candidateId;
+            jobApplication.ApplicationDate = DateTime.UtcNow;
             jobApplication.CreatedAt = DateTime.UtcNow;
 
             await jobApplicationRepository.AddAsync(jobApplication, cancellationToken);

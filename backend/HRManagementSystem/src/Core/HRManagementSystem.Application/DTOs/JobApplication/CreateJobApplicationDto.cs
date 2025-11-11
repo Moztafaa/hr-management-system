@@ -14,7 +14,6 @@ public class CreateJobApplicationDto
     [Required(ErrorMessage = "Job posting ID is required")]
     public int JobPostingId { get; set; }
 
-    public DateTime ApplicationDate { get; set; } = DateTime.UtcNow;
 
     [Required(ErrorMessage = "Application source is required")]
     [StringLength(50)]
