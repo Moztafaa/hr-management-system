@@ -20,4 +20,6 @@ public class JobPosting : BaseEntity
     public Department? Department { get; set; }
     public int DesignationId { get; set; }
     public Designation? Designation { get; set; }
+
+    public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
 }
