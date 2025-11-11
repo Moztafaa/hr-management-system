@@ -22,19 +22,19 @@ public class LeaveApprovalService(
             await _leaveApprovalRepo.UpdateAsync(approval);
 
             // Check if all steps are done
-            var allSteps = await _leaveApprovalRepo.GetAllByRequestIdAsync(dto.LeaveRequestId);
+            IEnumerable<LeaveApproval> allSteps = await _leaveApprovalRepo.GetAllByRequestIdAsync(dto.LeaveRequestId);
             bool stillPending = allSteps.Any(a => a.ActionDate == null);
             if (stillPending)
                 return new Response<bool>(true, null, false);
 
             // Update LeaveRequest and balance
-            var respose = await _leaveRequestService.GetLeaveRequestByIdAsync(dto.LeaveRequestId);
+            Response<LeaveRequestDto> respose = await _leaveRequestService.GetLeaveRequestByIdAsync(dto.LeaveRequestId);
             if (respose.HasError)
                 return new Response<bool>(false, "Leave request not found", true);
 
-            var leaveRequest = respose.Data;
+            LeaveRequestDto leaveRequest = respose.Data;
 
-            var deductResult = await _leaveBalanceService.DeductLeaveDaysAsync(
+            Response<bool> deductResult = await _leaveBalanceService.DeductLeaveDaysAsync(
                 leaveRequest.EmployeeId,
                 leaveRequest.LeaveTypeId,
                 leaveRequest.TotalDays
@@ -58,8 +58,8 @@ public class LeaveApprovalService(
     {
         try
         {
-            var approvals = await _leaveApprovalRepo.GetAllByApproverIdAsync(approverId);
-            var approverApprovals = _mapper.Map<IEnumerable<LeaveApprovalDto>>(approvals);
+            IEnumerable<LeaveApproval> approvals = await _leaveApprovalRepo.GetAllByApproverIdAsync(approverId);
+            IEnumerable<LeaveApprovalDto>? approverApprovals = _mapper.Map<IEnumerable<LeaveApprovalDto>>(approvals);
 
 
             return new Response<IEnumerable<LeaveApprovalDto>>(approverApprovals, string.Empty, false);
@@ -74,8 +74,8 @@ public class LeaveApprovalService(
     {
         try
         {
-            var approvals = await _leaveApprovalRepo.GetAllByRequestIdAsync(leaveRequestId);
-            var requestApprovals = _mapper.Map<IEnumerable<LeaveApprovalDto>>(approvals);
+            IEnumerable<LeaveApproval> approvals = await _leaveApprovalRepo.GetAllByRequestIdAsync(leaveRequestId);
+            IEnumerable<LeaveApprovalDto>? requestApprovals = _mapper.Map<IEnumerable<LeaveApprovalDto>>(approvals);
 
             return new Response<IEnumerable<LeaveApprovalDto>>(requestApprovals, string.Empty, false);
         }
@@ -97,19 +97,19 @@ public class LeaveApprovalService(
             approval.ActionDate = DateTime.UtcNow;
             await _leaveApprovalRepo.UpdateAsync(approval);
 
-            var allSteps = await _leaveApprovalRepo.GetAllByRequestIdAsync(dto.LeaveRequestId);
+            IEnumerable<LeaveApproval> allSteps = await _leaveApprovalRepo.GetAllByRequestIdAsync(dto.LeaveRequestId);
 
-            foreach (var step in allSteps.Where(a => a.ActionDate == null))
+            foreach (LeaveApproval step in allSteps.Where(a => a.ActionDate == null))
             {
                 step.ActionDate = DateTime.UtcNow;
                 await _leaveApprovalRepo.UpdateAsync(step);
             }
 
-            var leaveRequestResponse = await _leaveRequestService.GetLeaveRequestByIdAsync(dto.LeaveRequestId);
+            Response<LeaveRequestDto> leaveRequestResponse = await _leaveRequestService.GetLeaveRequestByIdAsync(dto.LeaveRequestId);
             if (leaveRequestResponse.HasError)
                 return new Response<bool>(false, "Leave request not found", true);
 
-            var leaveRequest = leaveRequestResponse.Data;
+            LeaveRequestDto leaveRequest = leaveRequestResponse.Data;
 
             leaveRequest.Status = (int)LeaveStatus.Rejected;
             leaveRequest.ReviewedAt = null;

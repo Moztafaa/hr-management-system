@@ -12,4 +12,6 @@ public interface IJobPostingService
     Task<Response<bool>> UpdateJobPostingAsync(int id, UpdateJobPostingDto updateJobPostingDto, CancellationToken cancellationToken = default);
     Task<Response<bool>> DeleteJobPostingAsync(int id, CancellationToken cancellationToken = default);
     Task<Response<IEnumerable<JobPostingDto>>> GetActiveJobPostingsAsync(CancellationToken cancellationToken = default);
+    Task<Response<IEnumerable<JobPostingDto>>> GetJobPostingsByDepartmentAsync(int departmentId, CancellationToken cancellationToken = default);
+    Task<Response<IEnumerable<JobPostingDto>>> GetJobPostingsByDesignationAsync(int designationId, CancellationToken cancellationToken = default);
 }

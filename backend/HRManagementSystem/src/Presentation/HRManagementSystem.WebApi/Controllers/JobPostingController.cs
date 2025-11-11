@@ -8,12 +8,14 @@ namespace HRManagementSystem.WebApi.Controllers;
 
 /*
 End Points:
-GET    /api/jobposting          - List all job postings
-GET    /api/jobposting/active   - List active job postings
-GET    /api/jobposting/{id}     - Get specific job posting
-POST   /api/jobposting          - Create new job posting
-PUT    /api/jobposting/{id}     - Update job posting
-DELETE /api/jobposting/{id}     - Delete job posting
+GET    /api/jobposting                     - List all job postings
+GET    /api/jobposting/active              - List active job postings
+GET    /api/jobposting/{id}                - Get specific job posting
+GET    /api/jobposting/department/{departmentId} - Get job postings by department
+GET    /api/jobposting/designation/{designationId} - Get job postings by designation
+POST   /api/jobposting                     - Create new job posting
+PUT    /api/jobposting/{id}                - Update job posting
+DELETE /api/jobposting/{id}                - Delete job posting
 */
 
 
@@ -56,6 +58,34 @@ public class JobPostingController(IJobPostingService jobPostingService) : Contro
     public async Task<IActionResult> GetJobPostingById(int id, CancellationToken cancellationToken)
     {
         Response<JobPostingDto> response = await jobPostingService.GetJobPostingByIdAsync(id, cancellationToken);
+        if (response.HasError)
+        {
+            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+        }
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Get job postings by department
+    /// </summary>
+    [HttpGet("department/{departmentId}")]
+    public async Task<IActionResult> GetJobPostingsByDepartment(int departmentId, CancellationToken cancellationToken)
+    {
+        Response<IEnumerable<JobPostingDto>> response = await jobPostingService.GetJobPostingsByDepartmentAsync(departmentId, cancellationToken);
+        if (response.HasError)
+        {
+            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+        }
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Get job postings by designation
+    /// </summary>
+    [HttpGet("designation/{designationId}")]
+    public async Task<IActionResult> GetJobPostingsByDesignation(int designationId, CancellationToken cancellationToken)
+    {
+        Response<IEnumerable<JobPostingDto>> response = await jobPostingService.GetJobPostingsByDesignationAsync(designationId, cancellationToken);
         if (response.HasError)
         {
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });

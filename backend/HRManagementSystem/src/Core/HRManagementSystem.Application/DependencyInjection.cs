@@ -21,6 +21,10 @@ public static class DependencyInjection
         // services.AddScoped<ILeaveService, LeaveService>();
         services.AddAutoMapper(x => x.AddProfile(new MappingHelper()));
         services.AddAutoMapper(x => x.AddProfile(new LeaveProfile()));
+        // Add other mapping profiles for Department, Employee, JobPosting, etc.
+        services.AddAutoMapper(x => x.AddProfile(new EmployeeProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new DepartmentProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new JobPostingProfile()));
 
 
         return services;

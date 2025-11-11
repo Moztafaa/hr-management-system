@@ -7,7 +7,7 @@ public class LeaveRequestService(ILeaveRequestRepository _LeaveRequestRepository
             DateTime start = createLeaveRequestDto.StartDate.Date;
             DateTime end = createLeaveRequestDto.EndDate.Date;
 
-            var temp = await CanCreateOrUpdate(createLeaveRequestDto.EmployeeId, -1, start, end, cancellationToken);
+            Response<LeaveRequestDto> temp = await CanCreateOrUpdate(createLeaveRequestDto.EmployeeId, -1, start, end, cancellationToken);
 
             if (temp.HasError)
                 return temp;
@@ -17,8 +17,8 @@ public class LeaveRequestService(ILeaveRequestRepository _LeaveRequestRepository
             LeaveRequest req = _mapper.Map<LeaveRequest>(createLeaveRequestDto);
             req.TotalDays = totalDays;
             req.CreatedAt = DateTime.UtcNow;
-            var emp = await _employeeService.GetEmployeeByIdAsync(createLeaveRequestDto.EmployeeId, cancellationToken);
-            var dept = await _departmentService.GetDepartmentByIdAsync(emp.Data.DeptId);
+            Response<EmployeeDto> emp = await _employeeService.GetEmployeeByIdAsync(createLeaveRequestDto.EmployeeId, cancellationToken);
+            Response<DepartmentDto> dept = await _departmentService.GetDepartmentByIdAsync(emp.Data.DeptId);
             req.ReviewedById = dept.Data.ManagerId;
 
             await _LeaveRequestRepository.AddAsync(req, cancellationToken);
@@ -134,15 +134,15 @@ public class LeaveRequestService(ILeaveRequestRepository _LeaveRequestRepository
             DateTime start = updateLeaveRequestDto.StartDate.Date;
             DateTime end = updateLeaveRequestDto.EndDate.Date;
 
-            var temp = await CanCreateOrUpdate(updateLeaveRequestDto.EmployeeId, id,start, end, cancellationToken);
+            Response<LeaveRequestDto> temp = await CanCreateOrUpdate(updateLeaveRequestDto.EmployeeId, id,start, end, cancellationToken);
 
             if (temp.HasError)
                 return new Response<bool>(false,temp.ErrorMessage, true);
             int totalDays = (int)(end - start).TotalDays + 1;
             LeaveRequest.TotalDays = totalDays;
             LeaveRequest.UpdatedAt = DateTime.UtcNow;
-            var emp = await _employeeService.GetEmployeeByIdAsync(updateLeaveRequestDto.EmployeeId, cancellationToken);
-            var dept = await _departmentService.GetDepartmentByIdAsync(emp.Data.DeptId);
+            Response<EmployeeDto> emp = await _employeeService.GetEmployeeByIdAsync(updateLeaveRequestDto.EmployeeId, cancellationToken);
+            Response<DepartmentDto> dept = await _departmentService.GetDepartmentByIdAsync(emp.Data.DeptId);
             LeaveRequest.ReviewedById = dept.Data.ManagerId;
             if (flag > 0)
             {
@@ -189,7 +189,7 @@ public class LeaveRequestService(ILeaveRequestRepository _LeaveRequestRepository
     }
     private async Task<Response<LeaveRequestDto>> CanCreateOrUpdate(int employeeId , int requestId,DateTime start, DateTime end, CancellationToken cancellationToken = default)
     {
-        var emp = await _employeeService.GetEmployeeByIdAsync(employeeId, cancellationToken);
+        Response<EmployeeDto> emp = await _employeeService.GetEmployeeByIdAsync(employeeId, cancellationToken);
         if (emp.HasError)
             return new Response<LeaveRequestDto>(default!, "Employee Id is not correct", true);
 

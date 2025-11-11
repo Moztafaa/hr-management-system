@@ -11,15 +11,15 @@ public class LeaveBalanceService(
     // ✅ Get leave balances for one employee
     public async Task<Response<IEnumerable<LeaveBalanceDto>>> GetByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default)
     {
-        var balances = await _leaveBalanceRepository.GetByEmployeeIdAsync(employeeId, cancellationToken);
-        var dtos = _mapper.Map<IEnumerable<LeaveBalanceDto>>(balances);
+        IEnumerable<EmployeeLeaveBalance> balances = await _leaveBalanceRepository.GetByEmployeeIdAsync(employeeId, cancellationToken);
+        IEnumerable<LeaveBalanceDto>? dtos = _mapper.Map<IEnumerable<LeaveBalanceDto>>(balances);
         return new Response<IEnumerable<LeaveBalanceDto>>(dtos, null, false);
     }
     // ✅ Get leave balances for one employee With year
     public async Task<Response<IEnumerable<LeaveBalanceDto>>> GetByEmployeeIdAndYearAsync(int employeeId, int year, CancellationToken cancellationToken = default)
     {
-        var balances = await _leaveBalanceRepository.GetByEmployeeIdAndYearAsync(employeeId, year, cancellationToken);
-        var dtos = _mapper.Map<IEnumerable<LeaveBalanceDto>>(balances);
+        IEnumerable<EmployeeLeaveBalance> balances = await _leaveBalanceRepository.GetByEmployeeIdAndYearAsync(employeeId, year, cancellationToken);
+        IEnumerable<LeaveBalanceDto>? dtos = _mapper.Map<IEnumerable<LeaveBalanceDto>>(balances);
         return new Response<IEnumerable<LeaveBalanceDto>>(dtos, null, false);
     }
 
@@ -28,21 +28,21 @@ public class LeaveBalanceService(
     {
         try
         {
-            var employee = await _employeeService.GetEmployeeByIdAsync(employeeId, cancellationToken);
+            Response<EmployeeDto> employee = await _employeeService.GetEmployeeByIdAsync(employeeId, cancellationToken);
             if (employee.HasError == true)
                 return new Response<bool>(false, "Employee not found", true);
 
-            var yearsOfService = (int)((DateTime.UtcNow - employee.Data.HireDate).TotalDays / 365);
+            int yearsOfService = (int)((DateTime.UtcNow - employee.Data.HireDate).TotalDays / 365);
 
-            var leaveTypes = await _leaveTypeRepository.GetAllAsync(cancellationToken);
+            IEnumerable<LeaveType> leaveTypes = await _leaveTypeRepository.GetAllAsync(cancellationToken);
 
-            foreach (var type in leaveTypes)
+            foreach (LeaveType type in leaveTypes)
             {
-                var existing = await _leaveBalanceRepository.GetByEmployeeAndTypeAndYearAsync(employeeId, type.Id, DateTime.UtcNow.Year, cancellationToken);
+                EmployeeLeaveBalance? existing = await _leaveBalanceRepository.GetByEmployeeAndTypeAndYearAsync(employeeId, type.Id, DateTime.UtcNow.Year, cancellationToken);
                 if (existing != null)
                     continue;
 
-                var totalDays = type.MaxDays;
+                int totalDays = type.MaxDays;
 
                 // 🔹 Adjust annual leave based on years of service
                 if (type.Name.Equals("Annual Leave", StringComparison.OrdinalIgnoreCase))
@@ -79,7 +79,7 @@ public class LeaveBalanceService(
     // ✅ Deduct leave days after an approved request
     public async Task<Response<bool>> DeductLeaveDaysAsync(int employeeId, int leaveTypeId, int leaveDays, CancellationToken cancellationToken = default)
     {
-        var balance = await _leaveBalanceRepository.GetByEmployeeAndTypeAndYearAsync(employeeId, leaveTypeId, DateTime.UtcNow.Year, cancellationToken);
+        EmployeeLeaveBalance? balance = await _leaveBalanceRepository.GetByEmployeeAndTypeAndYearAsync(employeeId, leaveTypeId, DateTime.UtcNow.Year, cancellationToken);
         if (balance == null)
             return new Response<bool>(false, "Leave balance not found", true);
 
@@ -95,9 +95,9 @@ public class LeaveBalanceService(
     // ✅ Allocate balances for all employees (e.g., at the start of each year)
     public async Task<Response<bool>> AllocateBalancesForNewYearAsync(CancellationToken cancellationToken = default)
     {
-        var response = await _employeeService.GetAllEmployeesAsync(cancellationToken);
-        var employees = response.Data;
-        foreach (var emp in employees)
+        Response<IEnumerable<EmployeeDto>> response = await _employeeService.GetAllEmployeesAsync(cancellationToken);
+        IEnumerable<EmployeeDto> employees = response.Data;
+        foreach (EmployeeDto emp in employees)
         {
             await AllocateInitialBalancesAsync(emp.Id, cancellationToken);
         }

@@ -10,9 +10,9 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
             {
                 return new Response<DesignationDto>(default!, "Designation with the same name already exists.", true);
             }
-            var Designation = _mapper.Map<Designation>(createDesignationDto);
+            Designation? Designation = _mapper.Map<Designation>(createDesignationDto);
             await _DesignationRepository.AddAsync(Designation, cancellationToken);
-            var DesignationDto = _mapper.Map<DesignationDto>(Designation);
+            DesignationDto? DesignationDto = _mapper.Map<DesignationDto>(Designation);
 
             return new Response<DesignationDto>(DesignationDto, string.Empty, false);
         }
@@ -76,7 +76,7 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
                 return new Response<DesignationDto>(null!, "Designation not found.", true);
             }
 
-            var DesignationDto = _mapper.Map<DesignationDto>(Designation);
+            DesignationDto? DesignationDto = _mapper.Map<DesignationDto>(Designation);
 
             return new Response<DesignationDto>(DesignationDto, string.Empty, false);
         }
@@ -96,7 +96,7 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
                 return new Response<DesignationWithEmployeesDto>(default!, "Designation not found.", true);
             }
 
-            var DesignationWithEmployeesDto = _mapper.Map<DesignationWithEmployeesDto>(Designation);
+            DesignationWithEmployeesDto? DesignationWithEmployeesDto = _mapper.Map<DesignationWithEmployeesDto>(Designation);
 
             return new Response<DesignationWithEmployeesDto>(DesignationWithEmployeesDto, string.Empty, false);
         }

@@ -1,49 +1,16 @@
 namespace HRManagementSystem.Application.Services;
 
-public class EmployeeService(IRepository<Employee> employeeRepository) : IEmployeeService
+public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _mapper) : IEmployeeService
 {
     public async Task<Response<EmployeeDto>> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto, CancellationToken cancellationToken = default)
     {
         try
         {
-            var employee = new Employee
-            {
-                FirstName = createEmployeeDto.FirstName,
-                LastName = createEmployeeDto.LastName,
-                DateOfBirth = createEmployeeDto.DateOfBirth,
-                Gender = createEmployeeDto.Gender,
-                HireDate = createEmployeeDto.HireDate,
-                EFF_Start = createEmployeeDto.EFF_Start,
-                EFF_End = createEmployeeDto.EFF_End,
-                Email = createEmployeeDto.Email,
-                ContactNumber = createEmployeeDto.ContactNumber,
-                Address = createEmployeeDto.Address,
-                BasicSalary = createEmployeeDto.BasicSalary,
-                ApplicationUserId = createEmployeeDto.ApplicationUserId,
-                DepartmentId = createEmployeeDto.DeptId,
-                DesignationId = createEmployeeDto.DesignationId
-            };
+            Employee? employee = _mapper.Map<Employee>(createEmployeeDto);
 
             await employeeRepository.AddAsync(employee, cancellationToken);
 
-            var dto = new EmployeeDto
-            {
-                Id = employee.Id,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                DateOfBirth = employee.DateOfBirth,
-                Gender = employee.Gender,
-                HireDate = employee.HireDate,
-                EFF_Start = employee.EFF_Start,
-                EFF_End = employee.EFF_End,
-                Email = employee.Email,
-                ContactNumber = employee.ContactNumber,
-                Address = employee.Address,
-                BasicSalary = employee.BasicSalary,
-                ApplicationUserId = employee.ApplicationUserId,
-                DeptId= (int)employee.DepartmentId,
-                DesignationId= (int)employee.DesignationId
-            };
+            EmployeeDto? dto = _mapper.Map<EmployeeDto>(employee);
 
             return new Response<EmployeeDto>(dto, string.Empty, false);
         }
@@ -59,24 +26,7 @@ public class EmployeeService(IRepository<Employee> employeeRepository) : IEmploy
         {
             IEnumerable<Employee> employees = await employeeRepository.GetAllAsync(cancellationToken);
 
-            IEnumerable<EmployeeDto> dtoList = employees.Select(e => new EmployeeDto
-            {
-                Id = e.Id,
-                FirstName = e.FirstName,
-                LastName = e.LastName,
-                DeptId = e.DepartmentId ?? 0,
-                DesignationId = e.DesignationId ?? 0,
-                DateOfBirth = e.DateOfBirth,
-                Gender = e.Gender,
-                HireDate = e.HireDate,
-                EFF_Start = e.EFF_Start,
-                EFF_End = e.EFF_End,
-                Email = e.Email,
-                ContactNumber = e.ContactNumber,
-                Address = e.Address,
-                BasicSalary = e.BasicSalary,
-                ApplicationUserId = e.ApplicationUserId
-            });
+            IEnumerable<EmployeeDto> dtoList = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
 
             return new Response<IEnumerable<EmployeeDto>>(dtoList, string.Empty, false);
         }
@@ -95,24 +45,7 @@ public class EmployeeService(IRepository<Employee> employeeRepository) : IEmploy
             if (employee is null)
                 return new Response<EmployeeDto>(null, "Employee not found", true);
 
-            var dto = new EmployeeDto
-            {
-                Id = employee.Id,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                DateOfBirth = employee.DateOfBirth,
-                DeptId= (int)employee.DepartmentId,
-                DesignationId= (int)employee.DesignationId,
-                Gender = employee.Gender,
-                HireDate = employee.HireDate,
-                EFF_Start = employee.EFF_Start,
-                EFF_End = employee.EFF_End,
-                Email = employee.Email,
-                ContactNumber = employee.ContactNumber,
-                Address = employee.Address,
-                BasicSalary = employee.BasicSalary,
-                ApplicationUserId = employee.ApplicationUserId
-            };
+            EmployeeDto? dto = _mapper.Map<EmployeeDto>(employee);
 
             return new Response<EmployeeDto>(dto, string.Empty, false);
         }
@@ -130,20 +63,7 @@ public class EmployeeService(IRepository<Employee> employeeRepository) : IEmploy
             if (employee is null)
                 return new Response<bool>(false, "Employee not found", true);
 
-            employee.FirstName = updateEmployeeDto.FirstName;
-            employee.LastName = updateEmployeeDto.LastName;
-            employee.DateOfBirth = updateEmployeeDto.DateOfBirth;
-            employee.Gender = updateEmployeeDto.Gender;
-            employee.HireDate = updateEmployeeDto.HireDate;
-            employee.EFF_Start = updateEmployeeDto.EFF_Start;
-            employee.EFF_End = updateEmployeeDto.EFF_End;
-            employee.Email = updateEmployeeDto.Email;
-            employee.DesignationId=updateEmployeeDto.DesignationId;
-            employee.DepartmentId=updateEmployeeDto.DeptId;
-            employee.ContactNumber = updateEmployeeDto.ContactNumber;
-            employee.Address = updateEmployeeDto.Address;
-            employee.BasicSalary = updateEmployeeDto.BasicSalary;
-            employee.ApplicationUserId = updateEmployeeDto.ApplicationUserId;
+            _mapper.Map(updateEmployeeDto, employee);
 
             await employeeRepository.UpdateAsync(employee, cancellationToken);
             return new Response<bool>(true, string.Empty, false);

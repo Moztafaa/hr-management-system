@@ -11,7 +11,7 @@ public class LeaveApprovalController(ILeaveApprovalService _leaveApprovalService
     [HttpPost("approve")]
     public async Task<IActionResult> Approve([FromBody] LeaveApprovalActionDto dto)
     {
-        var response = await _leaveApprovalService.ApproveAsync(dto);
+        Response<bool> response = await _leaveApprovalService.ApproveAsync(dto);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -22,7 +22,7 @@ public class LeaveApprovalController(ILeaveApprovalService _leaveApprovalService
     [HttpPost("reject")]
     public async Task<IActionResult> Reject([FromBody] LeaveApprovalActionDto dto)
     {
-        var response = await _leaveApprovalService.RejectAsync(dto);
+        Response<bool> response = await _leaveApprovalService.RejectAsync(dto);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -33,7 +33,7 @@ public class LeaveApprovalController(ILeaveApprovalService _leaveApprovalService
     [HttpGet("approver/{approverId}")]
     public async Task<IActionResult> GetAllByApproverId(int approverId)
     {
-        var response = await _leaveApprovalService.GetAllApprovalsByApproverIdAsync(approverId);
+        Response<IEnumerable<LeaveApprovalDto>> response = await _leaveApprovalService.GetAllApprovalsByApproverIdAsync(approverId);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -44,7 +44,7 @@ public class LeaveApprovalController(ILeaveApprovalService _leaveApprovalService
     [HttpGet("request/{leaveRequestId}")]
     public async Task<IActionResult> GetAllByRequestId(int leaveRequestId)
     {
-        var response = await _leaveApprovalService.GetAllApprovalsByRequestIdAsync(leaveRequestId);
+        Response<IEnumerable<LeaveApprovalDto>> response = await _leaveApprovalService.GetAllApprovalsByRequestIdAsync(leaveRequestId);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 

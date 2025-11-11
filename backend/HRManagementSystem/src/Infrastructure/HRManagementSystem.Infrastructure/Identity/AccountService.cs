@@ -8,7 +8,8 @@ public class AccountService(
     SignInManager<ApplicationUser> _signInManager,
     RoleManager<ApplicationRole> _roleManager,
     ApplicationDbContext _context,
-    JwtTokenGenerator _jwtGenerator
+    JwtTokenGenerator _jwtGenerator,
+    IMapper _mapper
     ) : IAccountService
 {
 
@@ -59,24 +60,9 @@ public class AccountService(
             }
 
             // 4. Create the Employee entity
-            var employee = new Employee
-            {
-                FirstName = registerEmployeeDto.FirstName,
-                LastName = registerEmployeeDto.LastName,
-                Email = registerEmployeeDto.Email,
-                DateOfBirth = registerEmployeeDto.DateOfBirth,
-                Gender = registerEmployeeDto.Gender,
-                HireDate = registerEmployeeDto.HireDate,
-                EFF_Start = registerEmployeeDto.EFF_Start,
-                EFF_End = registerEmployeeDto.EFF_End,
-                DepartmentId = registerEmployeeDto.DeptId,
-                DesignationId = registerEmployeeDto.DesignationId,
-                ContactNumber = registerEmployeeDto.ContactNumber,
-                Address = registerEmployeeDto.Address,
-                BasicSalary = registerEmployeeDto.BasicSalary,
-                ApplicationUserId = user.Id.ToString(),
-                CreatedAt = DateTime.UtcNow
-            };
+            Employee? employee = _mapper.Map<Employee>(registerEmployeeDto);
+            employee.ApplicationUserId = user.Id.ToString();
+            employee.CreatedAt = DateTime.UtcNow;
 
             await _context.Employees.AddAsync(employee);
             await _context.SaveChangesAsync();

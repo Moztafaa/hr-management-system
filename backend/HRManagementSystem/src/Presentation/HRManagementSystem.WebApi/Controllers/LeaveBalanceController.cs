@@ -10,7 +10,7 @@ public class LeaveBalanceController(ILeaveBalanceService _leaveBalanceService) :
     [HttpGet("employee-leavebalance/{employeeId:int}")]
     public async Task<IActionResult> GetByEmployeeId(int employeeId, CancellationToken cancellationToken)
     {
-        var response = await _leaveBalanceService.GetByEmployeeIdAsync(employeeId, cancellationToken);
+        Response<IEnumerable<LeaveBalanceDto>> response = await _leaveBalanceService.GetByEmployeeIdAsync(employeeId, cancellationToken);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -19,7 +19,7 @@ public class LeaveBalanceController(ILeaveBalanceService _leaveBalanceService) :
     [HttpGet("employee-currentyear-leavebalance/{employeeId:int}")]
     public async Task<IActionResult> GetByEmployeeIdAndYear(int employeeId, CancellationToken cancellationToken)
     {
-        var response = await _leaveBalanceService.GetByEmployeeIdAndYearAsync(employeeId, DateTime.UtcNow.Year, cancellationToken);
+        Response<IEnumerable<LeaveBalanceDto>> response = await _leaveBalanceService.GetByEmployeeIdAndYearAsync(employeeId, DateTime.UtcNow.Year, cancellationToken);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -30,7 +30,7 @@ public class LeaveBalanceController(ILeaveBalanceService _leaveBalanceService) :
     [HttpPost("allocate/{employeeId:int}")]
     public async Task<IActionResult> AllocateForEmployee(int employeeId, CancellationToken cancellationToken)
     {
-        var response = await _leaveBalanceService.AllocateInitialBalancesAsync(employeeId, cancellationToken);
+        Response<bool> response = await _leaveBalanceService.AllocateInitialBalancesAsync(employeeId, cancellationToken);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -41,7 +41,7 @@ public class LeaveBalanceController(ILeaveBalanceService _leaveBalanceService) :
     [HttpPost("deduct")]
     public async Task<IActionResult> DeductLeave([FromBody] DeductLeaveRequestDto request, CancellationToken cancellationToken)
     {
-        var response = await _leaveBalanceService.DeductLeaveDaysAsync(request.EmployeeId, request.LeaveTypeId, request.DaysUsed, cancellationToken);
+        Response<bool> response = await _leaveBalanceService.DeductLeaveDaysAsync(request.EmployeeId, request.LeaveTypeId, request.DaysUsed, cancellationToken);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -52,7 +52,7 @@ public class LeaveBalanceController(ILeaveBalanceService _leaveBalanceService) :
     [HttpPost("reset-annual")]
     public async Task<IActionResult> ResetAnnualBalances(CancellationToken cancellationToken)
     {
-        var response = await _leaveBalanceService.AllocateBalancesForNewYearAsync(cancellationToken);
+        Response<bool> response = await _leaveBalanceService.AllocateBalancesForNewYearAsync(cancellationToken);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
