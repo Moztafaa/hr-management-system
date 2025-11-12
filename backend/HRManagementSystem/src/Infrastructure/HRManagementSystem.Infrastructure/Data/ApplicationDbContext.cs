@@ -1,6 +1,7 @@
 using System.Reflection.Emit;
 using HRManagementSystem.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace HRManagementSystem.Infrastructure.Data;
 
@@ -29,6 +30,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
         //Add Leave types in database
         builder.SeedLeaveTypes();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<EntityEntry<BaseEntity>> entries = ChangeTracker.Entries<BaseEntity>();
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
     }
 
     public DbSet<Employee> Employees { get; set; }
