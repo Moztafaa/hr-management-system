@@ -10,3 +10,7 @@ global using HRManagementSystem.Infrastructure.Identity;
 global using HRManagementSystem.Application.Common;
 global using HRManagementSystem.Application.DTOs.Department;
 global using HRManagementSystem.Application.DTOs.Designation;
+global using HRManagementSystem.Application.DTOs.Payroll.Allowance;
+global using HRManagementSystem.Application.DTOs.Payroll.Deduction;
+global using HRManagementSystem.Application.DTOs.Payroll.EmployeeAllowance;
+global using HRManagementSystem.Application.DTOs.Payroll.EmployeeDeduction;

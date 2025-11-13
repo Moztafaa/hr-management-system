@@ -1,5 +1,3 @@
-using HRManagementSystem.Application.DTOs.Payslip;
-
 namespace HRManagementSystem.Application.Mappings;
 
 /// <summary>
@@ -30,6 +28,21 @@ public class MappingHelper:Profile
                                                    .ReverseMap();
         CreateMap<CreatePayslipDto, Payslip>();
 
+        CreateMap<Allowance, AllowanceDto>().ReverseMap();
+        CreateMap<Allowance, CreateAllowanceDto>().ReverseMap();
+        CreateMap<Allowance, UpdateAllowanceDto>().ReverseMap();
+
+        CreateMap<Deduction, DeductionDto>().ReverseMap();
+        CreateMap<Deduction, CreateDeductionDto>().ReverseMap();
+        CreateMap<Deduction, UpdateDeductionDto>().ReverseMap();
+
+        CreateMap<EmployeeAllowance, EmployeeAllowanceDto>().ReverseMap();
+        CreateMap<EmployeeAllowance, CreateEmployeeAllowanceDto>().ReverseMap();
+        CreateMap<EmployeeAllowance, UpdateEmployeeAllowanceDto>().ReverseMap();
+
+        CreateMap<EmployeeDeduction, EmployeeDeductionDto>().ReverseMap();
+        CreateMap<EmployeeDeduction, CreateEmployeeDeductionDto>().ReverseMap();
+        CreateMap<EmployeeDeduction, UpdateEmployeeDeductionDto>().ReverseMap();
 
     }
 }

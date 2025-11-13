@@ -12,3 +12,8 @@ global using System.Reflection;
 global using AutoMapper;
 global using HRManagementSystem.Application.DTOs.Designation;
 global using HRManagementSystem.Application.DTOs.Department;
+global using HRManagementSystem.Application.DTOs.Payroll.Allowance;
+global using HRManagementSystem.Application.DTOs.Payroll.Deduction;
+global using HRManagementSystem.Application.DTOs.Payroll.EmployeeAllowance;
+global using HRManagementSystem.Application.DTOs.Payroll.EmployeeDeduction;
+global using HRManagementSystem.Application.DTOs.Payslip;

@@ -20,4 +20,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<Department> Departments { get; set; }
     public DbSet<Designation> Designations { get; set; }
     public DbSet<Payslip> Payslips { get; set; }
+    public DbSet<Allowance> Allowances { get; set; }
+    public DbSet<Deduction> Deductions { get; set; }
+    public DbSet<EmployeeAllowance> EmployeeAllowances { get; set; }
+    public DbSet<EmployeeDeduction> EmployeeDeductions { get; set; }
 }
