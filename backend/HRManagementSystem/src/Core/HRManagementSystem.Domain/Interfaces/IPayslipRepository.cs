@@ -1,10 +1,10 @@
-﻿
-using HRManagementSystem.Domain.Entities;
+﻿using HRManagementSystem.Domain.Entities;
 
 namespace HRManagementSystem.Domain.Interfaces;
+
 public interface IPayslipRepository : IRepository<Payslip>
 {
-    Task<bool> ExistsAsync(int employeeId, int month, int year);
-    Task<IEnumerable<Payslip>> GetByEmployeeAsync(int employeeId);
-    Task<Payslip?> GetByEmployeeAndDateAsync(int employeeId, int month, int year);
+    Task<IEnumerable<Payslip>> GetByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Payslip>> GetByMonthAsync(int month, int year, CancellationToken cancellationToken = default);
+    Task<Payslip?> GetByEmployeeAndMonthAsync(int employeeId, int month, int year, CancellationToken cancellationToken = default);
 }

@@ -1,4 +1,5 @@
-﻿namespace HRManagementSystem.Application.DTOs.Payslip;
+﻿namespace HRManagementSystem.Application.DTOs.Payroll.Payslip;
+
 public class CreatePayslipDto
 {
     public int EmployeeId { get; set; }

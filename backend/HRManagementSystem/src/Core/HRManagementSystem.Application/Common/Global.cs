@@ -16,4 +16,4 @@ global using HRManagementSystem.Application.DTOs.Payroll.Allowance;
 global using HRManagementSystem.Application.DTOs.Payroll.Deduction;
 global using HRManagementSystem.Application.DTOs.Payroll.EmployeeAllowance;
 global using HRManagementSystem.Application.DTOs.Payroll.EmployeeDeduction;
-global using HRManagementSystem.Application.DTOs.Payslip;
+global using HRManagementSystem.Application.DTOs.Payroll.Payslip;

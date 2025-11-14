@@ -1,4 +1,3 @@
-using HRManagementSystem.Application.Interfaces;
 using HRManagementSystem.Application.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -39,7 +38,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IPayslipService, PayslipService>();
 // Add Application and Infrastructure layers
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
