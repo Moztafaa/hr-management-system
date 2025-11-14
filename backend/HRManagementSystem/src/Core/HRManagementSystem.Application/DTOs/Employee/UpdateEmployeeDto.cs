@@ -4,6 +4,8 @@ public class UpdateEmployeeDto
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
+    public int DeptId { get; set; }
+    public int DesignationId { get; set; }
     public DateTime DateOfBirth { get; set; }
     public string? Gender { get; set; }
     public DateTime HireDate { get; set; }

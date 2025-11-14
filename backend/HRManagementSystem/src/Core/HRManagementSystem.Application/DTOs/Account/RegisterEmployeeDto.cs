@@ -7,6 +7,8 @@ public class RegisterEmployeeDto
     [EmailAddress]
     public required string Email { get; set; }
 
+    public int DeptId {  get; set; }
+    public int DesignationId { get; set; }
     [Required]
     [StringLength(100, MinimumLength = 6)]
     public required string Password { get; set; }
@@ -49,6 +51,7 @@ public class RegisterEmployeeDto
     [Required]
     [Range(0, double.MaxValue)]
     public decimal BasicSalary { get; set; }
+    
 
     // Optional: Role assignment
     public List<string>? Roles { get; set; }

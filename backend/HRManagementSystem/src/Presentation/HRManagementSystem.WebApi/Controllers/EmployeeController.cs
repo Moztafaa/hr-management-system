@@ -7,7 +7,6 @@ namespace HRManagementSystem.WebApi.Controllers;
 public class EmployeeController(IEmployeeService employeeService) : ControllerBase
 {
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetAllEmployees(CancellationToken cancellationToken)
     {
         Response<IEnumerable<EmployeeDto>> employees = await employeeService.GetAllEmployeesAsync(cancellationToken);

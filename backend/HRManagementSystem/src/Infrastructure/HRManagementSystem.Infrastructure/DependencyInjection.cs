@@ -1,3 +1,6 @@
+using HRManagementSystem.Domain.Interfaces.LeaveRepository;
+using HRManagementSystem.Infrastructure.Repositories.ILeaveRepository;
+
 namespace HRManagementSystem.Infrastructure;
 
 public static class DependencyInjection
@@ -50,6 +53,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IDesignationRepository, DesignationRepository>();
+
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         services.AddScoped<IPayslipRepository, PayslipRepository>();
@@ -57,6 +61,15 @@ public static class DependencyInjection
         services.AddScoped<IDeductionRepository, DeductionRepository>();
         services.AddScoped<IEmployeeAllowanceRepository, EmployeeAllowanceRepository>();
         services.AddScoped<IEmployeeDeductionRepository, EmployeeDeductionRepository>();
+
+        services.AddScoped<ILeaveApprovalRepository, LeaveApprovalRepository>();
+        services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
+        services.AddScoped<IEmployeeLeaveBalanceRepository, EmployeeLeaveBalanceRepository>();
+        services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
+        services.AddScoped<IJobPostingRepository, JobPostingRepository>();
+        services.AddScoped<ICandidateRepository, CandidateRepository>();
+        services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+
         return services;
     }
 }

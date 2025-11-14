@@ -14,3 +14,6 @@ global using HRManagementSystem.Application.DTOs.Payroll.Allowance;
 global using HRManagementSystem.Application.DTOs.Payroll.Deduction;
 global using HRManagementSystem.Application.DTOs.Payroll.EmployeeAllowance;
 global using HRManagementSystem.Application.DTOs.Payroll.EmployeeDeduction;
+global using HRManagementSystem.Application.DTOs.Leaves.LeaveRequestDtos;
+global using HRManagementSystem.Application.Interfaces.ILeaveServices;
+global using HRManagementSystem.Application.DTOs.Leaves.LeaveTypeDtos;

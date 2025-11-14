@@ -62,5 +62,15 @@ public class MappingHelper:Profile
         CreateMap<EmployeeDeduction, CreateEmployeeDeductionDto>().ReverseMap();
         CreateMap<EmployeeDeduction, UpdateEmployeeDeductionDto>().ReverseMap();
 
+        //Leave Request
+        CreateMap<LeaveRequest, LeaveRequestDto>().ReverseMap();
+        CreateMap<LeaveRequest, UpdateLeaveRequestDto>().ReverseMap();
+        CreateMap<LeaveBalanceDto, EmployeeLeaveBalance>().ReverseMap();
+        CreateMap<LeaveRequestDto, UpdateLeaveRequestDto>().ReverseMap();
+        CreateMap<LeaveApproval, LeaveApprovalDto>().ReverseMap();
+
+
+
+
     }
 }

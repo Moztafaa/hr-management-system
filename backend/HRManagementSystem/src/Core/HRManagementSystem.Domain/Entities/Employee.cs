@@ -14,12 +14,19 @@ public class Employee : BaseEntity
     public string? Address { get; set; }
     public decimal BasicSalary { get; set; }
     public string? ApplicationUserId { get; set; }
+
     public ICollection<Payslip>? Payslips { get; set; }
     public ICollection<EmployeeAllowance> EmployeeAllowances { get; set; }
     public ICollection<EmployeeDeduction> EmployeeDeductions { get; set; }
-    public int? DepartmentId { get; set; }
-    public Department? Department { get; set; }
 
+    public int? DepartmentId { get; set; }
     public int? DesignationId { get; set; }
+
+
+    public Department? Department { get; set; }
     public Designation? Designation { get; set; }
+    public ICollection<LeaveRequest> LeaveRequests { get; set; }
+    public ICollection<LeaveApproval> LeaveApprovals { get; set; }
+    public ICollection<EmployeeLeaveBalance> LeaveBalances { get; set; }
+
 }
