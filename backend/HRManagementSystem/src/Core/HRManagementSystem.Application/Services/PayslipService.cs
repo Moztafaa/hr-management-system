@@ -11,12 +11,14 @@ public class PayslipService(
     {
         try
         {
-            var employee = await _employeeRepository.GetByIdAsync(employeeId);
+            Employee? employee = await _employeeRepository.GetByIdAsync(employeeId);
             if (employee == null)
+            {
                 return new Response<PayslipDto>(null!, "Employee not found.", true);
+            }
 
-            var allowances = await _employeeAllowanceRepository.GetByEmployeeIdAsync(employeeId);
-            var deductions = await _employeeDeductionRepository.GetByEmployeeIdAsync(employeeId);
+            IEnumerable<EmployeeAllowance> allowances = await _employeeAllowanceRepository.GetByEmployeeIdAsync(employeeId);
+            IEnumerable<EmployeeDeduction> deductions = await _employeeDeductionRepository.GetByEmployeeIdAsync(employeeId);
 
             decimal totalAllowances = allowances.Sum(a => a.Amount);
             decimal totalDeductions = deductions.Sum(d => d.Amount);
@@ -31,12 +33,12 @@ public class PayslipService(
                 TotalAllowances = totalAllowances,
                 TotalDeductions = totalDeductions,
                 NetSalary = netSalary,
-                GeneratedAt = DateTime.UtcNow
+                GeneratedAt = DateTime.Now
             };
 
             await _payslipRepository.AddAsync(payslip);
 
-            var payslipDto = _mapper.Map<PayslipDto>(payslip);
+            PayslipDto payslipDto = _mapper.Map<PayslipDto>(payslip);
             payslipDto.Allowances = _mapper.Map<List<AllowanceDto>>(allowances.Select(ea => ea.Allowance));
             payslipDto.Deductions = _mapper.Map<List<DeductionDto>>(deductions.Select(ed => ed.Deduction));
 
@@ -52,14 +54,16 @@ public class PayslipService(
     {
         try
         {
-            var employees = await _employeeRepository.GetAllAsync();
+            IEnumerable<Employee> employees = await _employeeRepository.GetAllAsync();
             var payslipDtos = new List<PayslipDto>();
 
-            foreach (var employee in employees)
+            foreach (Employee employee in employees)
             {
-                var result = await GeneratePayslipAsync(employee.Id, month, year);
+                Response<PayslipDto> result = await GeneratePayslipAsync(employee.Id, month, year);
                 if (!result.HasError && result.Data != null)
+                {
                     payslipDtos.Add(result.Data);
+                }
             }
 
             return new Response<IEnumerable<PayslipDto>>(payslipDtos, string.Empty, false);
@@ -74,11 +78,13 @@ public class PayslipService(
     {
         try
         {
-            var payslip = await _payslipRepository.GetByIdAsync(id);
+            Payslip? payslip = await _payslipRepository.GetByIdAsync(id);
             if (payslip == null)
+            {
                 return new Response<PayslipDto>(null!, "Payslip not found.", true);
+            }
 
-            var dto = _mapper.Map<PayslipDto>(payslip);
+            PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
             return new Response<PayslipDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
@@ -91,8 +97,8 @@ public class PayslipService(
     {
         try
         {
-            var payslips = await _payslipRepository.GetByEmployeeIdAsync(employeeId);
-            var dtoList = _mapper.Map<IEnumerable<PayslipDto>>(payslips);
+            IEnumerable<Payslip> payslips = await _payslipRepository.GetByEmployeeIdAsync(employeeId);
+            IEnumerable<PayslipDto> dtoList = _mapper.Map<IEnumerable<PayslipDto>>(payslips);
             return new Response<IEnumerable<PayslipDto>>(dtoList, string.Empty, false);
         }
         catch (Exception ex)
@@ -105,8 +111,8 @@ public class PayslipService(
     {
         try
         {
-            var payslips = await _payslipRepository.GetByMonthAsync(month, year);
-            var dtoList = _mapper.Map<IEnumerable<PayslipDto>>(payslips);
+            IEnumerable<Payslip> payslips = await _payslipRepository.GetByMonthAsync(month, year);
+            IEnumerable<PayslipDto> dtoList = _mapper.Map<IEnumerable<PayslipDto>>(payslips);
             return new Response<IEnumerable<PayslipDto>>(dtoList, string.Empty, false);
         }
         catch (Exception ex)
@@ -119,9 +125,11 @@ public class PayslipService(
     {
         try
         {
-            var payslip = await _payslipRepository.GetByIdAsync(id);
+            Payslip? payslip = await _payslipRepository.GetByIdAsync(id);
             if (payslip == null)
+            {
                 return new Response<bool>(false, "Payslip not found.", true);
+            }
 
             await _payslipRepository.DeleteAsync(id);
             return new Response<bool>(true, string.Empty, false);

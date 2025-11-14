@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251113133902_InitialCreate")]
+    [Migration("20251114211955_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,32 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Allowance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Allowances");
+                });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Candidate", b =>
                 {
@@ -128,6 +154,32 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("ConvertedToEmployeeId");
 
                     b.ToTable("Candidates");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Deduction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Deductions");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Department", b =>
@@ -267,6 +319,70 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("DesignationId");
 
                     b.ToTable("Employees", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeAllowance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AllowanceId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AllowanceId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeAllowances", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeDeduction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DeductionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeductionId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeDeductions", (string)null);
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeLeaveBalance", b =>
@@ -576,7 +692,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 1,
                             CanCarryForward = true,
                             CarryForwardLimit = 5,
-                            CreatedAt = new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(280),
+                            CreatedAt = new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8361),
                             Description = "Annual paid leave after completing the first year of work",
                             IsPaid = true,
                             MaxDays = 15,
@@ -586,7 +702,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 2,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(332),
+                            CreatedAt = new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8508),
                             Description = "Medical leave based on a valid medical certificate",
                             IsPaid = true,
                             MaxDays = 30,
@@ -596,7 +712,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 3,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(336),
+                            CreatedAt = new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8517),
                             Description = "Maternity leave for female employees, 90 days paid",
                             GenderRestriction = "Female",
                             IsPaid = true,
@@ -607,7 +723,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 4,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8521),
                             Description = "Short paid leave for new fathers as per company policy",
                             GenderRestriction = "Male",
                             IsPaid = true,
@@ -618,7 +734,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 5,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(387),
+                            CreatedAt = new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8525),
                             Description = "Leave without pay subject to management approval",
                             IsPaid = false,
                             MaxDays = 30,
@@ -628,7 +744,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 6,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(391),
+                            CreatedAt = new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8530),
                             Description = "Leave for emergencies (death of a relative, special circumstances)",
                             IsPaid = true,
                             MaxDays = 5,
@@ -638,12 +754,57 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 7,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(394),
+                            CreatedAt = new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8547),
                             Description = "Hajj leave for Muslims, 10 days paid, once in a lifetime",
                             IsPaid = true,
                             MaxDays = 10,
                             Name = "Hajj Leave"
                         });
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Payslip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasicSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("GeneratedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("NetSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalAllowances")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalDeductions")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Payslips", (string)null);
                 });
 
             modelBuilder.Entity("HRManagementSystem.Infrastructure.Identity.ApplicationRole", b =>
@@ -875,6 +1036,44 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("Designation");
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeAllowance", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Allowance", "Allowance")
+                        .WithMany("EmployeeAllowances")
+                        .HasForeignKey("AllowanceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("EmployeeAllowances")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Allowance");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeDeduction", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Deduction", "Deduction")
+                        .WithMany("EmployeeDeductions")
+                        .HasForeignKey("DeductionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("EmployeeDeductions")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Deduction");
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeLeaveBalance", b =>
                 {
                     b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
@@ -989,6 +1188,17 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("Reviewer");
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Payslip", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("Payslips")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("HRManagementSystem.Infrastructure.Identity.ApplicationRole", null)
@@ -1040,9 +1250,19 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Allowance", b =>
+                {
+                    b.Navigation("EmployeeAllowances");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Candidate", b =>
                 {
                     b.Navigation("JobApplications");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Deduction", b =>
+                {
+                    b.Navigation("EmployeeDeductions");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Department", b =>
@@ -1057,11 +1277,17 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Employee", b =>
                 {
+                    b.Navigation("EmployeeAllowances");
+
+                    b.Navigation("EmployeeDeductions");
+
                     b.Navigation("LeaveApprovals");
 
                     b.Navigation("LeaveBalances");
 
                     b.Navigation("LeaveRequests");
+
+                    b.Navigation("Payslips");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.JobPosting", b =>

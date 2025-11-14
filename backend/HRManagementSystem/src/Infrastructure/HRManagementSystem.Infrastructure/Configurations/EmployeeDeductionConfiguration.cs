@@ -9,6 +9,7 @@
             builder.HasKey(ed => ed.Id);
 
             builder.Property(ed => ed.Amount)
+                   .HasColumnType("decimal(18,2)")
                    .IsRequired();
 
             builder.HasOne(ed => ed.Employee)

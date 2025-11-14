@@ -14,6 +14,22 @@ namespace HRManagementSystem.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Allowances",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Allowances", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -52,6 +68,22 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Deductions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Deductions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -337,6 +369,64 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmployeeAllowances",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    AllowanceId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeAllowances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmployeeAllowances_Allowances_AllowanceId",
+                        column: x => x.AllowanceId,
+                        principalTable: "Allowances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EmployeeAllowances_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeeDeductions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    DeductionId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeDeductions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmployeeDeductions_Deductions_DeductionId",
+                        column: x => x.DeductionId,
+                        principalTable: "Deductions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EmployeeDeductions_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EmployeeLeaveBalances",
                 columns: table => new
                 {
@@ -403,6 +493,34 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         name: "FK_LeaveRequests_LeaveTypes_LeaveTypeId",
                         column: x => x.LeaveTypeId,
                         principalTable: "LeaveTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payslips",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    BasicSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalAllowances = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalDeductions = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    NetSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Month = table.Column<int>(type: "int", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    GeneratedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payslips", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payslips_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -495,13 +613,13 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 columns: new[] { "Id", "CanCarryForward", "CarryForwardLimit", "CreatedAt", "Description", "GenderRestriction", "IsPaid", "MaxDays", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, true, 5, new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(280), "Annual paid leave after completing the first year of work", null, true, 15, "Annual Leave", null },
-                    { 2, false, null, new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(332), "Medical leave based on a valid medical certificate", null, true, 30, "Sick Leave", null },
-                    { 3, false, null, new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(336), "Maternity leave for female employees, 90 days paid", "Female", true, 90, "Maternity Leave", null },
-                    { 4, false, null, new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(381), "Short paid leave for new fathers as per company policy", "Male", true, 3, "Paternity Leave", null },
-                    { 5, false, null, new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(387), "Leave without pay subject to management approval", null, false, 30, "Unpaid Leave", null },
-                    { 6, false, null, new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(391), "Leave for emergencies (death of a relative, special circumstances)", null, true, 5, "Emergency Leave", null },
-                    { 7, false, null, new DateTime(2025, 11, 13, 15, 39, 1, 785, DateTimeKind.Local).AddTicks(394), "Hajj leave for Muslims, 10 days paid, once in a lifetime", null, true, 10, "Hajj Leave", null }
+                    { 1, true, 5, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8361), "Annual paid leave after completing the first year of work", null, true, 15, "Annual Leave", null },
+                    { 2, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8508), "Medical leave based on a valid medical certificate", null, true, 30, "Sick Leave", null },
+                    { 3, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8517), "Maternity leave for female employees, 90 days paid", "Female", true, 90, "Maternity Leave", null },
+                    { 4, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8521), "Short paid leave for new fathers as per company policy", "Male", true, 3, "Paternity Leave", null },
+                    { 5, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8525), "Leave without pay subject to management approval", null, false, 30, "Unpaid Leave", null },
+                    { 6, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8530), "Leave for emergencies (death of a relative, special circumstances)", null, true, 5, "Emergency Leave", null },
+                    { 7, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8547), "Hajj leave for Muslims, 10 days paid, once in a lifetime", null, true, 10, "Hajj Leave", null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -547,6 +665,26 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "IX_Candidates_ConvertedToEmployeeId",
                 table: "Candidates",
                 column: "ConvertedToEmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeeAllowances_AllowanceId",
+                table: "EmployeeAllowances",
+                column: "AllowanceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeeAllowances_EmployeeId",
+                table: "EmployeeAllowances",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeeDeductions_DeductionId",
+                table: "EmployeeDeductions",
+                column: "DeductionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeeDeductions_EmployeeId",
+                table: "EmployeeDeductions",
+                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeLeaveBalances_EmployeeId",
@@ -622,6 +760,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "IX_LeaveRequests_ReviewedById",
                 table: "LeaveRequests",
                 column: "ReviewedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payslips_EmployeeId",
+                table: "Payslips",
+                column: "EmployeeId");
         }
 
         /// <inheritdoc />
@@ -643,6 +786,12 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "EmployeeAllowances");
+
+            migrationBuilder.DropTable(
+                name: "EmployeeDeductions");
+
+            migrationBuilder.DropTable(
                 name: "EmployeeLeaveBalances");
 
             migrationBuilder.DropTable(
@@ -652,10 +801,19 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "LeaveApprovals");
 
             migrationBuilder.DropTable(
+                name: "Payslips");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Allowances");
+
+            migrationBuilder.DropTable(
+                name: "Deductions");
 
             migrationBuilder.DropTable(
                 name: "Candidates");
