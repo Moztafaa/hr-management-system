@@ -155,16 +155,20 @@ public class LeaveRequestService(
     public async Task<Response<bool>> UpdateLeaveRequestAsync(int id, UpdateLeaveRequestDto updateLeaveRequestDto,
         int flag = 0, CancellationToken cancellationToken = default)
     {
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
+
         try
         {
             LeaveRequest? LeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id, cancellationToken);
             if (LeaveRequest == null)
             {
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return new Response<bool>(false, "LeaveRequest not found.", true);
             }
 
             if (LeaveRequest.Status != LeaveStatus.Pending)
             {
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return new Response<bool>(false, "Cannot update this leave request because it has already been reviewed.", true);
             }
 
@@ -175,7 +179,11 @@ public class LeaveRequestService(
                 await CanCreateOrUpdate(updateLeaveRequestDto.EmployeeId, id, start, end, cancellationToken);
 
             if (validation.HasError)
+            {
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return new Response<bool>(false, validation.ErrorMessage, true);
+            }
+
             int totalDays = (int)(end - start).TotalDays + 1;
             LeaveRequest.TotalDays = totalDays;
             LeaveRequest.UpdatedAt = DateTime.UtcNow;
@@ -190,19 +198,19 @@ public class LeaveRequestService(
             }
 
             await _unitOfWork.LeaveRequests.UpdateAsync(LeaveRequest, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             LeaveApproval approval =
                 await _unitOfWork.LeaveApprovals.GetByLeaveRequestIdAsync(LeaveRequest.Id, cancellationToken);
             approval.ApproverId = (int)LeaveRequest.ReviewedById;
             await _unitOfWork.LeaveApprovals.UpdateAsync(approval);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             return new Response<bool>(true, null, false);
         }
         catch (Exception ex)
         {
-            // Log the exception (ex) as needed
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             return new Response<bool>(false, $"Failed to update leave request: {ex.Message}", true);
         }
     }
