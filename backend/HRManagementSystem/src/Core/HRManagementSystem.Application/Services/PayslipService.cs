@@ -7,7 +7,7 @@ public class PayslipService(
     IEmployeeDeductionRepository _employeeDeductionRepository,
     IMapper _mapper) : IPayslipService
 {
-    public async Task<Response<PayslipDto>> GeneratePayslipAsync(int employeeId, int month, int year)
+    public async Task<Response<PayslipDto>> GeneratePayslipAsync(int employeeId, int month, int year, CancellationToken cancellationToken)
     {
         try
         {
@@ -17,13 +17,36 @@ public class PayslipService(
                 return new Response<PayslipDto>(null!, "Employee not found.", true);
             }
 
-            IEnumerable<EmployeeAllowance> allowances = await _employeeAllowanceRepository.GetByEmployeeIdAsync(employeeId);
-            IEnumerable<EmployeeDeduction> deductions = await _employeeDeductionRepository.GetByEmployeeIdAsync(employeeId);
+            Payslip? existingPayslip = await _payslipRepository.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
+            if (existingPayslip != null)
+            {
+                return new Response<PayslipDto>(_mapper.Map<PayslipDto>(existingPayslip), "Payslip already exists for this month.", false);
+            }
 
-            decimal totalAllowances = allowances.Sum(a => a.Amount);
-            decimal totalDeductions = deductions.Sum(d => d.Amount);
+            IEnumerable<EmployeeAllowance> employeeAllowances = await _employeeAllowanceRepository.GetByEmployeeIdAsync(employeeId, cancellationToken);
+            IEnumerable<EmployeeDeduction> employeeDeductions = await _employeeDeductionRepository.GetByEmployeeIdAsync(employeeId, cancellationToken);
+
+            var allowancesForDto = employeeAllowances.Select(ea => new AllowanceDto
+            {
+                Id = ea.AllowanceId,
+                Name = ea.Allowance.Name,
+                Amount = ea.Amount != 0 ? ea.Amount : ea.Allowance.Amount
+            }).ToList();
+
+            decimal totalAllowances = allowancesForDto.Sum(a => a.Amount);
+
+            var deductionsForDto = employeeDeductions.Select(ed => new DeductionDto
+            {
+                Id = ed.DeductionId,
+                Name = ed.Deduction.Name,
+                Amount = ed.Amount != 0 ? ed.Amount : ed.Deduction.Amount
+            }).ToList();
+
+            decimal totalDeductions = deductionsForDto.Sum(d => d.Amount);
+
             decimal netSalary = employee.BasicSalary + totalAllowances - totalDeductions;
 
+            // Create payslip
             var payslip = new Payslip
             {
                 EmployeeId = employeeId,
@@ -36,11 +59,12 @@ public class PayslipService(
                 GeneratedAt = DateTime.Now
             };
 
-            await _payslipRepository.AddAsync(payslip);
+            await _payslipRepository.AddAsync(payslip, cancellationToken);
 
+            // Map to DTO
             PayslipDto payslipDto = _mapper.Map<PayslipDto>(payslip);
-            payslipDto.Allowances = _mapper.Map<List<AllowanceDto>>(allowances.Select(ea => ea.Allowance));
-            payslipDto.Deductions = _mapper.Map<List<DeductionDto>>(deductions.Select(ed => ed.Deduction));
+            payslipDto.Allowances = _mapper.Map<List<AllowanceDto>>(allowancesForDto);
+            payslipDto.Deductions = _mapper.Map<List<DeductionDto>>(deductionsForDto);
 
             return new Response<PayslipDto>(payslipDto, string.Empty, false);
         }
@@ -50,16 +74,16 @@ public class PayslipService(
         }
     }
 
-    public async Task<Response<IEnumerable<PayslipDto>>> GeneratePayslipsForMonthAsync(int month, int year)
+    public async Task<Response<IEnumerable<PayslipDto>>> GeneratePayslipsForMonthAsync(int month, int year, CancellationToken cancellationToken)
     {
         try
         {
-            IEnumerable<Employee> employees = await _employeeRepository.GetAllAsync();
+            IEnumerable<Employee> employees = await _employeeRepository.GetAllAsync(cancellationToken);
             var payslipDtos = new List<PayslipDto>();
 
             foreach (Employee employee in employees)
             {
-                Response<PayslipDto> result = await GeneratePayslipAsync(employee.Id, month, year);
+                Response<PayslipDto> result = await GeneratePayslipAsync(employee.Id, month, year, cancellationToken);
                 if (!result.HasError && result.Data != null)
                 {
                     payslipDtos.Add(result.Data);
@@ -74,31 +98,43 @@ public class PayslipService(
         }
     }
 
-    public async Task<Response<PayslipDto>> GetByIdAsync(int id)
+    //public async Task<Response<PayslipDto>> GetByIdAsync(int id, CancellationToken cancellationToken)
+    //{
+    //    try
+    //    {
+    //        Payslip? payslip = await _payslipRepository.GetByIdAsync(id, cancellationToken);
+    //        if (payslip == null)
+    //        {
+    //            return new Response<PayslipDto>(null!, "Payslip not found.", true);
+    //        }
+
+    //        PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
+    //        dto.Allowances = _mapper.Map<List<AllowanceDto>>(payslip.Employee.EmployeeAllowances.Select(ea => ea.Allowance));
+    //        dto.Deductions = _mapper.Map<List<DeductionDto>>(payslip.Employee.EmployeeDeductions.Select(ed => ed.Deduction));
+
+    //        return new Response<PayslipDto>(dto, string.Empty, false);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return new Response<PayslipDto>(null!, $"Error retrieving payslip: {ex.Message}", true);
+    //    }
+    //}
+
+    public async Task<Response<IEnumerable<PayslipDto>>> GetByEmployeeAsync(int employeeId, CancellationToken cancellationToken)
     {
         try
         {
-            Payslip? payslip = await _payslipRepository.GetByIdAsync(id);
-            if (payslip == null)
+            IEnumerable<Payslip> payslips = await _payslipRepository.GetByEmployeeIdAsync(employeeId, cancellationToken);
+            var dtoList = new List<PayslipDto>();
+
+            foreach (Payslip payslip in payslips)
             {
-                return new Response<PayslipDto>(null!, "Payslip not found.", true);
+                PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
+                dto.Allowances = _mapper.Map<List<AllowanceDto>>(payslip.Employee.EmployeeAllowances.Select(ea => ea.Allowance));
+                dto.Deductions = _mapper.Map<List<DeductionDto>>(payslip.Employee.EmployeeDeductions.Select(ed => ed.Deduction));
+                dtoList.Add(dto);
             }
 
-            PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
-            return new Response<PayslipDto>(dto, string.Empty, false);
-        }
-        catch (Exception ex)
-        {
-            return new Response<PayslipDto>(null!, $"Error retrieving payslip: {ex.Message}", true);
-        }
-    }
-
-    public async Task<Response<IEnumerable<PayslipDto>>> GetByEmployeeAsync(int employeeId)
-    {
-        try
-        {
-            IEnumerable<Payslip> payslips = await _payslipRepository.GetByEmployeeIdAsync(employeeId);
-            IEnumerable<PayslipDto> dtoList = _mapper.Map<IEnumerable<PayslipDto>>(payslips);
             return new Response<IEnumerable<PayslipDto>>(dtoList, string.Empty, false);
         }
         catch (Exception ex)
@@ -107,12 +143,49 @@ public class PayslipService(
         }
     }
 
-    public async Task<Response<IEnumerable<PayslipDto>>> GetByMonthAsync(int month, int year)
+    public async Task<Response<PayslipDto>> GetEmployeePayslipForMonthAsync(int employeeId, int month, int year, CancellationToken cancellationToken)
     {
         try
         {
-            IEnumerable<Payslip> payslips = await _payslipRepository.GetByMonthAsync(month, year);
-            IEnumerable<PayslipDto> dtoList = _mapper.Map<IEnumerable<PayslipDto>>(payslips);
+            Employee? employee = await _employeeRepository.GetByIdAsync(employeeId, cancellationToken);
+            if (employee == null)
+            {
+                return new Response<PayslipDto>(null!, "Employee not found.", true);
+            }
+
+            Payslip? payslip = await _payslipRepository.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
+            if (payslip == null)
+            {
+                return new Response<PayslipDto>(null!, "Payslip not found for this employee and month.", true);
+            }
+
+            PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
+            dto.Allowances = _mapper.Map<List<AllowanceDto>>(payslip.Employee.EmployeeAllowances.Select(ea => ea.Allowance));
+            dto.Deductions = _mapper.Map<List<DeductionDto>>(payslip.Employee.EmployeeDeductions.Select(ed => ed.Deduction));
+
+            return new Response<PayslipDto>(dto, string.Empty, false);
+        }
+        catch (Exception ex)
+        {
+            return new Response<PayslipDto>(null!, $"Error retrieving employee payslip for month: {ex.Message}", true);
+        }
+    }
+
+    public async Task<Response<IEnumerable<PayslipDto>>> GetByMonthAsync(int month, int year, CancellationToken cancellationToken)
+    {
+        try
+        {
+            IEnumerable<Payslip> payslips = await _payslipRepository.GetByMonthAsync(month, year, cancellationToken);
+            var dtoList = new List<PayslipDto>();
+
+            foreach (Payslip payslip in payslips)
+            {
+                PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
+                dto.Allowances = _mapper.Map<List<AllowanceDto>>(payslip.Employee.EmployeeAllowances.Select(ea => ea.Allowance));
+                dto.Deductions = _mapper.Map<List<DeductionDto>>(payslip.Employee.EmployeeDeductions.Select(ed => ed.Deduction));
+                dtoList.Add(dto);
+            }
+
             return new Response<IEnumerable<PayslipDto>>(dtoList, string.Empty, false);
         }
         catch (Exception ex)
@@ -121,17 +194,17 @@ public class PayslipService(
         }
     }
 
-    public async Task<Response<bool>> DeleteAsync(int id)
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         try
         {
-            Payslip? payslip = await _payslipRepository.GetByIdAsync(id);
+            Payslip? payslip = await _payslipRepository.GetByIdAsync(id, cancellationToken);
             if (payslip == null)
             {
                 return new Response<bool>(false, "Payslip not found.", true);
             }
 
-            await _payslipRepository.DeleteAsync(id);
+            await _payslipRepository.DeleteAsync(id, cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
