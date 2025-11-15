@@ -1,10 +1,9 @@
 ﻿namespace HRManagementSystem.Application.Services.LeaveServices;
 
 public class LeaveRequestService(
-    ILeaveRequestRepository _LeaveRequestRepository,
+    IUnitOfWork _unitOfWork,
     IEmployeeService _employeeService,
     IDepartmentService _departmentService,
-    ILeaveApprovalRepository _leaveApprovalRepository,
     IMapper _mapper) : ILeaveRequestService
 {
     public async Task<Response<LeaveRequestDto>> CreateLeaveRequestAsync(CreateLeaveRequestDto createLeaveRequestDto,
@@ -34,12 +33,13 @@ public class LeaveRequestService(
             Response<DepartmentDto> dept = await _departmentService.GetDepartmentByIdAsync(emp.Data.DeptId);
             if (dept.HasError)
                 return new Response<LeaveRequestDto>(default!, "Department not found for this employee.", true);
-            if (dept.Data.ManagerId==null)
+            if (dept.Data.ManagerId == null)
                 return new Response<LeaveRequestDto>(default!, "No manager assigned to this department.", true);
 
             leaveRequest.ReviewedById = dept.Data.ManagerId;
 
-            await _LeaveRequestRepository.AddAsync(leaveRequest, cancellationToken);
+            await _unitOfWork.LeaveRequests.AddAsync(leaveRequest, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             LeaveApproval approval = new LeaveApproval
             {
@@ -49,7 +49,8 @@ public class LeaveRequestService(
                 Status = LeaveStatus.Pending,
                 ActionDate = null
             };
-            await _leaveApprovalRepository.AddAsync(approval);
+            await _unitOfWork.LeaveApprovals.AddAsync(approval);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             LeaveRequestDto result = _mapper.Map<LeaveRequestDto>(leaveRequest);
 
             return new Response<LeaveRequestDto>(result, null, false);
@@ -64,7 +65,7 @@ public class LeaveRequestService(
     {
         try
         {
-            LeaveRequest? LeaveRequest = await _LeaveRequestRepository.GetByIdAsync(id, cancellationToken);
+            LeaveRequest? LeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id, cancellationToken);
             if (LeaveRequest == null)
             {
                 return new Response<bool>(false, "LeaveRequest not found.", true);
@@ -75,7 +76,8 @@ public class LeaveRequestService(
                 return new Response<bool>(false, "Cannot delete this leave request because it has already been reviewed.", true);
             }
 
-            await _LeaveRequestRepository.DeleteAsync(LeaveRequest.Id, cancellationToken);
+            await _unitOfWork.LeaveRequests.DeleteAsync(LeaveRequest.Id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, "Leave request deleted successfully.", false);
         }
         catch (Exception ex)
@@ -90,7 +92,7 @@ public class LeaveRequestService(
     {
         try
         {
-            IEnumerable<LeaveRequest> list = await _LeaveRequestRepository.GetAllAsync(cancellationToken);
+            IEnumerable<LeaveRequest> list = await _unitOfWork.LeaveRequests.GetAllAsync(cancellationToken);
             IEnumerable<LeaveRequestDto> dtos = _mapper.Map<IEnumerable<LeaveRequestDto>>(list);
             return new Response<IEnumerable<LeaveRequestDto>>(dtos, null, false);
         }
@@ -106,7 +108,7 @@ public class LeaveRequestService(
         try
         {
             IEnumerable<LeaveRequest> list =
-                await _LeaveRequestRepository.GetAllByEmployeeIdAsync(id, cancellationToken);
+                await _unitOfWork.LeaveRequests.GetAllByEmployeeIdAsync(id, cancellationToken);
             IEnumerable<LeaveRequestDto> dtos = _mapper.Map<IEnumerable<LeaveRequestDto>>(list);
             return new Response<IEnumerable<LeaveRequestDto>>(dtos, null, false);
         }
@@ -121,7 +123,7 @@ public class LeaveRequestService(
     {
         try
         {
-            LeaveRequest leaveRequest = await _LeaveRequestRepository.GetByIdAsync(id, cancellationToken);
+            LeaveRequest leaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id, cancellationToken);
             if (leaveRequest == null)
                 return new Response<LeaveRequestDto>(null, "Leave request not found.", true);
 
@@ -140,7 +142,7 @@ public class LeaveRequestService(
         try
         {
             IEnumerable<LeaveRequest> list =
-                await _LeaveRequestRepository.GetAllByReviewerIdAsync(id, cancellationToken);
+                await _unitOfWork.LeaveRequests.GetAllByReviewerIdAsync(id, cancellationToken);
             IEnumerable<LeaveRequestDto> dtos = _mapper.Map<IEnumerable<LeaveRequestDto>>(list);
             return new Response<IEnumerable<LeaveRequestDto>>(dtos, null, false);
         }
@@ -155,7 +157,7 @@ public class LeaveRequestService(
     {
         try
         {
-            LeaveRequest? LeaveRequest = await _LeaveRequestRepository.GetByIdAsync(id, cancellationToken);
+            LeaveRequest? LeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id, cancellationToken);
             if (LeaveRequest == null)
             {
                 return new Response<bool>(false, "LeaveRequest not found.", true);
@@ -187,12 +189,14 @@ public class LeaveRequestService(
                 LeaveRequest.ReviewedAt = DateTime.UtcNow;
             }
 
-            await _LeaveRequestRepository.UpdateAsync(LeaveRequest, cancellationToken);
+            await _unitOfWork.LeaveRequests.UpdateAsync(LeaveRequest, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             LeaveApproval approval =
-                await _leaveApprovalRepository.GetByLeaveRequestIdAsync(LeaveRequest.Id, cancellationToken);
+                await _unitOfWork.LeaveApprovals.GetByLeaveRequestIdAsync(LeaveRequest.Id, cancellationToken);
             approval.ApproverId = (int)LeaveRequest.ReviewedById;
-            await _leaveApprovalRepository.UpdateAsync(approval);
+            await _unitOfWork.LeaveApprovals.UpdateAsync(approval);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new Response<bool>(true, null, false);
         }
@@ -210,7 +214,7 @@ public class LeaveRequestService(
     {
         try
         {
-            IEnumerable<LeaveRequest> all = await _LeaveRequestRepository.GetAllByEmployeeIdAsync(employeeId);
+            IEnumerable<LeaveRequest> all = await _unitOfWork.LeaveRequests.GetAllByEmployeeIdAsync(employeeId);
             DateTime s = start.Date;
             DateTime e = end.Date;
 
@@ -241,7 +245,7 @@ public class LeaveRequestService(
             return new Response<LeaveRequestDto>(default!, overlap.ErrorMessage, true);
         if (overlap.Data == true)
             return new Response<LeaveRequestDto>(default!, "Overlapping leave request already exists.", true);
-        
+
         return new Response<LeaveRequestDto>(default!, null, false);
     }
 }

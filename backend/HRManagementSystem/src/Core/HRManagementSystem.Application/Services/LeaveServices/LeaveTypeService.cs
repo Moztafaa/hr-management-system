@@ -1,11 +1,12 @@
 ﻿namespace HRManagementSystem.Application.Services.LeaveServices;
-public class LeaveTypeService(ILeaveTypeRepository _leaveTypeRepository, IMapper _mapper) : ILeaveTypeService
+
+public class LeaveTypeService(IUnitOfWork _unitOfWork, IMapper _mapper) : ILeaveTypeService
 {
     public async Task<Response<IEnumerable<LeaveTypeDto>>> GetAllLeaveTypesAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            IEnumerable<LeaveType> types = await _leaveTypeRepository.GetAllAsync(cancellationToken);
+            IEnumerable<LeaveType> types = await _unitOfWork.LeaveTypes.GetAllAsync(cancellationToken);
 
             if (!types.Any())
                 return new Response<IEnumerable<LeaveTypeDto>>(Enumerable.Empty<LeaveTypeDto>(), "No leave types found.", false);
@@ -23,7 +24,7 @@ public class LeaveTypeService(ILeaveTypeRepository _leaveTypeRepository, IMapper
     {
         try
         {
-            LeaveType? entity = await _leaveTypeRepository.GetByIdAsync(id);
+            LeaveType? entity = await _unitOfWork.LeaveTypes.GetByIdAsync(id);
             if (entity is null)
                 return new Response<LeaveTypeDto>(default!, "LeaveType not found", true);
 

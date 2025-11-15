@@ -1,17 +1,19 @@
 ﻿namespace HRManagementSystem.Application.Services;
-public class DesignationService(IDesignationRepository _DesignationRepository, IMapper _mapper) : IDesignationService
+
+public class DesignationService(IUnitOfWork _unitOfWork, IMapper _mapper) : IDesignationService
 {
     public async Task<Response<DesignationDto>> CreateDesignationAsync(CreateDesignationDto createDesignationDto, CancellationToken cancellationToken = default)
     {
         try
         {
-            Designation existingDesignation = await _DesignationRepository.GetByTitleAsync(createDesignationDto.Title, cancellationToken);
+            Designation existingDesignation = await _unitOfWork.Designations.GetByTitleAsync(createDesignationDto.Title, cancellationToken);
             if (existingDesignation != null)
             {
                 return new Response<DesignationDto>(default!, "Designation with the same name already exists.", true);
             }
             Designation? Designation = _mapper.Map<Designation>(createDesignationDto);
-            await _DesignationRepository.AddAsync(Designation, cancellationToken);
+            await _unitOfWork.Designations.AddAsync(Designation, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             DesignationDto? DesignationDto = _mapper.Map<DesignationDto>(Designation);
 
             return new Response<DesignationDto>(DesignationDto, string.Empty, false);
@@ -23,12 +25,12 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
         }
     }
 
-    
+
     public async Task<Response<bool>> DeleteDesignationAsync(int id, CancellationToken cancellationToken = default)
     {
         try
         {
-            Designation? Designation = await _DesignationRepository.GetByIdAsync(id, cancellationToken);
+            Designation? Designation = await _unitOfWork.Designations.GetByIdAsync(id, cancellationToken);
             if (Designation == null)
             {
                 return new Response<bool>(false, "Designation not found.", true);
@@ -40,7 +42,8 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
                 return new Response<bool>(false, "Cannot delete Designation with existing employees. Please reassign or remove employees first.", true);
             }
 
-            await _DesignationRepository.DeleteAsync(Designation.Id, cancellationToken);
+            await _unitOfWork.Designations.DeleteAsync(Designation.Id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -55,7 +58,7 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
     {
         try
         {
-            IEnumerable<Designation> Designations = await _DesignationRepository.GetAllAsync(cancellationToken);
+            IEnumerable<Designation> Designations = await _unitOfWork.Designations.GetAllAsync(cancellationToken);
             IEnumerable<DesignationDto> DesignationDtos = Designations.Select(
                 d => _mapper.Map<DesignationDto>(d));
             return new Response<IEnumerable<DesignationDto>>(DesignationDtos, string.Empty, false);
@@ -70,7 +73,7 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
     {
         try
         {
-            Designation? Designation = await _DesignationRepository.GetByIdAsync(id, cancellationToken);
+            Designation? Designation = await _unitOfWork.Designations.GetByIdAsync(id, cancellationToken);
             if (Designation == null)
             {
                 return new Response<DesignationDto>(null!, "Designation not found.", true);
@@ -89,7 +92,7 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
     {
         try
         {
-            IEnumerable<Designation> Designations = await _DesignationRepository.GetDesignationsWithEmployeesAsync(id, cancellationToken);
+            IEnumerable<Designation> Designations = await _unitOfWork.Designations.GetDesignationsWithEmployeesAsync(id, cancellationToken);
             Designation? Designation = Designations.FirstOrDefault();
             if (Designation == null)
             {
@@ -109,7 +112,7 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
     {
         try
         {
-            Designation? Designation = await _DesignationRepository.GetByIdAsync(id, cancellationToken);
+            Designation? Designation = await _unitOfWork.Designations.GetByIdAsync(id, cancellationToken);
             if (Designation == null)
             {
                 return new Response<bool>(false, "Designation not found.", true);
@@ -118,7 +121,7 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
             // Check if title is being changed and if it conflicts with another Designation
             if (Designation.Title != updateDesignationDto.Title)
             {
-                Designation? existingDept = await _DesignationRepository.GetByTitleAsync(updateDesignationDto.Title, cancellationToken);
+                Designation? existingDept = await _unitOfWork.Designations.GetByTitleAsync(updateDesignationDto.Title, cancellationToken);
                 if (existingDept != null && existingDept.Id != id)
                 {
                     return new Response<bool>(false, "Another Designation with this name already exists.", true);
@@ -129,7 +132,8 @@ public class DesignationService(IDesignationRepository _DesignationRepository, I
             Designation.Description = updateDesignationDto.Description;
             Designation.UpdatedAt = DateTime.UtcNow;
 
-            await _DesignationRepository.UpdateAsync(Designation, cancellationToken);
+            await _unitOfWork.Designations.UpdateAsync(Designation, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

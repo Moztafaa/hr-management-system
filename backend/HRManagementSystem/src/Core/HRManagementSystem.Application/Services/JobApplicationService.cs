@@ -9,15 +9,14 @@ using HRManagementSystem.Domain.Interfaces;
 namespace HRManagementSystem.Application.Services;
 
 public class JobApplicationService(
-    IJobApplicationRepository jobApplicationRepository,
-    ICandidateRepository candidateRepository,
+    IUnitOfWork unitOfWork,
     IMapper mapper) : IJobApplicationService
 {
     public async Task<Response<JobApplicationDto>> GetJobApplicationByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         try
         {
-            JobApplication? jobApplication = await jobApplicationRepository.GetByIdAsync(id, cancellationToken);
+            JobApplication? jobApplication = await unitOfWork.JobApplications.GetByIdAsync(id, cancellationToken);
             if (jobApplication == null)
             {
                 return new Response<JobApplicationDto>(null!, "Job application not found.", true);
@@ -36,7 +35,7 @@ public class JobApplicationService(
     {
         try
         {
-            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetAllAsync(cancellationToken);
+            IEnumerable<JobApplication> jobApplications = await unitOfWork.JobApplications.GetAllAsync(cancellationToken);
             IEnumerable<JobApplicationDto> jobApplicationDtos = mapper.Map<IEnumerable<JobApplicationDto>>(jobApplications);
 
             return new Response<IEnumerable<JobApplicationDto>>(jobApplicationDtos, string.Empty, false);
@@ -51,7 +50,7 @@ public class JobApplicationService(
     {
         try
         {
-            JobApplication? jobApplication = await jobApplicationRepository.GetApplicationWithDetailsAsync(id, cancellationToken);
+            JobApplication? jobApplication = await unitOfWork.JobApplications.GetApplicationWithDetailsAsync(id, cancellationToken);
             if (jobApplication == null)
             {
                 return new Response<JobApplicationDetailDto>(null!, "Job application not found.", true);
@@ -70,7 +69,7 @@ public class JobApplicationService(
     {
         try
         {
-            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByCandidateAsync(candidateId, cancellationToken);
+            IEnumerable<JobApplication> jobApplications = await unitOfWork.JobApplications.GetApplicationsByCandidateAsync(candidateId, cancellationToken);
             IEnumerable<JobApplicationDto> jobApplicationDtos = mapper.Map<IEnumerable<JobApplicationDto>>(jobApplications);
 
             return new Response<IEnumerable<JobApplicationDto>>(jobApplicationDtos, string.Empty, false);
@@ -85,7 +84,7 @@ public class JobApplicationService(
     {
         try
         {
-            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByJobPostingAsync(jobPostingId, cancellationToken);
+            IEnumerable<JobApplication> jobApplications = await unitOfWork.JobApplications.GetApplicationsByJobPostingAsync(jobPostingId, cancellationToken);
             IEnumerable<JobApplicationDto> jobApplicationDtos = mapper.Map<IEnumerable<JobApplicationDto>>(jobApplications);
 
             return new Response<IEnumerable<JobApplicationDto>>(jobApplicationDtos, string.Empty, false);
@@ -100,7 +99,7 @@ public class JobApplicationService(
     {
         try
         {
-            IEnumerable<JobApplication> jobApplications = await jobApplicationRepository.GetApplicationsByStatusAsync(status, cancellationToken);
+            IEnumerable<JobApplication> jobApplications = await unitOfWork.JobApplications.GetApplicationsByStatusAsync(status, cancellationToken);
             IEnumerable<JobApplicationDto> jobApplicationDtos = mapper.Map<IEnumerable<JobApplicationDto>>(jobApplications);
 
             return new Response<IEnumerable<JobApplicationDto>>(jobApplicationDtos, string.Empty, false);
@@ -123,7 +122,7 @@ public class JobApplicationService(
                 candidateId = createJobApplicationDto.CandidateId.Value;
 
                 // Verify candidate exists
-                Candidate? existingCandidate = await candidateRepository.GetByIdAsync(candidateId, cancellationToken);
+                Candidate? existingCandidate = await unitOfWork.Candidates.GetByIdAsync(candidateId, cancellationToken);
                 if (existingCandidate == null)
                 {
                     return new Response<JobApplicationDto>(null!, "Candidate not found.", true);
@@ -133,7 +132,7 @@ public class JobApplicationService(
             {
                 // Create new candidate
                 // Check if email already exists
-                bool emailExists = await candidateRepository.IsEmailInUseAsync(createJobApplicationDto.CandidateInfo.Email, cancellationToken);
+                bool emailExists = await unitOfWork.Candidates.IsEmailInUseAsync(createJobApplicationDto.CandidateInfo.Email, cancellationToken);
                 if (emailExists)
                 {
                     return new Response<JobApplicationDto>(null!, "A candidate with this email already exists. Please use the existing candidate ID.", true);
@@ -141,7 +140,8 @@ public class JobApplicationService(
 
                 Candidate newCandidate = mapper.Map<Candidate>(createJobApplicationDto.CandidateInfo);
                 newCandidate.CreatedAt = DateTime.UtcNow;
-                await candidateRepository.AddAsync(newCandidate, cancellationToken);
+                await unitOfWork.Candidates.AddAsync(newCandidate, cancellationToken);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
                 candidateId = newCandidate.Id;
             }
@@ -151,7 +151,7 @@ public class JobApplicationService(
             }
 
             // Check if candidate has already applied to this job
-            bool hasApplied = await jobApplicationRepository.HasCandidateAppliedAsync(candidateId, createJobApplicationDto.JobPostingId, cancellationToken);
+            bool hasApplied = await unitOfWork.JobApplications.HasCandidateAppliedAsync(candidateId, createJobApplicationDto.JobPostingId, cancellationToken);
             if (hasApplied)
             {
                 return new Response<JobApplicationDto>(null!, "This candidate has already applied to this job posting.", true);
@@ -163,7 +163,8 @@ public class JobApplicationService(
             jobApplication.ApplicationDate = DateTime.UtcNow;
             jobApplication.CreatedAt = DateTime.UtcNow;
 
-            await jobApplicationRepository.AddAsync(jobApplication, cancellationToken);
+            await unitOfWork.JobApplications.AddAsync(jobApplication, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             JobApplicationDto jobApplicationDto = mapper.Map<JobApplicationDto>(jobApplication);
             return new Response<JobApplicationDto>(jobApplicationDto, string.Empty, false);
@@ -178,7 +179,7 @@ public class JobApplicationService(
     {
         try
         {
-            JobApplication? jobApplication = await jobApplicationRepository.GetByIdAsync(id, cancellationToken);
+            JobApplication? jobApplication = await unitOfWork.JobApplications.GetByIdAsync(id, cancellationToken);
             if (jobApplication == null)
             {
                 return new Response<bool>(false, "Job application not found.", true);
@@ -187,7 +188,8 @@ public class JobApplicationService(
             mapper.Map(updateDto, jobApplication);
             jobApplication.UpdatedAt = DateTime.UtcNow;
 
-            await jobApplicationRepository.UpdateAsync(jobApplication, cancellationToken);
+            await unitOfWork.JobApplications.UpdateAsync(jobApplication, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -200,13 +202,14 @@ public class JobApplicationService(
     {
         try
         {
-            JobApplication? jobApplication = await jobApplicationRepository.GetByIdAsync(id, cancellationToken);
+            JobApplication? jobApplication = await unitOfWork.JobApplications.GetByIdAsync(id, cancellationToken);
             if (jobApplication == null)
             {
                 return new Response<bool>(false, "Job application not found.", true);
             }
 
-            await jobApplicationRepository.DeleteAsync(id, cancellationToken);
+            await unitOfWork.JobApplications.DeleteAsync(id, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -219,7 +222,7 @@ public class JobApplicationService(
     {
         try
         {
-            int count = await jobApplicationRepository.GetApplicationCountByJobPostingAsync(jobPostingId, cancellationToken);
+            int count = await unitOfWork.JobApplications.GetApplicationCountByJobPostingAsync(jobPostingId, cancellationToken);
             return new Response<int>(count, string.Empty, false);
         }
         catch (Exception ex)
@@ -232,7 +235,7 @@ public class JobApplicationService(
     {
         try
         {
-            bool hasApplied = await jobApplicationRepository.HasCandidateAppliedAsync(candidateId, jobPostingId, cancellationToken);
+            bool hasApplied = await unitOfWork.JobApplications.HasCandidateAppliedAsync(candidateId, jobPostingId, cancellationToken);
             return new Response<bool>(hasApplied, string.Empty, false);
         }
         catch (Exception ex)

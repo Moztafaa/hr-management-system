@@ -60,6 +60,10 @@ public static class DependencyInjection
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
         services.AddScoped<ICandidateRepository, CandidateRepository>();
         services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+
+        // Register Unit of Work
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         return services;
     }
 }
