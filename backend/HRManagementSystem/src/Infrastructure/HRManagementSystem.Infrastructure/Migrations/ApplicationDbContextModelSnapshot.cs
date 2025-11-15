@@ -125,6 +125,98 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("ConvertedToEmployeeId");
 
                     b.ToTable("Candidates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "123 New Cairo, Egypt",
+                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentSalary = 12000.00m,
+                            DateOfBirth = new DateTime(1995, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Education = "Bachelor of Computer Science",
+                            Email = "youssef.ahmed@email.com",
+                            ExpectedSalary = 18000.00m,
+                            FirstName = "Youssef",
+                            Gender = "Male",
+                            LastName = "Ahmed",
+                            Phone = "+20-100-111-2222",
+                            Skills = "C#, .NET, SQL Server, Angular",
+                            WillingToRelocate = false,
+                            YearsOfExperience = 3
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "456 Maadi, Cairo, Egypt",
+                            CreatedAt = new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentSalary = 15000.00m,
+                            DateOfBirth = new DateTime(1993, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Education = "Master of Business Administration",
+                            Email = "amira.mostafa@email.com",
+                            ExpectedSalary = 22000.00m,
+                            FirstName = "Amira",
+                            Gender = "Female",
+                            LastName = "Mostafa",
+                            Phone = "+20-105-222-3333",
+                            Skills = "HR Management, Recruitment, Employee Relations, HRIS",
+                            WillingToRelocate = false,
+                            YearsOfExperience = 5
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "789 Heliopolis, Cairo, Egypt",
+                            CreatedAt = new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentSalary = 10000.00m,
+                            DateOfBirth = new DateTime(1996, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Education = "Bachelor of Accounting",
+                            Email = "karim.nabil@email.com",
+                            ExpectedSalary = 16000.00m,
+                            FirstName = "Karim",
+                            Gender = "Male",
+                            LastName = "Nabil",
+                            Phone = "+20-110-333-4444",
+                            Skills = "Financial Reporting, Excel, SAP, Auditing",
+                            WillingToRelocate = false,
+                            YearsOfExperience = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Address = "321 Zamalek, Cairo, Egypt",
+                            CreatedAt = new DateTime(2024, 10, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentSalary = 11000.00m,
+                            DateOfBirth = new DateTime(1994, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Education = "Bachelor of Marketing",
+                            Email = "salma.hany@email.com",
+                            ExpectedSalary = 17000.00m,
+                            FirstName = "Salma",
+                            Gender = "Female",
+                            LastName = "Hany",
+                            Phone = "+20-122-444-5555",
+                            Skills = "Digital Marketing, SEO, Social Media, Content Strategy",
+                            WillingToRelocate = false,
+                            YearsOfExperience = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Address = "654 6th October City, Egypt",
+                            CreatedAt = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentSalary = 8000.00m,
+                            DateOfBirth = new DateTime(1997, 1, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Education = "Bachelor of Engineering",
+                            Email = "ziad.hamdy@email.com",
+                            ExpectedSalary = 13000.00m,
+                            FirstName = "Ziad",
+                            Gender = "Male",
+                            LastName = "Hamdy",
+                            Phone = "+20-155-555-6666",
+                            Skills = "Python, Machine Learning, Data Analysis, TensorFlow",
+                            WillingToRelocate = false,
+                            YearsOfExperience = 1
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Department", b =>
@@ -159,6 +251,50 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Manages all IT infrastructure, software development, and technical support",
+                            Name = "Information Technology"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Handles recruitment, employee relations, benefits, and HR policies",
+                            Name = "Human Resources"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Manages financial operations, accounting, budgeting, and reporting",
+                            Name = "Finance"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Drives sales growth, customer acquisition, and marketing campaigns",
+                            Name = "Sales & Marketing"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Oversees day-to-day operations and process optimization",
+                            Name = "Operations"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Provides customer service and technical support",
+                            Name = "Customer Support"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Designation", b =>
@@ -190,6 +326,134 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Designations", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Develops and maintains software applications",
+                            Title = "Software Engineer"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Lead developer responsible for complex technical solutions",
+                            Title = "Senior Software Engineer"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Manages and guides team members to achieve project goals",
+                            Title = "Team Lead"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Manages deployment pipelines and infrastructure",
+                            Title = "DevOps Engineer"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ensures software quality through testing and automation",
+                            Title = "QA Engineer"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Oversees human resources operations and employee management",
+                            Title = "HR Manager"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Handles recruitment, onboarding, and employee relations",
+                            Title = "HR Specialist"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Focuses on talent acquisition and candidate screening",
+                            Title = "Recruiter"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Analyzes financial data and prepares reports",
+                            Title = "Financial Analyst"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Manages accounting records and financial transactions",
+                            Title = "Accountant"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Oversees financial planning and budget management",
+                            Title = "Finance Manager"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Drives sales and builds customer relationships",
+                            Title = "Sales Representative"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Develops and executes marketing campaigns",
+                            Title = "Marketing Specialist"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Identifies growth opportunities and partnerships",
+                            Title = "Business Development Manager"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Manages daily operations and process improvements",
+                            Title = "Operations Manager"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Plans, executes, and closes projects successfully",
+                            Title = "Project Manager"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Provides customer assistance and resolves issues",
+                            Title = "Customer Support Representative"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Leads customer support team and ensures service quality",
+                            Title = "Support Team Lead"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Employee", b =>
@@ -264,6 +528,178 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("DesignationId");
 
                     b.ToTable("Employees", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "123 Cairo Street, Nasr City, Cairo, Egypt",
+                            BasicSalary = 25000.00m,
+                            ContactNumber = "+20-123-456-7890",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1990, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 1,
+                            DesignationId = 3,
+                            EFF_Start = new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ahmed.hassan@company.com",
+                            FirstName = "Ahmed",
+                            Gender = "Male",
+                            HireDate = new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Hassan"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "456 Alexandria Road, Maadi, Cairo, Egypt",
+                            BasicSalary = 20000.00m,
+                            ContactNumber = "+20-100-555-1234",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1992, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 1,
+                            DesignationId = 2,
+                            EFF_Start = new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "sarah.mohamed@company.com",
+                            FirstName = "Sarah",
+                            Gender = "Female",
+                            HireDate = new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Mohamed"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "789 Pyramids Avenue, Giza, Egypt",
+                            BasicSalary = 15000.00m,
+                            ContactNumber = "+20-111-222-3333",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1988, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 1,
+                            DesignationId = 1,
+                            EFF_Start = new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "khaled.ibrahim@company.com",
+                            FirstName = "Khaled",
+                            Gender = "Male",
+                            HireDate = new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Ibrahim"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Address = "321 Nile Corniche, Zamalek, Cairo, Egypt",
+                            BasicSalary = 22000.00m,
+                            ContactNumber = "+20-122-333-4444",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1987, 4, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 2,
+                            DesignationId = 6,
+                            EFF_Start = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "fatima.ali@company.com",
+                            FirstName = "Fatima",
+                            Gender = "Female",
+                            HireDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Ali"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Address = "654 Heliopolis Street, Cairo, Egypt",
+                            BasicSalary = 16000.00m,
+                            ContactNumber = "+20-155-666-7777",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1991, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 2,
+                            DesignationId = 7,
+                            EFF_Start = new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "omar.mahmoud@company.com",
+                            FirstName = "Omar",
+                            Gender = "Male",
+                            HireDate = new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Mahmoud"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Address = "987 Garden City, Cairo, Egypt",
+                            BasicSalary = 24000.00m,
+                            ContactNumber = "+20-101-888-9999",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1989, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 3,
+                            DesignationId = 11,
+                            EFF_Start = new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mariam.youssef@company.com",
+                            FirstName = "Mariam",
+                            Gender = "Female",
+                            HireDate = new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Youssef"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Address = "147 Downtown, Cairo, Egypt",
+                            BasicSalary = 14000.00m,
+                            ContactNumber = "+20-127-111-2222",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1993, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 3,
+                            DesignationId = 10,
+                            EFF_Start = new DateTime(2023, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "hassan.saleh@company.com",
+                            FirstName = "Hassan",
+                            Gender = "Male",
+                            HireDate = new DateTime(2023, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Saleh"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Address = "258 New Cairo, Egypt",
+                            BasicSalary = 23000.00m,
+                            ContactNumber = "+20-150-333-4444",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1990, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 4,
+                            DesignationId = 14,
+                            EFF_Start = new DateTime(2022, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nour.abdel@company.com",
+                            FirstName = "Nour",
+                            Gender = "Female",
+                            HireDate = new DateTime(2022, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Abdel"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Address = "369 6th October City, Egypt",
+                            BasicSalary = 13000.00m,
+                            ContactNumber = "+20-106-555-6666",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1994, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 4,
+                            DesignationId = 12,
+                            EFF_Start = new DateTime(2023, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "tarek.farid@company.com",
+                            FirstName = "Tarek",
+                            Gender = "Male",
+                            HireDate = new DateTime(2023, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Farid"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Address = "741 Mohandessin, Giza, Egypt",
+                            BasicSalary = 26000.00m,
+                            ContactNumber = "+20-128-777-8888",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DateOfBirth = new DateTime(1986, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentId = 5,
+                            DesignationId = 15,
+                            EFF_Start = new DateTime(2021, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "layla.kamal@company.com",
+                            FirstName = "Layla",
+                            Gender = "Female",
+                            HireDate = new DateTime(2021, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Kamal"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeLeaveBalance", b =>
@@ -383,6 +819,80 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("ReviewerId");
 
                     b.ToTable("JobApplications");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ApplicationDate = new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CandidateId = 1,
+                            CoverLetter = "I am excited to apply for the Senior .NET Developer position. With 3 years of experience in .NET development, I am confident in my ability to contribute to your team.",
+                            CreatedAt = new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentStage = 0,
+                            ExpectedSalary = 18000.00m,
+                            InterviewDate = new DateTime(2024, 10, 15, 10, 0, 0, 0, DateTimeKind.Utc),
+                            JobPostingId = 1,
+                            Notes = "Strong technical background, scheduled for technical interview",
+                            Source = 0,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ApplicationDate = new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CandidateId = 2,
+                            CoverLetter = "With 5 years of HR experience, I am well-equipped to handle recruitment and employee relations at your organization.",
+                            CreatedAt = new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentStage = 0,
+                            ExpectedSalary = 22000.00m,
+                            InterviewDate = new DateTime(2024, 10, 18, 14, 0, 0, 0, DateTimeKind.Utc),
+                            JobPostingId = 2,
+                            Notes = "Excellent HR background, moved to shortlist",
+                            Source = 0,
+                            Status = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ApplicationDate = new DateTime(2024, 10, 11, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CandidateId = 3,
+                            CoverLetter = "I am applying for the Financial Analyst position. My background in accounting and financial reporting makes me a great fit.",
+                            CreatedAt = new DateTime(2024, 10, 11, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentStage = 0,
+                            ExpectedSalary = 16000.00m,
+                            JobPostingId = 3,
+                            Notes = "New application, pending review",
+                            Source = 0,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ApplicationDate = new DateTime(2024, 10, 16, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CandidateId = 4,
+                            CoverLetter = "I am passionate about digital marketing and would love to bring my skills to your marketing team.",
+                            CreatedAt = new DateTime(2024, 10, 16, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentStage = 0,
+                            ExpectedSalary = 17000.00m,
+                            JobPostingId = 4,
+                            Notes = "Good portfolio, under review by marketing manager",
+                            Source = 0,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ApplicationDate = new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CandidateId = 5,
+                            CoverLetter = "I am eager to start my DevOps career with your company. I have hands-on experience with Docker and Kubernetes from my academic projects.",
+                            CreatedAt = new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentStage = 0,
+                            ExpectedSalary = 13000.00m,
+                            JobPostingId = 5,
+                            Notes = "Junior candidate, needs experience verification",
+                            Source = 0,
+                            Status = 0
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.JobPosting", b =>
@@ -435,6 +945,73 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("DesignationId");
 
                     b.ToTable("JobPostings", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClosingDate = new DateTime(2024, 11, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DepartmentId = 1,
+                            Description = "We are looking for an experienced .NET developer to join our IT team. The ideal candidate will have strong experience in ASP.NET Core, Entity Framework, and modern web technologies.",
+                            DesignationId = 2,
+                            IsActive = true,
+                            PostedDate = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Requirements = "5+ years of .NET development experience\nProficiency in C#, ASP.NET Core, EF Core\nExperience with SQL Server and Azure\nKnowledge of Angular or React is a plus",
+                            Title = "Senior .NET Developer"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClosingDate = new DateTime(2024, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DepartmentId = 2,
+                            Description = "Join our HR team to manage recruitment, onboarding, and employee relations. We're looking for someone with excellent communication skills and HR experience.",
+                            DesignationId = 7,
+                            IsActive = true,
+                            PostedDate = new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Requirements = "3+ years of HR experience\nExperience with recruitment and onboarding\nKnowledge of labor laws and HR best practices\nExcellent interpersonal and communication skills",
+                            Title = "HR Specialist"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClosingDate = new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DepartmentId = 3,
+                            Description = "We need a detail-oriented financial analyst to support our finance team with budgeting, forecasting, and financial reporting.",
+                            DesignationId = 9,
+                            IsActive = true,
+                            PostedDate = new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Requirements = "Bachelor's degree in Finance or Accounting\n2+ years of financial analysis experience\nProficiency in Excel and financial software\nStrong analytical and problem-solving skills",
+                            Title = "Financial Analyst"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClosingDate = new DateTime(2024, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2024, 10, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DepartmentId = 4,
+                            Description = "Looking for a creative marketing specialist to develop and execute marketing campaigns across digital and traditional channels.",
+                            DesignationId = 13,
+                            IsActive = true,
+                            PostedDate = new DateTime(2024, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Requirements = "3+ years of marketing experience\nExperience with digital marketing and SEO\nExcellent content creation skills\nFamiliarity with marketing analytics tools",
+                            Title = "Marketing Specialist"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClosingDate = new DateTime(2024, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DepartmentId = 1,
+                            Description = "Join our IT team as a DevOps engineer to manage our cloud infrastructure, CI/CD pipelines, and deployment processes.",
+                            DesignationId = 4,
+                            IsActive = true,
+                            PostedDate = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Requirements = "3+ years of DevOps experience\nExperience with Azure/AWS cloud platforms\nProficiency in Docker, Kubernetes\nKnowledge of CI/CD tools (Jenkins, Azure DevOps)",
+                            Title = "DevOps Engineer"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveApproval", b =>
@@ -573,7 +1150,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 1,
                             CanCarryForward = true,
                             CarryForwardLimit = 5,
-                            CreatedAt = new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6157),
+                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3511),
                             Description = "Annual paid leave after completing the first year of work",
                             IsPaid = true,
                             MaxDays = 15,
@@ -583,7 +1160,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 2,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6258),
+                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3628),
                             Description = "Medical leave based on a valid medical certificate",
                             IsPaid = true,
                             MaxDays = 30,
@@ -593,7 +1170,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 3,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6286),
+                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3657),
                             Description = "Maternity leave for female employees, 90 days paid",
                             GenderRestriction = "Female",
                             IsPaid = true,
@@ -604,7 +1181,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 4,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6310),
+                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3681),
                             Description = "Short paid leave for new fathers as per company policy",
                             GenderRestriction = "Male",
                             IsPaid = true,
@@ -615,7 +1192,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 5,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6333),
+                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3705),
                             Description = "Leave without pay subject to management approval",
                             IsPaid = false,
                             MaxDays = 30,
@@ -625,7 +1202,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 6,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6353),
+                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3729),
                             Description = "Leave for emergencies (death of a relative, special circumstances)",
                             IsPaid = true,
                             MaxDays = 5,
@@ -635,7 +1212,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 7,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6391),
+                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3776),
                             Description = "Hajj leave for Muslims, 10 days paid, once in a lifetime",
                             IsPaid = true,
                             MaxDays = 10,

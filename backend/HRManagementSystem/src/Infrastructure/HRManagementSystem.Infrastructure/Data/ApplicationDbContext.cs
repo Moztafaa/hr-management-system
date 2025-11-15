@@ -1,5 +1,6 @@
 using System.Reflection.Emit;
 using HRManagementSystem.Infrastructure.Configurations;
+using HRManagementSystem.Infrastructure.Data.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -28,8 +29,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.ApplyConfiguration(new LeaveApprovalConfiguration());
         builder.ApplyConfiguration(new EmployeeLeaveBalanceConfiguration());
 
-        //Add Leave types in database
+        // Seed initial data
+        builder.SeedDepartments();
+        builder.SeedDesignations();
+        builder.SeedEmployees();
         builder.SeedLeaveTypes();
+        builder.SeedCandidates();
+        builder.SeedJobPostings();
+        builder.SeedJobApplications();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
