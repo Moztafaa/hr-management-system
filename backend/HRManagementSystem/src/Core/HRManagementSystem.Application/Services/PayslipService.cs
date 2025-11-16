@@ -20,7 +20,9 @@ public class PayslipService(
             Payslip? existingPayslip = await _payslipRepository.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
             if (existingPayslip != null)
             {
-                return new Response<PayslipDto>(_mapper.Map<PayslipDto>(existingPayslip), "Payslip already exists for this month.", false);
+                //return new Response<PayslipDto>(_mapper.Map<PayslipDto>(existingPayslip), "Payslip already exists for this month.", false);
+                // Remove the old payslip to prevent duplication
+                await _payslipRepository.DeleteAsync(existingPayslip.Id, cancellationToken);
             }
 
             IEnumerable<EmployeeAllowance> employeeAllowances = await _employeeAllowanceRepository.GetByEmployeeIdAsync(employeeId, cancellationToken);
@@ -29,8 +31,8 @@ public class PayslipService(
             var allowancesForDto = employeeAllowances.Select(ea => new AllowanceDto
             {
                 Id = ea.AllowanceId,
-                Name = ea.Allowance.Name,
-                Amount = ea.Amount != 0 ? ea.Amount : ea.Allowance.Amount
+                Name = ea.Allowance.Name ?? "No Allowance",
+                Amount = ea.Amount != 0 ? ea.Amount : ea.Allowance?.Amount ?? 0
             }).ToList();
 
             decimal totalAllowances = allowancesForDto.Sum(a => a.Amount);
@@ -38,7 +40,7 @@ public class PayslipService(
             var deductionsForDto = employeeDeductions.Select(ed => new DeductionDto
             {
                 Id = ed.DeductionId,
-                Name = ed.Deduction.Name,
+                Name = ed.Deduction.Name ,
                 Amount = ed.Amount != 0 ? ed.Amount : ed.Deduction.Amount
             }).ToList();
 
