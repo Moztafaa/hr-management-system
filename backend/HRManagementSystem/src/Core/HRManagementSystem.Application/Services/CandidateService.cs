@@ -7,13 +7,13 @@ using HRManagementSystem.Domain.Interfaces;
 
 namespace HRManagementSystem.Application.Services;
 
-public class CandidateService(ICandidateRepository candidateRepository, IMapper mapper) : ICandidateService
+public class CandidateService(IUnitOfWork unitOfWork, IMapper mapper) : ICandidateService
 {
     public async Task<Response<CandidateDto>> GetCandidateByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         try
         {
-            Candidate? candidate = await candidateRepository.GetByIdAsync(id, cancellationToken);
+            Candidate? candidate = await unitOfWork.Candidates.GetByIdAsync(id, cancellationToken);
             if (candidate == null)
             {
                 return new Response<CandidateDto>(null!, "Candidate not found.", true);
@@ -32,7 +32,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
     {
         try
         {
-            IEnumerable<Candidate> candidates = await candidateRepository.GetAllAsync(cancellationToken);
+            IEnumerable<Candidate> candidates = await unitOfWork.Candidates.GetAllAsync(cancellationToken);
             IEnumerable<CandidateDto> candidateDtos = mapper.Map<IEnumerable<CandidateDto>>(candidates);
 
             return new Response<IEnumerable<CandidateDto>>(candidateDtos, string.Empty, false);
@@ -47,7 +47,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
     {
         try
         {
-            Candidate? candidate = await candidateRepository.GetByEmailAsync(email, cancellationToken);
+            Candidate? candidate = await unitOfWork.Candidates.GetByEmailAsync(email, cancellationToken);
             if (candidate == null)
             {
                 return new Response<CandidateDto>(null!, "Candidate not found with the provided email.", true);
@@ -66,7 +66,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
     {
         try
         {
-            Candidate? candidate = await candidateRepository.GetCandidatewithApplicationsAsync(id, cancellationToken);
+            Candidate? candidate = await unitOfWork.Candidates.GetCandidatewithApplicationsAsync(id, cancellationToken);
             if (candidate == null)
             {
                 return new Response<CandidateDto>(null!, "Candidate not found.", true);
@@ -85,7 +85,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
     {
         try
         {
-            IEnumerable<Candidate> candidates = await candidateRepository.SearchCandidatesAsync(searchTerm, cancellationToken);
+            IEnumerable<Candidate> candidates = await unitOfWork.Candidates.SearchCandidatesAsync(searchTerm, cancellationToken);
             IEnumerable<CandidateDto> candidateDtos = mapper.Map<IEnumerable<CandidateDto>>(candidates);
 
             return new Response<IEnumerable<CandidateDto>>(candidateDtos, string.Empty, false);
@@ -101,7 +101,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
         try
         {
             // Check if email already exists
-            bool emailExists = await candidateRepository.IsEmailInUseAsync(createCandidateDto.Email, cancellationToken);
+            bool emailExists = await unitOfWork.Candidates.IsEmailInUseAsync(createCandidateDto.Email, cancellationToken);
             if (emailExists)
             {
                 return new Response<CandidateDto>(null!, "A candidate with this email already exists.", true);
@@ -110,7 +110,8 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
             Candidate candidate = mapper.Map<Candidate>(createCandidateDto);
             candidate.CreatedAt = DateTime.UtcNow;
 
-            await candidateRepository.AddAsync(candidate, cancellationToken);
+            await unitOfWork.Candidates.AddAsync(candidate, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             CandidateDto candidateDto = mapper.Map<CandidateDto>(candidate);
             return new Response<CandidateDto>(candidateDto, string.Empty, false);
@@ -125,7 +126,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
     {
         try
         {
-            Candidate? candidate = await candidateRepository.GetByIdAsync(id, cancellationToken);
+            Candidate? candidate = await unitOfWork.Candidates.GetByIdAsync(id, cancellationToken);
             if (candidate == null)
             {
                 return new Response<bool>(false, "Candidate not found.", true);
@@ -134,7 +135,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
             // Check if email is being changed and if the new email already exists
             if (updateCandidateDto.Email != null && updateCandidateDto.Email != candidate.Email)
             {
-                bool emailExists = await candidateRepository.IsEmailInUseAsync(updateCandidateDto.Email, cancellationToken);
+                bool emailExists = await unitOfWork.Candidates.IsEmailInUseAsync(updateCandidateDto.Email, cancellationToken);
                 if (emailExists)
                 {
                     return new Response<bool>(false, "A candidate with this email already exists.", true);
@@ -144,7 +145,8 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
             mapper.Map(updateCandidateDto, candidate);
             candidate.UpdatedAt = DateTime.UtcNow;
 
-            await candidateRepository.UpdateAsync(candidate, cancellationToken);
+            await unitOfWork.Candidates.UpdateAsync(candidate, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -157,13 +159,14 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
     {
         try
         {
-            Candidate? candidate = await candidateRepository.GetByIdAsync(id, cancellationToken);
+            Candidate? candidate = await unitOfWork.Candidates.GetByIdAsync(id, cancellationToken);
             if (candidate == null)
             {
                 return new Response<bool>(false, "Candidate not found.", true);
             }
 
-            await candidateRepository.DeleteAsync(id, cancellationToken);
+            await unitOfWork.Candidates.DeleteAsync(id, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -176,7 +179,7 @@ public class CandidateService(ICandidateRepository candidateRepository, IMapper 
     {
         try
         {
-            bool exists = await candidateRepository.IsEmailInUseAsync(email, cancellationToken);
+            bool exists = await unitOfWork.Candidates.IsEmailInUseAsync(email, cancellationToken);
             return new Response<bool>(exists, string.Empty, false);
         }
         catch (Exception ex)

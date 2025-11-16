@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class ImplementUnitOfWorkPattern : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -613,6 +613,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 columns: new[] { "Id", "CanCarryForward", "CarryForwardLimit", "CreatedAt", "Description", "GenderRestriction", "IsPaid", "MaxDays", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
+<<<<<<<< HEAD:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251114211955_InitialCreate.cs
                     { 1, true, 5, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8361), "Annual paid leave after completing the first year of work", null, true, 15, "Annual Leave", null },
                     { 2, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8508), "Medical leave based on a valid medical certificate", null, true, 30, "Sick Leave", null },
                     { 3, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8517), "Maternity leave for female employees, 90 days paid", "Female", true, 90, "Maternity Leave", null },
@@ -620,6 +621,15 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     { 5, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8525), "Leave without pay subject to management approval", null, false, 30, "Unpaid Leave", null },
                     { 6, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8530), "Leave for emergencies (death of a relative, special circumstances)", null, true, 5, "Emergency Leave", null },
                     { 7, false, null, new DateTime(2025, 11, 14, 23, 19, 54, 302, DateTimeKind.Local).AddTicks(8547), "Hajj leave for Muslims, 10 days paid, once in a lifetime", null, true, 10, "Hajj Leave", null }
+========
+                    { 1, true, 5, new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6157), "Annual paid leave after completing the first year of work", null, true, 15, "Annual Leave", null },
+                    { 2, false, null, new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6258), "Medical leave based on a valid medical certificate", null, true, 30, "Sick Leave", null },
+                    { 3, false, null, new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6286), "Maternity leave for female employees, 90 days paid", "Female", true, 90, "Maternity Leave", null },
+                    { 4, false, null, new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6310), "Short paid leave for new fathers as per company policy", "Male", true, 3, "Paternity Leave", null },
+                    { 5, false, null, new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6333), "Leave without pay subject to management approval", null, false, 30, "Unpaid Leave", null },
+                    { 6, false, null, new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6353), "Leave for emergencies (death of a relative, special circumstances)", null, true, 5, "Emergency Leave", null },
+                    { 7, false, null, new DateTime(2025, 11, 15, 11, 13, 36, 846, DateTimeKind.Local).AddTicks(6391), "Hajj leave for Muslims, 10 days paid, once in a lifetime", null, true, 10, "Hajj Leave", null }
+>>>>>>>> bdd5b7fc4036aefb234bdf36cc38fe1c2f986f05:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251115091338_ImplementUnitOfWorkPattern.cs
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,3 +1,9 @@
+using System.Reflection.Emit;
+using HRManagementSystem.Infrastructure.Configurations;
+using HRManagementSystem.Infrastructure.Data.Seeds;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 namespace HRManagementSystem.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
@@ -27,10 +33,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.ApplyConfiguration(new EmployeeDeductionConfiguration());
         builder.ApplyConfiguration(new PayslipConfiguration());
 
-
-
-        //Add Leave types in database
+        // Seed initial data
+        builder.SeedDepartments();
+        builder.SeedDesignations();
+        builder.SeedEmployees();
         builder.SeedLeaveTypes();
+        builder.SeedCandidates();
+        builder.SeedJobPostings();
+        builder.SeedJobApplications();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

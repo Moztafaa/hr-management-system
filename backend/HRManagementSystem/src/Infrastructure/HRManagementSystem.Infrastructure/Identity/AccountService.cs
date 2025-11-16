@@ -7,7 +7,7 @@ public class AccountService(
     UserManager<ApplicationUser> _userManager,
     SignInManager<ApplicationUser> _signInManager,
     RoleManager<ApplicationRole> _roleManager,
-    ApplicationDbContext _context,
+    IUnitOfWork _unitOfWork,
     JwtTokenGenerator _jwtGenerator,
     IMapper _mapper
     ) : IAccountService
@@ -17,9 +17,8 @@ public class AccountService(
 
     public async Task<Response<RegisterEmployeeResponseDto>> RegisterEmployeeAsync(RegisterEmployeeDto registerEmployeeDto)
     {
-        // TODO: Will be replaced with UnitOfWork pattern ...
         // Start a transaction to ensure both user and employee are created together
-        await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync();
+        await _unitOfWork.BeginTransactionAsync();
 
         try
         {
@@ -42,7 +41,7 @@ public class AccountService(
 
             if (!userResult.Succeeded)
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackTransactionAsync();
                 return new Response<RegisterEmployeeResponseDto>(default!, string.Join(", ", userResult.Errors.Select(e => e.Description)), true);
             }
 
@@ -64,15 +63,15 @@ public class AccountService(
             employee.ApplicationUserId = user.Id.ToString();
             employee.CreatedAt = DateTime.UtcNow;
 
-            await _context.Employees.AddAsync(employee);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.Repository<Employee>().AddAsync(employee);
+            await _unitOfWork.SaveChangesAsync();
 
             // 5. Link the employee to the user
             user.EmployeeId = employee.Id;
             await _userManager.UpdateAsync(user);
 
             // Commit the transaction
-            await transaction.CommitAsync();
+            await _unitOfWork.CommitTransactionAsync();
 
             // 6. Get user roles for response
             IList<string> roles = await _userManager.GetRolesAsync(user);
@@ -90,7 +89,7 @@ public class AccountService(
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
+            await _unitOfWork.RollbackTransactionAsync();
             return new Response<RegisterEmployeeResponseDto>(default!, $"An error occurred while registering the employee: {ex.Message}", true);
         }
     }
