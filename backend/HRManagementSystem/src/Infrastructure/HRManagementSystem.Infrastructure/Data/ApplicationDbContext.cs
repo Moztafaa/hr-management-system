@@ -41,13 +41,20 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.SeedCandidates();
         builder.SeedJobPostings();
         builder.SeedJobApplications();
+
+        // Seed Payroll data
+        builder.SeedAllowances();
+        builder.SeedDeductions();
+        builder.SeedEmployeeAllowances();
+        builder.SeedEmployeeDeductions();
+        builder.SeedPayslips();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         IEnumerable<EntityEntry<BaseEntity>> entries = ChangeTracker.Entries<BaseEntity>();
 
-        foreach (var entry in entries)
+        foreach (EntityEntry<BaseEntity> entry in entries)
         {
             if (entry.State == EntityState.Added)
             {

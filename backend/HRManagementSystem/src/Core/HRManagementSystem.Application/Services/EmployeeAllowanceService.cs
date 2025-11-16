@@ -1,16 +1,15 @@
 ﻿namespace HRManagementSystem.Application.Services;
 
 public class EmployeeAllowanceService(
-        IEmployeeAllowanceRepository _employeeAllowanceRepository,
-        IAllowanceRepository _allowanceRepository,
+        IUnitOfWork _unitOfWork,
         IMapper _mapper) : IEmployeeAllowanceService
 {
     public async Task<Response<IEnumerable<EmployeeAllowanceDto>>> GetAllAsync()
     {
         try
         {
-            var employeeAllowances = await _employeeAllowanceRepository.GetAllAsync();
-            var employeeAllowanceDtos = _mapper.Map<IEnumerable<EmployeeAllowanceDto>>(employeeAllowances);
+            IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances.GetAllAsync();
+            IEnumerable<EmployeeAllowanceDto> employeeAllowanceDtos = _mapper.Map<IEnumerable<EmployeeAllowanceDto>>(employeeAllowances);
             return new Response<IEnumerable<EmployeeAllowanceDto>>(employeeAllowanceDtos, string.Empty, false);
         }
         catch (Exception ex)
@@ -23,11 +22,11 @@ public class EmployeeAllowanceService(
     {
         try
         {
-            var employeeAllowance = await _employeeAllowanceRepository.GetByIdAsync(id);
+            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdAsync(id);
             if (employeeAllowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Employee allowance not found.", true);
 
-            var dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
+            EmployeeAllowanceDto dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
             return new Response<EmployeeAllowanceDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
@@ -40,19 +39,20 @@ public class EmployeeAllowanceService(
     {
         try
         {
-            var allowance = await _allowanceRepository.GetByIdAsync(request.AllowanceId);
+            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(request.AllowanceId);
             if (allowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Invalid allowance ID.", true);
 
-            var existingAllowances = await _employeeAllowanceRepository.GetByEmployeeIdAsync(request.EmployeeId);
+            IEnumerable<EmployeeAllowance> existingAllowances = await _unitOfWork.EmployeeAllowances.GetByEmployeeIdAsync(request.EmployeeId);
             if (existingAllowances.Any(a => a.AllowanceId == request.AllowanceId))
                 return new Response<EmployeeAllowanceDto>(default!, "Employee already has this allowance assigned.", true);
 
-            var employeeAllowance = _mapper.Map<EmployeeAllowance>(request);
+            EmployeeAllowance employeeAllowance = _mapper.Map<EmployeeAllowance>(request);
             employeeAllowance.CreatedAt = DateTime.UtcNow;
 
-            await _employeeAllowanceRepository.AddAsync(employeeAllowance);
-            var dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
+            await _unitOfWork.EmployeeAllowances.AddAsync(employeeAllowance);
+            await _unitOfWork.SaveChangesAsync();
+            EmployeeAllowanceDto dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
 
             return new Response<EmployeeAllowanceDto>(dto, string.Empty, false);
         }
@@ -66,12 +66,12 @@ public class EmployeeAllowanceService(
     {
         try
         {
-            var employeeAllowance = await _employeeAllowanceRepository.GetByIdAsync(id);
+            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdAsync(id);
             if (employeeAllowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Employee allowance not found.", true);
 
 
-            var allowance = await _allowanceRepository.GetByIdAsync(request.AllowanceId);
+            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(request.AllowanceId);
             if (allowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Invalid allowance ID.", true);
 
@@ -80,9 +80,10 @@ public class EmployeeAllowanceService(
             employeeAllowance.Amount = request.Amount;
             employeeAllowance.UpdatedAt = DateTime.UtcNow;
 
-            await _employeeAllowanceRepository.UpdateAsync(employeeAllowance);
+            await _unitOfWork.EmployeeAllowances.UpdateAsync(employeeAllowance);
+            await _unitOfWork.SaveChangesAsync();
 
-            var dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
+            EmployeeAllowanceDto dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
             return new Response<EmployeeAllowanceDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
@@ -95,11 +96,12 @@ public class EmployeeAllowanceService(
     {
         try
         {
-            var employeeAllowance = await _employeeAllowanceRepository.GetByIdAsync(id);
+            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdAsync(id);
             if (employeeAllowance == null)
                 return new Response<bool>(false, "Employee allowance not found.", true);
 
-            await _employeeAllowanceRepository.DeleteAsync(id);
+            await _unitOfWork.EmployeeAllowances.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

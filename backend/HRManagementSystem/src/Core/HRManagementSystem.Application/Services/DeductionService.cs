@@ -1,13 +1,13 @@
 ﻿namespace HRManagementSystem.Application.Services;
 
-public class DeductionService(IDeductionRepository _deductionRepository, IMapper _mapper) : IDeductionService
+public class DeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) : IDeductionService
 {
     public async Task<Response<IEnumerable<DeductionDto>>> GetAllAsync()
     {
         try
         {
-            var deductions = await _deductionRepository.GetAllAsync();
-            var deductionDtos = _mapper.Map<IEnumerable<DeductionDto>>(deductions);
+            IEnumerable<Deduction> deductions = await _unitOfWork.Deductions.GetAllAsync();
+            IEnumerable<DeductionDto> deductionDtos = _mapper.Map<IEnumerable<DeductionDto>>(deductions);
 
             return new Response<IEnumerable<DeductionDto>>(deductionDtos, string.Empty, false);
         }
@@ -21,11 +21,11 @@ public class DeductionService(IDeductionRepository _deductionRepository, IMapper
     {
         try
         {
-            var deduction = await _deductionRepository.GetByIdAsync(id);
+            Deduction? deduction = await _unitOfWork.Deductions.GetByIdAsync(id);
             if (deduction == null)
                 return new Response<DeductionDto>(null!, "Deduction not found.", true);
 
-            var deductionDto = _mapper.Map<DeductionDto>(deduction);
+            DeductionDto deductionDto = _mapper.Map<DeductionDto>(deduction);
             return new Response<DeductionDto>(deductionDto, string.Empty, false);
         }
         catch (Exception ex)
@@ -38,16 +38,17 @@ public class DeductionService(IDeductionRepository _deductionRepository, IMapper
     {
         try
         {
-            var existing = await _deductionRepository.GetByNameAsync(request.Name);
+            Deduction? existing = await _unitOfWork.Deductions.GetByNameAsync(request.Name);
             if (existing != null)
                 return new Response<DeductionDto>(default!, "Deduction with the same name already exists.", true);
 
-            var deduction = _mapper.Map<Deduction>(request);
+            Deduction deduction = _mapper.Map<Deduction>(request);
             deduction.CreatedAt = DateTime.UtcNow;
 
-            await _deductionRepository.AddAsync(deduction);
+            await _unitOfWork.Deductions.AddAsync(deduction);
+            await _unitOfWork.SaveChangesAsync();
 
-            var createdDto = _mapper.Map<DeductionDto>(deduction);
+            DeductionDto createdDto = _mapper.Map<DeductionDto>(deduction);
             return new Response<DeductionDto>(createdDto, string.Empty, false);
         }
         catch (Exception ex)
@@ -60,14 +61,14 @@ public class DeductionService(IDeductionRepository _deductionRepository, IMapper
     {
         try
         {
-            var deduction = await _deductionRepository.GetByIdAsync(id);
+            Deduction? deduction = await _unitOfWork.Deductions.GetByIdAsync(id);
             if (deduction == null)
                 return new Response<DeductionDto>(default!, "Deduction not found.", true);
 
- 
+
             if (!string.Equals(deduction.Name, request.Name, StringComparison.OrdinalIgnoreCase))
             {
-                var existing = await _deductionRepository.GetByNameAsync(request.Name);
+                Deduction? existing = await _unitOfWork.Deductions.GetByNameAsync(request.Name);
                 if (existing != null && existing.Id != id)
                     return new Response<DeductionDto>(default!, "Another deduction with this name already exists.", true);
             }
@@ -76,9 +77,10 @@ public class DeductionService(IDeductionRepository _deductionRepository, IMapper
             deduction.Amount = request.Amount;
             deduction.UpdatedAt = DateTime.UtcNow;
 
-            await _deductionRepository.UpdateAsync(deduction);
+            await _unitOfWork.Deductions.UpdateAsync(deduction);
+            await _unitOfWork.SaveChangesAsync();
 
-            var updatedDto = _mapper.Map<DeductionDto>(deduction);
+            DeductionDto updatedDto = _mapper.Map<DeductionDto>(deduction);
             return new Response<DeductionDto>(updatedDto, string.Empty, false);
         }
         catch (Exception ex)
@@ -91,11 +93,12 @@ public class DeductionService(IDeductionRepository _deductionRepository, IMapper
     {
         try
         {
-            var deduction = await _deductionRepository.GetByIdAsync(id);
+            Deduction? deduction = await _unitOfWork.Deductions.GetByIdAsync(id);
             if (deduction == null)
                 return new Response<bool>(false, "Deduction not found.", true);
 
-            await _deductionRepository.DeleteAsync(id);
+            await _unitOfWork.Deductions.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

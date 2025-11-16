@@ -12,11 +12,11 @@ public class LeaveTypeService(IUnitOfWork _unitOfWork, IMapper _mapper) : ILeave
                 return new Response<IEnumerable<LeaveTypeDto>>(Enumerable.Empty<LeaveTypeDto>(), "No leave types found.", false);
 
             IEnumerable<LeaveTypeDto> leaveTypeDtos = _mapper.Map<IEnumerable<LeaveTypeDto>>(types);
-            return new Response<IEnumerable<LeaveTypeDto>>(leaveTypeDtos, null, false);
+            return new Response<IEnumerable<LeaveTypeDto>>(leaveTypeDtos, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<IEnumerable<LeaveTypeDto>>(null, $"Failed to load leaveTypes: {ex.Message}", true);
+            return new Response<IEnumerable<LeaveTypeDto>>(null!, $"Failed to load leaveTypes: {ex.Message}", true);
         }
     }
 
@@ -29,7 +29,7 @@ public class LeaveTypeService(IUnitOfWork _unitOfWork, IMapper _mapper) : ILeave
                 return new Response<LeaveTypeDto>(default!, "LeaveType not found", true);
 
             LeaveTypeDto dto = _mapper.Map<LeaveTypeDto>(entity);
-            return new Response<LeaveTypeDto>(dto, null, false);
+            return new Response<LeaveTypeDto>(dto, null!, false);
         }
         catch (Exception ex)
         {

@@ -19,6 +19,12 @@ public class UnitOfWork : IUnitOfWork
     private ILeaveApprovalRepository? _leaveApprovals;
     private IEmployeeLeaveBalanceRepository? _employeeLeaveBalances;
     private ILeaveTypeRepository? _leaveTypes;
+    private IPayslipRepository? _payslips;
+    private IAllowanceRepository? _allowances;
+    private IDeductionRepository? _deductions;
+    private IEmployeeAllowanceRepository? _employeeAllowances;
+    private IEmployeeDeductionRepository? _employeeDeductions;
+    private IEmployeeRepository? _employees;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -43,6 +49,18 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeLeaveBalanceRepository EmployeeLeaveBalances => _employeeLeaveBalances ??= new EmployeeLeaveBalanceRepository(_context);
 
     public ILeaveTypeRepository LeaveTypes => _leaveTypes ??= new LeaveTypeRepository(_context);
+
+    public IPayslipRepository Payslips => _payslips ??= new PayslipRepository(_context);
+
+    public IAllowanceRepository Allowances => _allowances ??= new AllowanceRepository(_context);
+
+    public IDeductionRepository Deductions => _deductions ??= new DeductionRepository(_context);
+
+    public IEmployeeAllowanceRepository EmployeeAllowances => _employeeAllowances ??= new EmployeeAllowanceRepository(_context);
+
+    public IEmployeeDeductionRepository EmployeeDeductions => _employeeDeductions ??= new EmployeeDeductionRepository(_context);
+
+    public IEmployeeRepository Employees => _employees ??= new EmployeeRepository(_context);
 
     public IRepository<T> Repository<T>() where T : class
     {

@@ -5,7 +5,7 @@ namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+// [Authorize]
 //[Authorize(Roles = "Admin,HR")]
 
 public class PayslipController(IPayslipService _payslipService) : BaseApiController

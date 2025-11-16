@@ -46,6 +46,57 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Allowances");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 2000.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Housing Allowance"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Transportation Allowance"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Amount = 500.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Food Allowance"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Amount = 300.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Mobile Allowance"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Amount = 200.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Internet Allowance"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Amount = 3000.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Performance Bonus"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Amount = 1500.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Health Insurance"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Candidate", b =>
@@ -269,6 +320,43 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Deductions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 0.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Social Insurance"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 0.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Income Tax"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Amount = 0.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Absence Deduction"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Amount = 100.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Late Arrival Penalty"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Amount = 0.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Loan Installment"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Department", b =>
@@ -784,6 +872,136 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeeAllowances", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AllowanceId = 1,
+                            Amount = 2000.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AllowanceId = 2,
+                            Amount = 800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AllowanceId = 4,
+                            Amount = 300.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AllowanceId = 1,
+                            Amount = 1800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AllowanceId = 2,
+                            Amount = 800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AllowanceId = 5,
+                            Amount = 200.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AllowanceId = 1,
+                            Amount = 1500.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 3
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AllowanceId = 2,
+                            Amount = 700.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 3
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AllowanceId = 1,
+                            Amount = 1800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 4
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AllowanceId = 2,
+                            Amount = 800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 4
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AllowanceId = 4,
+                            Amount = 300.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 4
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AllowanceId = 1,
+                            Amount = 1500.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 5
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AllowanceId = 2,
+                            Amount = 700.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 5
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AllowanceId = 1,
+                            Amount = 2000.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 6
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AllowanceId = 2,
+                            Amount = 800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 6
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AllowanceId = 4,
+                            Amount = 300.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 6
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeDeduction", b =>
@@ -816,6 +1034,104 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeeDeductions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 2250.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 1,
+                            EmployeeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 3750.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 2,
+                            EmployeeId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Amount = 1800.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 1,
+                            EmployeeId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Amount = 2500.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 2,
+                            EmployeeId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Amount = 1350.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 1,
+                            EmployeeId = 3
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Amount = 1500.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 2,
+                            EmployeeId = 3
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Amount = 1980.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 1,
+                            EmployeeId = 4
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Amount = 2750.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 2,
+                            EmployeeId = 4
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Amount = 1440.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 1,
+                            EmployeeId = 5
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Amount = 1600.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 2,
+                            EmployeeId = 5
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Amount = 2160.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 1,
+                            EmployeeId = 6
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Amount = 3000.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DeductionId = 2,
+                            EmployeeId = 6
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeLeaveBalance", b =>
@@ -1266,7 +1582,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 1,
                             CanCarryForward = true,
                             CarryForwardLimit = 5,
-                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3511),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Annual paid leave after completing the first year of work",
                             IsPaid = true,
                             MaxDays = 15,
@@ -1276,7 +1592,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 2,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3628),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Medical leave based on a valid medical certificate",
                             IsPaid = true,
                             MaxDays = 30,
@@ -1286,7 +1602,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 3,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3657),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Maternity leave for female employees, 90 days paid",
                             GenderRestriction = "Female",
                             IsPaid = true,
@@ -1297,7 +1613,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 4,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3681),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Short paid leave for new fathers as per company policy",
                             GenderRestriction = "Male",
                             IsPaid = true,
@@ -1308,7 +1624,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 5,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3705),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Leave without pay subject to management approval",
                             IsPaid = false,
                             MaxDays = 30,
@@ -1318,7 +1634,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 6,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3729),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Leave for emergencies (death of a relative, special circumstances)",
                             IsPaid = true,
                             MaxDays = 5,
@@ -1328,7 +1644,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 7,
                             CanCarryForward = false,
-                            CreatedAt = new DateTime(2025, 11, 15, 12, 29, 11, 234, DateTimeKind.Local).AddTicks(3776),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Hajj leave for Muslims, 10 days paid, once in a lifetime",
                             IsPaid = true,
                             MaxDays = 10,
@@ -1379,6 +1695,138 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("Payslips", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BasicSalary = 25000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 1,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 22100.00m,
+                            TotalAllowances = 3100.00m,
+                            TotalDeductions = 6000.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BasicSalary = 20000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 2,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 18500.00m,
+                            TotalAllowances = 2800.00m,
+                            TotalDeductions = 4300.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BasicSalary = 15000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 3,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 14350.00m,
+                            TotalAllowances = 2200.00m,
+                            TotalDeductions = 2850.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BasicSalary = 22000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 4,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 20170.00m,
+                            TotalAllowances = 2900.00m,
+                            TotalDeductions = 4730.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BasicSalary = 16000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 5,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 15160.00m,
+                            TotalAllowances = 2200.00m,
+                            TotalDeductions = 3040.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BasicSalary = 24000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 6,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 21940.00m,
+                            TotalAllowances = 3100.00m,
+                            TotalDeductions = 5160.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BasicSalary = 25000.00m,
+                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 1,
+                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 9,
+                            NetSalary = 22100.00m,
+                            TotalAllowances = 3100.00m,
+                            TotalDeductions = 6000.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BasicSalary = 20000.00m,
+                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 2,
+                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 9,
+                            NetSalary = 18500.00m,
+                            TotalAllowances = 2800.00m,
+                            TotalDeductions = 4300.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BasicSalary = 22000.00m,
+                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 4,
+                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 9,
+                            NetSalary = 20170.00m,
+                            TotalAllowances = 2900.00m,
+                            TotalDeductions = 4730.00m,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 10,
+                            BasicSalary = 24000.00m,
+                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 6,
+                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 9,
+                            NetSalary = 21940.00m,
+                            TotalAllowances = 3100.00m,
+                            TotalDeductions = 5160.00m,
+                            Year = 2024
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Infrastructure.Identity.ApplicationRole", b =>

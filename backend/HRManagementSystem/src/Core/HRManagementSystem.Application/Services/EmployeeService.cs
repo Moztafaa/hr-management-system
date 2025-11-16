@@ -17,7 +17,7 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmploy
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDto>(default, ex.Message, true);
+            return new Response<EmployeeDto>(default!, ex.Message, true);
         }
     }
 
@@ -33,7 +33,7 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmploy
         }
         catch (Exception ex)
         {
-            return new Response<IEnumerable<EmployeeDto>>(null, ex.Message, true);
+            return new Response<IEnumerable<EmployeeDto>>(null!, ex.Message, true);
         }
     }
 
@@ -44,7 +44,7 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmploy
         {
             Employee? employee = await _unitOfWork.Repository<Employee>().GetByIdAsync(id, cancellationToken);
             if (employee is null)
-                return new Response<EmployeeDto>(null, "Employee not found", true);
+                return new Response<EmployeeDto>(null!, "Employee not found", true);
 
             EmployeeDto? dto = _mapper.Map<EmployeeDto>(employee);
 
@@ -52,7 +52,7 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmploy
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDto>(null, ex.Message, true);
+            return new Response<EmployeeDto>(null!, ex.Message, true);
         }
     }
     public async Task<Response<bool>> UpdateEmployeeAsync(int id, UpdateEmployeeDto updateEmployeeDto, CancellationToken cancellationToken = default)
