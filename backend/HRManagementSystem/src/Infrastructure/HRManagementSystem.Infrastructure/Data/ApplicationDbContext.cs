@@ -87,4 +87,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<Candidate> Candidates { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 }
