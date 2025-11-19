@@ -1,10 +1,10 @@
+using HRManagementSystem.Application.Services;
+using HRManagementSystem.WebApi.Middleware;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-});
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 // Configure Swagger with JWT support
@@ -44,13 +44,10 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 //link with angular
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngular",
+builder.Services.AddCors(options => options.AddPolicy("AllowAngular",
         policy => policy.AllowAnyOrigin()
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
-});
+                        .AllowAnyHeader()));
 
 WebApplication app = builder.Build();
 
@@ -60,9 +57,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseCors("AllowAngular");
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

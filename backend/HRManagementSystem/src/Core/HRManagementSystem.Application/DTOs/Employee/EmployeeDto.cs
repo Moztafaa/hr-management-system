@@ -16,5 +16,6 @@ public class EmployeeDto
     public string? ContactNumber { get; set; }
     public string? Address { get; set; }
     public decimal BasicSalary { get; set; }
+    public float[]? FaceEmbedding { get; set; }
     public string? ApplicationUserId { get; set; }
 }

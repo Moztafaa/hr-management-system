@@ -19,5 +19,8 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.Extensions.DependencyInjection;
 global using HRManagementSystem.Domain.Enums;
 global using AutoMapper;
+global using HRManagementSystem.Infrastructure.Configurations;
+global using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 
 

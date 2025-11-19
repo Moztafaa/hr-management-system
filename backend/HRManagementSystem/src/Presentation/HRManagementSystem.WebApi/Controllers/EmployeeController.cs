@@ -1,5 +1,3 @@
-using HRManagementSystem.Application.Common;
-
 namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
@@ -19,6 +17,14 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
         Response<EmployeeDto> employee = await employeeService.CreateEmployeeAsync(createEmployeeDto, cancellationToken);
         return Ok(employee);
     }
+    [HttpPost("{employeeId}/update-image")]
+    public async Task<IActionResult> UpdateImage(int employeeId, [FromBody] UpdateImageRequestDto request)
+    {
+        var result = await employeeService.UpdateEmployeeImageAsync(employeeId, request.Base64Image);
+        if (result.HasError)
+            return Ok(new { errorMassage = result.ErrorMessage, employee = result.Data });
 
+        return Ok(new { errorMassage = result.ErrorMessage, employee = result.Data });
+    }
 
 }

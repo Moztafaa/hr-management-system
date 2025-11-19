@@ -1,3 +1,7 @@
+
+using HRManagementSystem.Application.Interfaces;
+using HRManagementSystem.Application.Mappings;
+
 namespace HRManagementSystem.Application;
 
 public static class DependencyInjection
@@ -12,15 +16,27 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IDesignationService, DesignationService>();
 
+
+        
+        services.AddScoped<IPayslipService, PayslipService>();
+
+        services.AddScoped<IAllowanceService, AllowanceService>();
+        services.AddScoped<IDeductionService, DeductionService>();
+        services.AddScoped<IEmployeeAllowanceService, EmployeeAllowanceService>();
+        services.AddScoped<IEmployeeDeductionService, EmployeeDeductionService>();
+
         services.AddScoped<ILeaveRequestService, LeaveRequestService>();
         services.AddScoped<ILeaveTypeService, LeaveTypeService>();
         services.AddScoped<ILeaveBalanceService, LeaveBalanceService>();
         services.AddScoped<ILeaveApprovalService, LeaveApprovalService>();
+        services.AddScoped<IAttendanceService, AttendanceService>();
+        
         services.AddScoped<IJobPostingService, JobPostingService>();
         services.AddScoped<ICandidateService, CandidateService>();
         services.AddScoped<IJobApplicationService, JobApplicationService>();
 
         // services.AddScoped<ILeaveService, LeaveService>();
+
         services.AddAutoMapper(x => x.AddProfile(new MappingHelper()));
         services.AddAutoMapper(x => x.AddProfile(new LeaveProfile()));
         // Add other mapping profiles for Department, Employee, JobPosting, etc.

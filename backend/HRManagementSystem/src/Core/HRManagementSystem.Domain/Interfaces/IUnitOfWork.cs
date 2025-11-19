@@ -1,3 +1,4 @@
+using HRManagementSystem.Application.Interfaces;
 using HRManagementSystem.Domain.Interfaces.LeaveRepository;
 
 namespace HRManagementSystem.Domain.Interfaces;
@@ -9,11 +10,18 @@ public interface IUnitOfWork : IDisposable
     IDesignationRepository Designations { get; }
     ICandidateRepository Candidates { get; }
     IJobPostingRepository JobPostings { get; }
+    IAttendanceRepository Attendances { get; }
     IJobApplicationRepository JobApplications { get; }
     ILeaveRequestRepository LeaveRequests { get; }
     ILeaveApprovalRepository LeaveApprovals { get; }
     IEmployeeLeaveBalanceRepository EmployeeLeaveBalances { get; }
     ILeaveTypeRepository LeaveTypes { get; }
+    IPayslipRepository Payslips { get; }
+    IAllowanceRepository Allowances { get; }
+    IDeductionRepository Deductions { get; }
+    IEmployeeAllowanceRepository EmployeeAllowances { get; }
+    IEmployeeDeductionRepository EmployeeDeductions { get; }
+    IEmployeeRepository Employees { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);
