@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateWithAllSeedData : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -71,6 +71,22 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Competencies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Competencies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Deductions",
                 columns: table => new
                 {
@@ -122,6 +138,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KPIs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Target = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KPIs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LeaveTypes",
                 columns: table => new
                 {
@@ -140,6 +175,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LeaveTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReviewCycles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Frequency = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RatingScale = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReviewCycles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -526,6 +580,34 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PerformanceReviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    ReviewCycleId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    FinalRating = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PerformanceReviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PerformanceReviews_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PerformanceReviews_ReviewCycles_ReviewCycleId",
+                        column: x => x.ReviewCycleId,
+                        principalTable: "ReviewCycles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JobApplications",
                 columns: table => new
                 {
@@ -606,6 +688,117 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         principalTable: "LeaveRequests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeeCompetencyRatings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PerformanceReviewId = table.Column<int>(type: "int", nullable: false),
+                    CompetencyId = table.Column<int>(type: "int", nullable: false),
+                    Rating = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeCompetencyRatings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmployeeCompetencyRatings_Competencies_CompetencyId",
+                        column: x => x.CompetencyId,
+                        principalTable: "Competencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmployeeCompetencyRatings_PerformanceReviews_PerformanceReviewId",
+                        column: x => x.PerformanceReviewId,
+                        principalTable: "PerformanceReviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Feedbacks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PerformanceReviewId = table.Column<int>(type: "int", nullable: false),
+                    FromEmployeeId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feedbacks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_PerformanceReviews_PerformanceReviewId",
+                        column: x => x.PerformanceReviewId,
+                        principalTable: "PerformanceReviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Goals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PerformanceReviewId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ProgressPercent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Goals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Goals_PerformanceReviews_PerformanceReviewId",
+                        column: x => x.PerformanceReviewId,
+                        principalTable: "PerformanceReviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "KPIResults",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PerformanceReviewId = table.Column<int>(type: "int", nullable: false),
+                    KPIId = table.Column<int>(type: "int", nullable: false),
+                    Actual = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    WeightedScore = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KPIResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_KPIResults_KPIs_KPIId",
+                        column: x => x.KPIId,
+                        principalTable: "KPIs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_KPIResults_PerformanceReviews_PerformanceReviewId",
+                        column: x => x.PerformanceReviewId,
+                        principalTable: "PerformanceReviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -853,6 +1046,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeCompetencyRatings_CompetencyId",
+                table: "EmployeeCompetencyRatings",
+                column: "CompetencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeeCompetencyRatings_PerformanceReviewId",
+                table: "EmployeeCompetencyRatings",
+                column: "PerformanceReviewId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EmployeeDeductions_DeductionId",
                 table: "EmployeeDeductions",
                 column: "DeductionId");
@@ -881,6 +1084,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "IX_Employees_DesignationId",
                 table: "Employees",
                 column: "DesignationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Feedbacks_PerformanceReviewId",
+                table: "Feedbacks",
+                column: "PerformanceReviewId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Goals_PerformanceReviewId",
+                table: "Goals",
+                column: "PerformanceReviewId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_AssignedRecruiterId",
@@ -913,6 +1126,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 column: "DesignationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_KPIResults_KPIId",
+                table: "KPIResults",
+                column: "KPIId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KPIResults_PerformanceReviewId",
+                table: "KPIResults",
+                column: "PerformanceReviewId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LeaveApprovals_ApproverId",
                 table: "LeaveApprovals",
                 column: "ApproverId");
@@ -941,6 +1164,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "IX_Payslips_EmployeeId",
                 table: "Payslips",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PerformanceReviews_EmployeeId",
+                table: "PerformanceReviews",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PerformanceReviews_ReviewCycleId",
+                table: "PerformanceReviews",
+                column: "ReviewCycleId");
         }
 
         /// <inheritdoc />
@@ -965,13 +1198,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "EmployeeAllowances");
 
             migrationBuilder.DropTable(
+                name: "EmployeeCompetencyRatings");
+
+            migrationBuilder.DropTable(
                 name: "EmployeeDeductions");
 
             migrationBuilder.DropTable(
                 name: "EmployeeLeaveBalances");
 
             migrationBuilder.DropTable(
+                name: "Feedbacks");
+
+            migrationBuilder.DropTable(
+                name: "Goals");
+
+            migrationBuilder.DropTable(
                 name: "JobApplications");
+
+            migrationBuilder.DropTable(
+                name: "KPIResults");
 
             migrationBuilder.DropTable(
                 name: "LeaveApprovals");
@@ -989,6 +1234,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "Allowances");
 
             migrationBuilder.DropTable(
+                name: "Competencies");
+
+            migrationBuilder.DropTable(
                 name: "Deductions");
 
             migrationBuilder.DropTable(
@@ -998,7 +1246,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "JobPostings");
 
             migrationBuilder.DropTable(
+                name: "KPIs");
+
+            migrationBuilder.DropTable(
+                name: "PerformanceReviews");
+
+            migrationBuilder.DropTable(
                 name: "LeaveRequests");
+
+            migrationBuilder.DropTable(
+                name: "ReviewCycles");
 
             migrationBuilder.DropTable(
                 name: "Employees");

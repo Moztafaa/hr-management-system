@@ -87,4 +87,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<Candidate> Candidates { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
+
+    public DbSet<ReviewCycle> ReviewCycles { get; set; }
+    public DbSet<PerformanceReview> PerformanceReviews { get; set; }
+    public DbSet<Goal> Goals { get; set; }
+    public DbSet<KPI> KPIs { get; set; }
+    public DbSet<KPIResult> KPIResults { get; set; }
+    public DbSet<Competency> Competencies { get; set; }
+    public DbSet<EmployeeCompetencyRating> EmployeeCompetencyRatings { get; set; }
+    public DbSet<Feedback> Feedbacks { get; set; }
+
 }

@@ -69,6 +69,14 @@ public static class DependencyInjection
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
         services.AddScoped<ICandidateRepository, CandidateRepository>();
         services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+        services.AddScoped<IPerformanceReviewRepository, PerformanceReviewRepository>();
+        services.AddScoped<IReviewCycleRepository, ReviewCycleRepository>();
+        services.AddScoped<IGoalRepository, GoalRepository>();
+        services.AddScoped<IKpiRepository, KpiRepository>();
+        services.AddScoped<IKpiResultRepository, KpiResultRepository>();
+        services.AddScoped<ICompetencyRepository, CompetencyRepository>();
+        services.AddScoped<IEmployeeCompetencyRatingRepository, EmployeeCompetencyRatingRepository>();
+        services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
         // Register Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
