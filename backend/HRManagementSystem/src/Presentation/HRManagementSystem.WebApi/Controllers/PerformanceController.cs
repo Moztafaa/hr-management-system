@@ -1,4 +1,5 @@
 ﻿using HRManagementSystem.Application.DTOs.Performance;
+using HRManagementSystem.Domain.Enums.Performance;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRManagementSystem.WebApi.Controllers;
@@ -35,6 +36,15 @@ public class PerformanceController : ControllerBase
         return Ok(new { hasError = result.HasError, data = result.Data });
     }
 
+    [HttpGet("cycles/active")]
+    public async Task<IActionResult> GetActiveCycles([FromQuery] DateTime? at)
+    {
+        var result = await _performanceService.GetActiveCyclesAsync(at);
+        if (result.HasError)
+            return BadRequest(new { hasError = result.HasError, errorMessage = result.ErrorMessage });
+
+        return Ok(new { hasError = result.HasError, data = result.Data });
+    }
     // ========================= Reviews =========================
 
     [HttpPost("reviews")]
@@ -57,6 +67,15 @@ public class PerformanceController : ControllerBase
         return Ok(new { hasError = result.HasError, data = result.Data });
     }
 
+    [HttpGet("reviews/employee/{employeeId:int}")]
+    public async Task<IActionResult> GetEmployeeReviews([FromRoute] int employeeId)
+    {
+        var result = await _performanceService.GetEmployeeReviewsAsync(employeeId);
+        if (result.HasError)
+            return BadRequest(new { hasError = result.HasError, errorMessage = result.ErrorMessage });
+
+        return Ok(new { hasError = result.HasError, data = result.Data });
+    }
     // ========================= Goals =========================
 
     [HttpPost("goals")]
@@ -111,6 +130,16 @@ public class PerformanceController : ControllerBase
             return BadRequest(new { hasError = result.HasError, errorMessage = result.ErrorMessage });
 
         return Ok(new { hasError = result.HasError, data = result.Data });
+    }
+
+    [HttpGet("reviews/{reviewId:int}/feedback-by-type")]
+    public async Task<IActionResult> GetFeedbackByType(int reviewId,[FromQuery] FeedbackType type)
+    {
+        Response<IEnumerable<FeedbackDto>> result = await _performanceService.GetFeedbackByTypeAsync(reviewId, type);
+        if (result.HasError)
+            return BadRequest(result);
+
+        return Ok(result);
     }
 
     // ========================= Competencies =========================

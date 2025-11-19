@@ -9,7 +9,7 @@ public class EmployeeCompetencyRating : BaseEntity
 {
     public int PerformanceReviewId { get; set; }
     public int CompetencyId { get; set; }
-    public decimal Rating { get; set; } // 1..5 أو % حسب الـScale
+    public decimal Rating { get; set; } 
     public string? Notes { get; set; }
 
     public PerformanceReview Review { get; set; } = default!;

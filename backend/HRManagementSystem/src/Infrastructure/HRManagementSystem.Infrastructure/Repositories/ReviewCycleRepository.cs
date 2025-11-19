@@ -5,11 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HRManagementSystem.Infrastructure.Repositories;
-public class ReviewCycleRepository : Repository<ReviewCycle>, IReviewCycleRepository
+public class ReviewCycleRepository(ApplicationDbContext _ctx) : Repository<ReviewCycle>(_ctx), IReviewCycleRepository
 {
-    private readonly ApplicationDbContext _ctx;
-    public ReviewCycleRepository(ApplicationDbContext ctx) : base(ctx) => _ctx = ctx;
-
     public async Task<IEnumerable<ReviewCycle>> GetActiveAtAsync(DateTime at, CancellationToken ct = default)
     {
         return await _ctx.ReviewCycles

@@ -42,7 +42,4 @@ public class Repository<T> : IRepository<T> where T : class
             _dbSet.Remove(entity);
         }
     }
-
-    public virtual async Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default)
-        => await _dbSet.Where(predicate).ToListAsync(ct);
 }

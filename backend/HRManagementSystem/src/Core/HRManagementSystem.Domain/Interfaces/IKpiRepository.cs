@@ -8,5 +8,4 @@ using HRManagementSystem.Domain.Entities;
 namespace HRManagementSystem.Domain.Interfaces;
 public interface IKpiRepository : IRepository<KPI>
 {
-    Task<KPI?> GetByCodeAsync(string code, CancellationToken ct = default);
 }

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 using HRManagementSystem.Domain.Enums.Performance;
 
 namespace HRManagementSystem.Infrastructure.Repositories;
-public class FeedbackRepository : Repository<Feedback>, IFeedbackRepository
+public class FeedbackRepository(ApplicationDbContext _ctx) : Repository<Feedback>(_ctx), IFeedbackRepository
 {
-    private readonly ApplicationDbContext _ctx;
-    public FeedbackRepository(ApplicationDbContext ctx) : base(ctx) => _ctx = ctx;
 
     public Task<IEnumerable<Feedback>> GetByReviewIdAsync(int reviewId, CancellationToken ct = default)
         => Task.FromResult<IEnumerable<Feedback>>(_ctx.Feedbacks.Where(x => x.PerformanceReviewId == reviewId).AsEnumerable());

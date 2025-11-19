@@ -9,7 +9,7 @@ namespace HRManagementSystem.Domain.Entities;
 public class Feedback : BaseEntity
 {
     public int PerformanceReviewId { get; set; }
-    public int FromEmployeeId { get; set; } // مين اللي كتب الفيدباك
+    public int FromEmployeeId { get; set; } 
     public FeedbackType Type { get; set; }
     public string Comments { get; set; } = default!;
     public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;

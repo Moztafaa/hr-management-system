@@ -12,7 +12,7 @@ public class Goal : BaseEntity
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
     public GoalStatus Status { get; set; } = GoalStatus.NotStarted;
-    public decimal ProgressPercent { get; set; } // 0..100
+    public decimal ProgressPercent { get; set; } 
     public DateTime? DueDate { get; set; }
 
     public PerformanceReview Review { get; set; } = default!;

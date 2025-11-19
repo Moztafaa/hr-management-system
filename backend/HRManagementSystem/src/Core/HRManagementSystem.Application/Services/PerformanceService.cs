@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using HRManagementSystem.Application.Common;
 using HRManagementSystem.Application.DTOs.Performance;
+using HRManagementSystem.Domain.Entities;
+using HRManagementSystem.Domain.Enums;
 using HRManagementSystem.Domain.Enums.Performance;
+using HRManagementSystem.Domain.Interfaces;
 
 namespace HRManagementSystem.Application.Services
 {
@@ -19,7 +22,7 @@ namespace HRManagementSystem.Application.Services
             _mapper = mapper;
         }
 
-        // ===== Cycles =====
+        // ===================== Cycles =====================
         public async Task<Response<ReviewCycleDto>> CreateCycleAsync(CreateCycleDto dto)
         {
             try
@@ -27,9 +30,14 @@ namespace HRManagementSystem.Application.Services
                 ReviewCycle entity = _mapper.Map<ReviewCycle>(dto);
                 await _uow.ReviewCycles.AddAsync(entity);
                 await _uow.SaveChangesAsync();
-                return new Response<ReviewCycleDto>(_mapper.Map<ReviewCycleDto>(entity), "", false);
+
+                ReviewCycleDto result = _mapper.Map<ReviewCycleDto>(entity);
+                return new Response<ReviewCycleDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<ReviewCycleDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<ReviewCycleDto>(default!, ex.Message, true);
+            }
         }
 
         public async Task<Response<IEnumerable<ReviewCycleDto>>> GetCyclesAsync()
@@ -37,28 +45,54 @@ namespace HRManagementSystem.Application.Services
             try
             {
                 IEnumerable<ReviewCycle> list = await _uow.ReviewCycles.GetAllAsync();
-                return new Response<IEnumerable<ReviewCycleDto>>(
-                    _mapper.Map<IEnumerable<ReviewCycleDto>>(list), "", false);
+                IEnumerable<ReviewCycleDto> result = _mapper.Map<IEnumerable<ReviewCycleDto>>(list);
+
+                return new Response<IEnumerable<ReviewCycleDto>>(result, "", false);
             }
-            catch (Exception ex) { return new Response<IEnumerable<ReviewCycleDto>>(Array.Empty<ReviewCycleDto>(), ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<IEnumerable<ReviewCycleDto>>(Array.Empty<ReviewCycleDto>(), ex.Message, true);
+            }
         }
 
-        // ===== Reviews =====
+        public async Task<Response<IEnumerable<ReviewCycleDto>>> GetActiveCyclesAsync(DateTime? at = null)
+        {
+            try
+            {
+                DateTime checkDate = at ?? DateTime.UtcNow;
+                IEnumerable<ReviewCycle> list = await _uow.ReviewCycles.GetActiveAtAsync(checkDate);
+                IEnumerable<ReviewCycleDto> result = _mapper.Map<IEnumerable<ReviewCycleDto>>(list);
+
+                return new Response<IEnumerable<ReviewCycleDto>>(result, "", false);
+            }
+            catch (Exception ex)
+            {
+                return new Response<IEnumerable<ReviewCycleDto>>(Array.Empty<ReviewCycleDto>(), ex.Message, true);
+            }
+        }
+
+        // ===================== Reviews =====================
         public async Task<Response<PerformanceReviewDto>> CreateReviewAsync(CreateReviewDto dto)
         {
             try
             {
                 ReviewCycle? reviewCycle = await _uow.ReviewCycles.GetByIdAsync(dto.ReviewCycleId);
-                if (reviewCycle == null)
+                if (reviewCycle is null)
                     return new Response<PerformanceReviewDto>(default!, "Review Cycle not found", true);
 
                 PerformanceReview entity = _mapper.Map<PerformanceReview>(dto);
                 entity.Status = ReviewStatus.InProgress;
+
                 await _uow.PerformanceReviews.AddAsync(entity);
                 await _uow.SaveChangesAsync();
-                return new Response<PerformanceReviewDto>(_mapper.Map<PerformanceReviewDto>(entity), "", false);
+
+                PerformanceReviewDto result = _mapper.Map<PerformanceReviewDto>(entity);
+                return new Response<PerformanceReviewDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<PerformanceReviewDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<PerformanceReviewDto>(default!, ex.Message, true);
+            }
         }
 
         public async Task<Response<PerformanceReviewDto>> CloseReviewAsync(int reviewId, decimal? finalRating)
@@ -71,15 +105,35 @@ namespace HRManagementSystem.Application.Services
 
                 review.Status = ReviewStatus.Closed;
                 review.FinalRating = finalRating;
+
                 await _uow.PerformanceReviews.UpdateAsync(review);
                 await _uow.SaveChangesAsync();
 
-                return new Response<PerformanceReviewDto>(_mapper.Map<PerformanceReviewDto>(review), "", false);
+                PerformanceReviewDto result = _mapper.Map<PerformanceReviewDto>(review);
+                return new Response<PerformanceReviewDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<PerformanceReviewDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<PerformanceReviewDto>(default!, ex.Message, true);
+            }
         }
 
-        // ===== Goals =====
+        public async Task<Response<IEnumerable<PerformanceReviewDto>>> GetEmployeeReviewsAsync(int employeeId)
+        {
+            try
+            {
+                IEnumerable<PerformanceReview> reviews = await _uow.PerformanceReviews.GetByEmployeeAsync(employeeId);
+                IEnumerable<PerformanceReviewDto> result = _mapper.Map<IEnumerable<PerformanceReviewDto>>(reviews);
+
+                return new Response<IEnumerable<PerformanceReviewDto>>(result, "", false);
+            }
+            catch (Exception ex)
+            {
+                return new Response<IEnumerable<PerformanceReviewDto>>(Array.Empty<PerformanceReviewDto>(), ex.Message, true);
+            }
+        }
+
+        // ===================== Goals =====================
         public async Task<Response<GoalDto>> CreateGoalAsync(CreateGoalDto dto)
         {
             try
@@ -90,11 +144,17 @@ namespace HRManagementSystem.Application.Services
 
                 Goal entity = _mapper.Map<Goal>(dto);
                 entity.Status = GoalStatus.NotStarted;
+
                 await _uow.Goals.AddAsync(entity);
                 await _uow.SaveChangesAsync();
-                return new Response<GoalDto>(_mapper.Map<GoalDto>(entity), "", false);
+
+                GoalDto result = _mapper.Map<GoalDto>(entity);
+                return new Response<GoalDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<GoalDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<GoalDto>(default!, ex.Message, true);
+            }
         }
 
         public async Task<Response<bool>> UpdateGoalProgressAsync(UpdateGoalProgressDto dto)
@@ -106,17 +166,22 @@ namespace HRManagementSystem.Application.Services
                     return new Response<bool>(false, "Goal not found", true);
 
                 goal.ProgressPercent = dto.ProgressPercent;
+
                 if (!string.IsNullOrWhiteSpace(dto.Status))
                     goal.Status = Enum.Parse<GoalStatus>(dto.Status, true);
 
                 await _uow.Goals.UpdateAsync(goal);
                 await _uow.SaveChangesAsync();
+
                 return new Response<bool>(true, "", false);
             }
-            catch (Exception ex) { return new Response<bool>(false, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<bool>(false, ex.Message, true);
+            }
         }
 
-        // ===== KPIs =====
+        // ===================== KPIs =====================
         public async Task<Response<KPIDto>> CreateKpiAsync(CreateKpiDto dto)
         {
             try
@@ -124,9 +189,14 @@ namespace HRManagementSystem.Application.Services
                 KPI entity = _mapper.Map<KPI>(dto);
                 await _uow.KPIs.AddAsync(entity);
                 await _uow.SaveChangesAsync();
-                return new Response<KPIDto>(_mapper.Map<KPIDto>(entity), "", false);
+
+                KPIDto result = _mapper.Map<KPIDto>(entity);
+                return new Response<KPIDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<KPIDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<KPIDto>(default!, ex.Message, true);
+            }
         }
 
         public async Task<Response<KPIResultDto>> AddKpiResultAsync(CreateKpiResultDto dto)
@@ -141,16 +211,26 @@ namespace HRManagementSystem.Application.Services
                 if (kpi is null)
                     return new Response<KPIResultDto>(default!, "KPI not found", true);
 
-                KPIResult result = new KPIResult { PerformanceReviewId = dto.PerformanceReviewId, KPIId = dto.KpiId, Actual = dto.Actual };
-                await _uow.KPIResults.AddAsync(result);
+                KPIResult resultEntity = new KPIResult
+                {
+                    PerformanceReviewId = dto.PerformanceReviewId,
+                    KPIId = dto.KpiId,
+                    Actual = dto.Actual
+                };
+
+                await _uow.KPIResults.AddAsync(resultEntity);
                 await _uow.SaveChangesAsync();
 
-                return new Response<KPIResultDto>(_mapper.Map<KPIResultDto>(result), "", false);
+                KPIResultDto result = _mapper.Map<KPIResultDto>(resultEntity);
+                return new Response<KPIResultDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<KPIResultDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<KPIResultDto>(default!, ex.Message, true);
+            }
         }
 
-        // ===== Feedback =====
+        // ===================== Feedback =====================
         public async Task<Response<FeedbackDto>> AddFeedbackAsync(CreateFeedbackDto dto)
         {
             try
@@ -163,22 +243,51 @@ namespace HRManagementSystem.Application.Services
                 await _uow.Feedbacks.AddAsync(entity);
                 await _uow.SaveChangesAsync();
 
-                return new Response<FeedbackDto>(_mapper.Map<FeedbackDto>(entity), "", false);
+                FeedbackDto result = _mapper.Map<FeedbackDto>(entity);
+                return new Response<FeedbackDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<FeedbackDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<FeedbackDto>(default!, ex.Message, true);
+            }
         }
 
-        // ===== Competencies =====
+        public async Task<Response<IEnumerable<FeedbackDto>>> GetFeedbackByTypeAsync(int reviewId, FeedbackType type)
+        {
+            try
+            {
+                IEnumerable<Feedback> feedbacks = await _uow.Feedbacks.GetByReviewIdAndTypeAsync(reviewId, type);
+                IEnumerable<FeedbackDto> result = _mapper.Map<IEnumerable<FeedbackDto>>(feedbacks);
+
+                return new Response<IEnumerable<FeedbackDto>>(result, "", false);
+            }
+            catch (Exception ex)
+            {
+                return new Response<IEnumerable<FeedbackDto>>(Array.Empty<FeedbackDto>(), ex.Message, true);
+            }
+        }
+
+
+        // ===================== Competencies =====================
         public async Task<Response<CompetencyDto>> CreateCompetencyAsync(CreateCompetencyDto dto)
         {
             try
             {
+                bool exists = await _uow.Competencies.ExistsByNameAsync(dto.Name);
+                if (exists)
+                    return new Response<CompetencyDto>(default!, "Competency with the same name already exists", true);
+
                 Competency entity = _mapper.Map<Competency>(dto);
                 await _uow.Competencies.AddAsync(entity);
                 await _uow.SaveChangesAsync();
-                return new Response<CompetencyDto>(_mapper.Map<CompetencyDto>(entity), "", false);
+
+                CompetencyDto result = _mapper.Map<CompetencyDto>(entity);
+                return new Response<CompetencyDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<CompetencyDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<CompetencyDto>(default!, ex.Message, true);
+            }
         }
 
         public async Task<Response<EmployeeCompetencyRatingDto>> RateCompetencyAsync(RateCompetencyDto dto)
@@ -204,12 +313,16 @@ namespace HRManagementSystem.Application.Services
                 await _uow.EmployeeCompetencyRatings.AddAsync(rating);
                 await _uow.SaveChangesAsync();
 
-                return new Response<EmployeeCompetencyRatingDto>(_mapper.Map<EmployeeCompetencyRatingDto>(rating), "", false);
+                EmployeeCompetencyRatingDto result = _mapper.Map<EmployeeCompetencyRatingDto>(rating);
+                return new Response<EmployeeCompetencyRatingDto>(result, "", false);
             }
-            catch (Exception ex) { return new Response<EmployeeCompetencyRatingDto>(default!, ex.Message, true); }
+            catch (Exception ex)
+            {
+                return new Response<EmployeeCompetencyRatingDto>(default!, ex.Message, true);
+            }
         }
 
-        // ===== Report =====
+        // ===================== Report =====================
         public async Task<Response<PerformanceReportDto>> GetReviewReportAsync(int reviewId)
         {
             try
@@ -218,10 +331,10 @@ namespace HRManagementSystem.Application.Services
                 if (review is null)
                     return new Response<PerformanceReportDto>(default!, "Review not found", true);
 
-                IEnumerable<Goal> goals = await _uow.Goals.GetAllAsync();
-                IEnumerable<KPIResult> kpiRes = await _uow.KPIResults.GetAllAsync();
-                IEnumerable<EmployeeCompetencyRating> comps = await _uow.EmployeeCompetencyRatings.GetAllAsync();
-                IEnumerable<Feedback> feeds = await _uow.Feedbacks.GetAllAsync();
+                IEnumerable<Goal> goals = await _uow.Goals.GetByReviewIdAsync(reviewId);
+                IEnumerable<KPIResult> kpiRes = await _uow.KPIResults.GetByReviewIdAsync(reviewId);
+                IEnumerable<EmployeeCompetencyRating> comps = await _uow.EmployeeCompetencyRatings.GetByReviewIdAsync(reviewId);
+                IEnumerable<Feedback> feeds = await _uow.Feedbacks.GetByReviewIdAsync(reviewId);
 
                 PerformanceReportDto dto = new PerformanceReportDto
                 {

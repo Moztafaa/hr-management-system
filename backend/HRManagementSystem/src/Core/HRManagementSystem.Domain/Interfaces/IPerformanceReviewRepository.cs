@@ -8,6 +8,5 @@ using HRManagementSystem.Domain.Entities;
 namespace HRManagementSystem.Domain.Interfaces;
 public interface IPerformanceReviewRepository : IRepository<PerformanceReview>
 {
-    Task<PerformanceReview?> GetWithDetailsAsync(int id, CancellationToken ct = default);
     Task<IEnumerable<PerformanceReview>> GetByEmployeeAsync(int employeeId, CancellationToken ct = default);
 }
