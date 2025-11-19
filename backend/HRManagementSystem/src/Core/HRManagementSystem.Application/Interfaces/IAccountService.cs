@@ -17,6 +17,7 @@ public interface IAccountService
     Task<Response<UserDto>> GetUserByEmailAsync(string email);
     Task<Response<IEnumerable<UserDto>>> GetAllUsersAsync();
     Task<Response<bool>> UpdateUserAsync(Guid userId, UserDto userDto);
+    Task<Response<bool>> UpdateUserEmailAsync(Guid userId, string newEmail);
     Task<Response<bool>> DeleteUserAsync(Guid userId);
     Task<Response<bool>> UserExistsAsync(string email);
 

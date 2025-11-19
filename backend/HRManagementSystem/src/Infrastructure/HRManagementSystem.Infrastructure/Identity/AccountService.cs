@@ -362,6 +362,29 @@ public class AccountService(
         return new Response<bool>(true, string.Empty, false);
     }
 
+    public async Task<Response<bool>> UpdateUserEmailAsync(Guid userId, string newEmail)
+    {
+        ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            return new Response<bool>(false, "User not found.", true);
+        }
+
+        user.Email = newEmail;
+        user.UserName = newEmail; // Email is typically used as username
+        user.NormalizedEmail = newEmail.ToUpperInvariant();
+        user.NormalizedUserName = newEmail.ToUpperInvariant();
+
+        IdentityResult result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
+        }
+
+        return new Response<bool>(true, string.Empty, false);
+    }
+
     public async Task<Response<bool>> DeleteUserAsync(Guid userId)
     {
         ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());

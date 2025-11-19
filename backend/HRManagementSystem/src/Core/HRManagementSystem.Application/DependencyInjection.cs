@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IDesignationService, DesignationService>();
+        services.AddScoped<IESSService, ESSService>();
 
 
 
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddAutoMapper(x => x.AddProfile(new CandidateProfile()));
         services.AddAutoMapper(x => x.AddProfile(new JobApplicationProfile()));
         services.AddAutoMapper(x => x.AddProfile(new NotificationProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new ESSProfile()));
 
 
         return services;
