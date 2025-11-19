@@ -1,5 +1,8 @@
 using HRManagementSystem.Domain.Interfaces.LeaveRepository;
 using HRManagementSystem.Infrastructure.Repositories.ILeaveRepository;
+using HRManagementSystem.Infrastructure.Common;
+using HRManagementSystem.Application.Interfaces;
+using HRManagementSystem.Infrastructure.Services;
 
 namespace HRManagementSystem.Infrastructure;
 
@@ -46,6 +49,12 @@ public static class DependencyInjection
                 IssuerSigningKey = new SymmetricSecurityKey(key)
             };
         });
+
+        // Configure Email Settings
+        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+
+        // Register Email Service
+        services.AddScoped<IEmailService, EmailService>();
 
         services.AddScoped<JwtTokenGenerator>();
         // Register AccountService

@@ -23,6 +23,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.10" />
+    <PackageReference Include="MailKit" Version="4.9.0" />
+    <PackageReference Include="MimeKit" Version="4.9.0" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="10.15.0.120848">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
