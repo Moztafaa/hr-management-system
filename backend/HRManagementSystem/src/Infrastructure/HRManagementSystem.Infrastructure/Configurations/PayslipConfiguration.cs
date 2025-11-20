@@ -34,13 +34,13 @@
                    .HasForeignKey(p => p.EmployeeId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(p => p.Allowances)
-                   .WithMany(a => a.Payslips)
-                   .UsingEntity(j => j.ToTable("PayslipAllowances"));
+            //builder.HasMany(p => p.Allowances)
+            //       .WithMany(a => a.Payslips)
+            //       .UsingEntity(j => j.ToTable("PayslipAllowances"));
 
-            builder.HasMany(p => p.Deductions)
-                   .WithMany(d => d.Payslips)
-                   .UsingEntity(j => j.ToTable("PayslipDeductions"));
+            //builder.HasMany(p => p.Deductions)
+            //       .WithMany(d => d.Payslips)
+            //       .UsingEntity(j => j.ToTable("PayslipDeductions"));
         }
     }
 }

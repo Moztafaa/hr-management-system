@@ -1,8 +1,8 @@
 ﻿namespace HRManagementSystem.Application.Services.LeaveServices;
+
 public class LeaveApprovalService(
-        ILeaveApprovalRepository _leaveApprovalRepo,
+        IUnitOfWork _unitOfWork,
         ILeaveRequestService _leaveRequestService,
-        ILeaveRequestRepository _leaveRequestRepository,
         ILeaveBalanceService _leaveBalanceService,
         IMapper _mapper
     ) : ILeaveApprovalService
@@ -13,16 +13,17 @@ public class LeaveApprovalService(
         try
         {
             // Get the approval step
-            LeaveApproval? approval = await _leaveApprovalRepo.GetByRequestAndApproverAsync(dto.LeaveRequestId, dto.ApproverId, dto.Level);
+            LeaveApproval? approval = await _unitOfWork.LeaveApprovals.GetByRequestAndApproverAsync(dto.LeaveRequestId, dto.ApproverId, dto.Level);
             if (approval == null || approval.ActionDate != null)
-                 return new Response<bool>(false, "Approval step not found or already processed", true);
+                return new Response<bool>(false, "Approval step not found or already processed", true);
 
             approval.ActionDate = DateTime.UtcNow;
             approval.Status = LeaveStatus.Approved;
-            await _leaveApprovalRepo.UpdateAsync(approval);
+            await _unitOfWork.LeaveApprovals.UpdateAsync(approval);
+            await _unitOfWork.SaveChangesAsync();
 
             // Check if there are still pending approval steps
-            IEnumerable<LeaveApproval> allSteps = await _leaveApprovalRepo.GetAllByRequestIdAsync(dto.LeaveRequestId);
+            IEnumerable<LeaveApproval> allSteps = await _unitOfWork.LeaveApprovals.GetAllByRequestIdAsync(dto.LeaveRequestId);
             bool stillPending = allSteps.Any(a => a.ActionDate == null);
             if (stillPending)
                 return new Response<bool>(true, "Approval recorded. Waiting for higher-level approvals.", false);
@@ -58,7 +59,7 @@ public class LeaveApprovalService(
     {
         try
         {
-            IEnumerable<LeaveApproval> approvals = await _leaveApprovalRepo.GetAllByApproverIdAsync(approverId);
+            IEnumerable<LeaveApproval> approvals = await _unitOfWork.LeaveApprovals.GetAllByApproverIdAsync(approverId);
             IEnumerable<LeaveApprovalDto>? approverApprovals = _mapper.Map<IEnumerable<LeaveApprovalDto>>(approvals);
 
 
@@ -74,7 +75,7 @@ public class LeaveApprovalService(
     {
         try
         {
-            IEnumerable<LeaveApproval> approvals = await _leaveApprovalRepo.GetAllByRequestIdAsync(leaveRequestId);
+            IEnumerable<LeaveApproval> approvals = await _unitOfWork.LeaveApprovals.GetAllByRequestIdAsync(leaveRequestId);
             IEnumerable<LeaveApprovalDto>? requestApprovals = _mapper.Map<IEnumerable<LeaveApprovalDto>>(approvals);
 
             return new Response<IEnumerable<LeaveApprovalDto>>(requestApprovals, null, false);
@@ -89,23 +90,25 @@ public class LeaveApprovalService(
     {
         try
         {
-           
-            LeaveApproval? approval = await _leaveApprovalRepo.GetByRequestAndApproverAsync(dto.LeaveRequestId, dto.ApproverId, dto.Level);
+
+            LeaveApproval? approval = await _unitOfWork.LeaveApprovals.GetByRequestAndApproverAsync(dto.LeaveRequestId, dto.ApproverId, dto.Level);
             if (approval == null || approval.ActionDate != null)
                 return new Response<bool>(false, "Approval step not found or already processed", true);
 
             approval.ActionDate = DateTime.UtcNow;
             approval.Status = LeaveStatus.Rejected;
-            await _leaveApprovalRepo.UpdateAsync(approval);
+            await _unitOfWork.LeaveApprovals.UpdateAsync(approval);
+            await _unitOfWork.SaveChangesAsync();
 
-            IEnumerable<LeaveApproval> allSteps = await _leaveApprovalRepo.GetAllByRequestIdAsync(dto.LeaveRequestId);
+            IEnumerable<LeaveApproval> allSteps = await _unitOfWork.LeaveApprovals.GetAllByRequestIdAsync(dto.LeaveRequestId);
 
             foreach (LeaveApproval step in allSteps.Where(a => a.ActionDate == null))
             {
                 step.ActionDate = DateTime.UtcNow;
                 step.Status = LeaveStatus.Rejected;
-                await _leaveApprovalRepo.UpdateAsync(step);
+                await _unitOfWork.LeaveApprovals.UpdateAsync(step);
             }
+            await _unitOfWork.SaveChangesAsync();
 
             Response<LeaveRequestDto> leaveRequestResponse = await _leaveRequestService.GetLeaveRequestByIdAsync(dto.LeaveRequestId);
             if (leaveRequestResponse.HasError)

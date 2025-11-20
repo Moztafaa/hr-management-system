@@ -1,6 +1,8 @@
 ﻿namespace HRManagementSystem.Application.Services;
 
-public class AllowanceService(IAllowanceRepository _allowanceRepository, IMapper _mapper) : IAllowanceService
+
+public class AllowanceService(IUnitOfWork _unitOfWork, IMapper _mapper) : IAllowanceService
+
 {
 
 
@@ -8,8 +10,10 @@ public class AllowanceService(IAllowanceRepository _allowanceRepository, IMapper
     {
         try
         {
-            var allowances = await _allowanceRepository.GetAllAsync();
-            var allowanceDtos = _mapper.Map<IEnumerable<AllowanceDto>>(allowances);
+
+            IEnumerable<Allowance> allowances = await _unitOfWork.Allowances.GetAllAsync();
+            IEnumerable<AllowanceDto> allowanceDtos = _mapper.Map<IEnumerable<AllowanceDto>>(allowances);
+
 
             return new Response<IEnumerable<AllowanceDto>>(allowanceDtos, string.Empty, false);
         }
@@ -23,11 +27,11 @@ public class AllowanceService(IAllowanceRepository _allowanceRepository, IMapper
     {
         try
         {
-            var allowance = await _allowanceRepository.GetByIdAsync(id);
+            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(id);
             if (allowance == null)
                 return new Response<AllowanceDto>(null!, "Allowance not found.", true);
 
-            var allowanceDto = _mapper.Map<AllowanceDto>(allowance);
+            AllowanceDto allowanceDto = _mapper.Map<AllowanceDto>(allowance);
             return new Response<AllowanceDto>(allowanceDto, string.Empty, false);
         }
         catch (Exception ex)
@@ -40,16 +44,17 @@ public class AllowanceService(IAllowanceRepository _allowanceRepository, IMapper
     {
         try
         {
-            var existing = await _allowanceRepository.GetByNameAsync(request.Name);
+            Allowance? existing = await _unitOfWork.Allowances.GetByNameAsync(request.Name);
             if (existing != null)
                 return new Response<AllowanceDto>(default!, "Allowance with the same name already exists.", true);
 
-            var allowance = _mapper.Map<Allowance>(request);
+            Allowance allowance = _mapper.Map<Allowance>(request);
             allowance.CreatedAt = DateTime.UtcNow;
 
-            await _allowanceRepository.AddAsync(allowance);
+            await _unitOfWork.Allowances.AddAsync(allowance);
+            await _unitOfWork.SaveChangesAsync();
 
-            var createdDto = _mapper.Map<AllowanceDto>(allowance);
+            AllowanceDto createdDto = _mapper.Map<AllowanceDto>(allowance);
             return new Response<AllowanceDto>(createdDto, string.Empty, false);
         }
         catch (Exception ex)
@@ -62,13 +67,13 @@ public class AllowanceService(IAllowanceRepository _allowanceRepository, IMapper
     {
         try
         {
-            var allowance = await _allowanceRepository.GetByIdAsync(id);
+            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(id);
             if (allowance == null)
                 return new Response<AllowanceDto>(default!, "Allowance not found.", true);
 
             if (!string.Equals(allowance.Name, request.Name, StringComparison.OrdinalIgnoreCase))
             {
-                var existing = await _allowanceRepository.GetByNameAsync(request.Name);
+                Allowance? existing = await _unitOfWork.Allowances.GetByNameAsync(request.Name);
                 if (existing != null && existing.Id != id)
                     return new Response<AllowanceDto>(default!, "Another allowance with this name already exists.", true);
             }
@@ -77,9 +82,10 @@ public class AllowanceService(IAllowanceRepository _allowanceRepository, IMapper
             allowance.Amount = request.Amount;
             allowance.UpdatedAt = DateTime.UtcNow;
 
-            await _allowanceRepository.UpdateAsync(allowance);
+            await _unitOfWork.Allowances.UpdateAsync(allowance);
+            await _unitOfWork.SaveChangesAsync();
 
-            var updatedDto = _mapper.Map<AllowanceDto>(allowance);
+            AllowanceDto updatedDto = _mapper.Map<AllowanceDto>(allowance);
             return new Response<AllowanceDto>(updatedDto, string.Empty, false);
         }
         catch (Exception ex)
@@ -92,11 +98,12 @@ public class AllowanceService(IAllowanceRepository _allowanceRepository, IMapper
     {
         try
         {
-            var allowance = await _allowanceRepository.GetByIdAsync(id);
+            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(id);
             if (allowance == null)
                 return new Response<bool>(false, "Allowance not found.", true);
 
-            await _allowanceRepository.DeleteAsync(id);
+            await _unitOfWork.Allowances.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

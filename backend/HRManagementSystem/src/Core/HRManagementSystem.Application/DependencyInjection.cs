@@ -1,7 +1,3 @@
-
-using HRManagementSystem.Application.Interfaces;
-using HRManagementSystem.Application.Mappings;
-
 namespace HRManagementSystem.Application;
 
 public static class DependencyInjection
@@ -32,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IJobPostingService, JobPostingService>();
         services.AddScoped<ICandidateService, CandidateService>();
         services.AddScoped<IJobApplicationService, JobApplicationService>();
+        services.AddScoped<IReportingService, ReportingService>();
 
         // services.AddScoped<ILeaveService, LeaveService>();
 

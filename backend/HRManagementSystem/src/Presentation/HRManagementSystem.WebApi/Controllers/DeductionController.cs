@@ -2,7 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+// [Authorize]
 //[Authorize(Roles = "Admin,HR")]
 public class DeductionController(IDeductionService _deductionService) : ControllerBase
 {

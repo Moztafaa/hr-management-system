@@ -1,74 +1,63 @@
-﻿using HRManagementSystem.Application.DTOs.Payroll.Payslip;
-using HRManagementSystem.Application.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading;
+using HRManagementSystem.Application.DTOs.Payroll.Payslip;
+
 
 namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+// [Authorize]
 //[Authorize(Roles = "Admin,HR")]
 
-public class PayslipController(IPayslipService _payslipService) : ControllerBase
+public class PayslipController(IPayslipService _payslipService) : BaseApiController
 {
 
     [HttpPost("{employeeId}/generate")]
-    public async Task<IActionResult> GeneratePayslip(int employeeId, int month, int year)
+    public async Task<IActionResult> GeneratePayslip(int employeeId, int month, int year, CancellationToken cancellationToken)
     {
-        var response = await _payslipService.GeneratePayslipAsync(employeeId, month, year);
-        if (response.HasError)
-            return BadRequest(new { response.HasError, response.ErrorMessage });
-
-        return Ok(response);
+        Response<PayslipDto> response = await _payslipService.GeneratePayslipAsync(employeeId, month, year,cancellationToken);
+        return HandleResponse(response);
     }
 
     [HttpPost("generate/month")]
-    public async Task<IActionResult> GeneratePayslipsForMonth(int month, int year)
+    public async Task<IActionResult> GeneratePayslipsForMonth(int month, int year, CancellationToken cancellationToken)
     {
-        var response = await _payslipService.GeneratePayslipsForMonthAsync(month, year);
-        if (response.HasError)
-            return BadRequest(new { response.HasError, response.ErrorMessage });
-
-        return Ok(response);
+        Response<IEnumerable<PayslipDto>> response = await _payslipService.GeneratePayslipsForMonthAsync(month, year,cancellationToken);
+        return HandleResponse(response);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetPayslipById(int id)
-    {
-        var response = await _payslipService.GetByIdAsync(id);
-        if (response.HasError)
-            return NotFound(new { response.HasError, response.ErrorMessage });
-
-        return Ok(response);
-    }
+    //[HttpGet("{id}")]
+    //public async Task<IActionResult> GetPayslipById(int id, CancellationToken cancellationToken)
+    //{
+    //    Response<PayslipDto> response = await _payslipService.GetByIdAsync(id,cancellationToken);
+    //    return HandleResponse(response);
+    //}
 
     [HttpGet("employee/{employeeId}")]
-    public async Task<IActionResult> GetPayslipsByEmployee(int employeeId)
+    public async Task<IActionResult> GetPayslipsByEmployee(int employeeId, CancellationToken cancellationToken)
     {
-        var response = await _payslipService.GetByEmployeeAsync(employeeId);
-        if (response.HasError)
-            return BadRequest(new { response.HasError, response.ErrorMessage });
+        Response<IEnumerable<PayslipDto>> response = await _payslipService.GetByEmployeeAsync(employeeId, cancellationToken);
+        return HandleResponse(response);
+    }
 
-        return Ok(response);
+    [HttpGet("employee/{employeeId}/month")]
+    public async Task<IActionResult> GetEmployeePayslipForMonth(int employeeId, [FromQuery] int month, [FromQuery] int year, CancellationToken cancellationToken)
+    {
+        Response<PayslipDto> response = await _payslipService.GetEmployeePayslipForMonthAsync(employeeId, month, year, cancellationToken);
+        return HandleResponse(response);
     }
 
     [HttpGet("month")]
-    public async Task<IActionResult> GetPayslipsByMonth(int month, int year)
+    public async Task<IActionResult> GetPayslipsByMonth(int month, int year, CancellationToken cancellationToken)
     {
-        var response = await _payslipService.GetByMonthAsync(month, year);
-        if (response.HasError)
-            return BadRequest(new { response.HasError, response.ErrorMessage });
-
-        return Ok(response);
+        Response<IEnumerable<PayslipDto>> response = await _payslipService.GetByMonthAsync(month, year,cancellationToken);
+        return HandleResponse(response);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletePayslip(int id)
+    public async Task<IActionResult> DeletePayslip(int id, CancellationToken cancellationToken)
     {
-        var response = await _payslipService.DeleteAsync(id);
-        if (response.HasError)
-            return BadRequest(new { response.HasError, response.ErrorMessage });
-
-        return NoContent();
+        Response<bool> response = await _payslipService.DeleteAsync(id, cancellationToken);
+        return HandleResponse(response);
     }
 }

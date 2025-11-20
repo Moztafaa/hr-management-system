@@ -1,6 +1,7 @@
 ﻿namespace HRManagementSystem.Application.Services;
 
-public class EmployeeDeductionService(IRepository<EmployeeDeduction> _employeeDeductionRepository, IMapper _mapper) : IEmployeeDeductionService
+public class EmployeeDeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmployeeDeductionService
+
 {
 
 
@@ -8,13 +9,13 @@ public class EmployeeDeductionService(IRepository<EmployeeDeduction> _employeeDe
     {
         try
         {
-            var employeeDeductions = await _employeeDeductionRepository.GetAllAsync();
-            var dtoList = _mapper.Map<IEnumerable<EmployeeDeductionDto>>(employeeDeductions);
+            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions.GetAllAsync();
+            IEnumerable<EmployeeDeductionDto> dtoList = _mapper.Map<IEnumerable<EmployeeDeductionDto>>(employeeDeductions);
             return new Response<IEnumerable<EmployeeDeductionDto>>(dtoList, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<IEnumerable<EmployeeDeductionDto>>(null, ex.Message, true);
+            return new Response<IEnumerable<EmployeeDeductionDto>>(null!, ex.Message, true);
         }
     }
 
@@ -22,16 +23,16 @@ public class EmployeeDeductionService(IRepository<EmployeeDeduction> _employeeDe
     {
         try
         {
-            var employeeDeduction = await _employeeDeductionRepository.GetByIdAsync(id);
+            EmployeeDeduction? employeeDeduction = await _unitOfWork.EmployeeDeductions.GetByIdAsync(id);
             if (employeeDeduction == null)
-                return new Response<EmployeeDeductionDto>(null, "Employee deduction not found", true);
+                return new Response<EmployeeDeductionDto>(null!, "Employee deduction not found", true);
 
-            var dto = _mapper.Map<EmployeeDeductionDto>(employeeDeduction);
+            EmployeeDeductionDto dto = _mapper.Map<EmployeeDeductionDto>(employeeDeduction);
             return new Response<EmployeeDeductionDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDeductionDto>(null, ex.Message, true);
+            return new Response<EmployeeDeductionDto>(null!, ex.Message, true);
         }
     }
 
@@ -39,15 +40,16 @@ public class EmployeeDeductionService(IRepository<EmployeeDeduction> _employeeDe
     {
         try
         {
-            var entity = _mapper.Map<EmployeeDeduction>(request);
-            await _employeeDeductionRepository.AddAsync(entity);
+            EmployeeDeduction entity = _mapper.Map<EmployeeDeduction>(request);
+            await _unitOfWork.EmployeeDeductions.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
 
-            var dto = _mapper.Map<EmployeeDeductionDto>(entity);
+            EmployeeDeductionDto dto = _mapper.Map<EmployeeDeductionDto>(entity);
             return new Response<EmployeeDeductionDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDeductionDto>(null, ex.Message, true);
+            return new Response<EmployeeDeductionDto>(null!, ex.Message, true);
         }
     }
 
@@ -55,19 +57,20 @@ public class EmployeeDeductionService(IRepository<EmployeeDeduction> _employeeDe
     {
         try
         {
-            var existing = await _employeeDeductionRepository.GetByIdAsync(id);
+            EmployeeDeduction? existing = await _unitOfWork.EmployeeDeductions.GetByIdAsync(id);
             if (existing == null)
-                return new Response<EmployeeDeductionDto>(null, "Employee deduction not found", true);
+                return new Response<EmployeeDeductionDto>(null!, "Employee deduction not found", true);
 
             _mapper.Map(request, existing);
-            await _employeeDeductionRepository.UpdateAsync(existing);
+            await _unitOfWork.EmployeeDeductions.UpdateAsync(existing);
+            await _unitOfWork.SaveChangesAsync();
 
-            var dto = _mapper.Map<EmployeeDeductionDto>(existing);
+            EmployeeDeductionDto dto = _mapper.Map<EmployeeDeductionDto>(existing);
             return new Response<EmployeeDeductionDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDeductionDto>(null, ex.Message, true);
+            return new Response<EmployeeDeductionDto>(null!, ex.Message, true);
         }
     }
 
@@ -75,11 +78,12 @@ public class EmployeeDeductionService(IRepository<EmployeeDeduction> _employeeDe
     {
         try
         {
-            var existing = await _employeeDeductionRepository.GetByIdAsync(id);
+            EmployeeDeduction? existing = await _unitOfWork.EmployeeDeductions.GetByIdAsync(id);
             if (existing == null)
                 return new Response<bool>(false, "Employee deduction not found", true);
 
-            await _employeeDeductionRepository.DeleteAsync(existing.Id);
+            await _unitOfWork.EmployeeDeductions.DeleteAsync(existing.Id);
+            await _unitOfWork.SaveChangesAsync();
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

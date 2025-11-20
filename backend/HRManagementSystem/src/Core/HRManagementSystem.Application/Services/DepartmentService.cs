@@ -4,20 +4,21 @@ using HRManagementSystem.Application.DTOs.Employee;
 
 namespace HRManagementSystem.Application.Services;
 
-public class DepartmentService(IDepartmentRepository _departmentRepository, IMapper _mapper) : IDepartmentService
+public class DepartmentService(IUnitOfWork _unitOfWork, IMapper _mapper) : IDepartmentService
 {
     public async Task<Response<DepartmentDto>> CreateDepartmentAsync(CreateDepartmentDto createDepartmentDto, CancellationToken cancellationToken = default)
     {
         try
         {
-            Department existingDept = await _departmentRepository.GetByNameAsync(createDepartmentDto.Name, cancellationToken);
+            Department existingDept = await _unitOfWork.Departments.GetByNameAsync(createDepartmentDto.Name, cancellationToken);
             if (existingDept != null)
             {
                 return new Response<DepartmentDto>(default!, "Department with the same name already exists.", true);
             }
             Department? department = _mapper.Map<Department>(createDepartmentDto);
             department.CreatedAt = DateTime.UtcNow;
-            await _departmentRepository.AddAsync(department, cancellationToken);
+            await _unitOfWork.Departments.AddAsync(department, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             DepartmentDto? departmentDto = _mapper.Map<DepartmentDto>(department);
 
             return new Response<DepartmentDto>(departmentDto, string.Empty, false);
@@ -32,7 +33,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
     {
         try
         {
-            Department? department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
+            Department? department = await _unitOfWork.Departments.GetByIdAsync(id, cancellationToken);
             if (department == null)
             {
                 return new Response<bool>(false, "Department not found.", true);
@@ -44,7 +45,8 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
                 return new Response<bool>(false, "Cannot delete department with existing employees. Please reassign or remove employees first.", true);
             }
 
-            await _departmentRepository.DeleteAsync(department.Id, cancellationToken);
+            await _unitOfWork.Departments.DeleteAsync(department.Id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -58,7 +60,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
     {
         try
         {
-            IEnumerable<Department> departments = await _departmentRepository.GetAllAsync(cancellationToken);
+            IEnumerable<Department> departments = await _unitOfWork.Departments.GetAllAsync(cancellationToken);
             IEnumerable<DepartmentDto> departmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments);
             return new Response<IEnumerable<DepartmentDto>>(departmentDtos, string.Empty, false);
         }
@@ -72,7 +74,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
     {
         try
         {
-            Department? department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
+            Department? department = await _unitOfWork.Departments.GetByIdAsync(id, cancellationToken);
             if (department == null)
             {
                 return new Response<DepartmentDto>(null!, "Department not found.", true);
@@ -91,7 +93,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
     {
         try
         {
-            IEnumerable<Department> departments = await _departmentRepository.GetDepartmentsWithEmployeesAsync(id, cancellationToken);
+            IEnumerable<Department> departments = await _unitOfWork.Departments.GetDepartmentsWithEmployeesAsync(id, cancellationToken);
             Department? department = departments.FirstOrDefault();
             if (department == null)
             {
@@ -111,7 +113,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
     {
         try
         {
-            Department? department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
+            Department? department = await _unitOfWork.Departments.GetByIdAsync(id, cancellationToken);
             if (department == null)
             {
                 return new Response<bool>(false, "Department not found.", true);
@@ -120,7 +122,7 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
             // Check if name is being changed and if it conflicts with another department
             if (department.Name != updateDepartmentDto.Name)
             {
-                Department? existingDept = await _departmentRepository.GetByNameAsync(updateDepartmentDto.Name, cancellationToken);
+                Department? existingDept = await _unitOfWork.Departments.GetByNameAsync(updateDepartmentDto.Name, cancellationToken);
                 if (existingDept != null && existingDept.Id != id)
                 {
                     return new Response<bool>(false, "Another department with this name already exists.", true);
@@ -132,7 +134,8 @@ public class DepartmentService(IDepartmentRepository _departmentRepository, IMap
             department.ManagerId = updateDepartmentDto.ManagerId;
             department.UpdatedAt = DateTime.UtcNow;
 
-            await _departmentRepository.UpdateAsync(department, cancellationToken);
+            await _unitOfWork.Departments.UpdateAsync(department, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

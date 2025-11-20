@@ -1,6 +1,6 @@
 namespace HRManagementSystem.Application.Services;
 
-public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _mapper) : IEmployeeService
+public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmployeeService
 {
     public async Task<Response<EmployeeDto>> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto, CancellationToken cancellationToken = default)
     {
@@ -8,7 +8,8 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
         {
             Employee? employee = _mapper.Map<Employee>(createEmployeeDto);
 
-            await employeeRepository.AddAsync(employee, cancellationToken);
+            await _unitOfWork.Repository<Employee>().AddAsync(employee, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             EmployeeDto? dto = _mapper.Map<EmployeeDto>(employee);
 
@@ -16,7 +17,7 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDto>(default, ex.Message, true);
+            return new Response<EmployeeDto>(default!, ex.Message, true);
         }
     }
 
@@ -24,7 +25,7 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
     {
         try
         {
-            IEnumerable<Employee> employees = await employeeRepository.GetAllAsync(cancellationToken);
+            IEnumerable<Employee> employees = await _unitOfWork.Repository<Employee>().GetAllAsync(cancellationToken);
 
             IEnumerable<EmployeeDto> dtoList = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
 
@@ -32,7 +33,7 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
         }
         catch (Exception ex)
         {
-            return new Response<IEnumerable<EmployeeDto>>(null, ex.Message, true);
+            return new Response<IEnumerable<EmployeeDto>>(null!, ex.Message, true);
         }
     }
 
@@ -41,9 +42,9 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
     {
         try
         {
-            Employee? employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
+            Employee? employee = await _unitOfWork.Repository<Employee>().GetByIdAsync(id, cancellationToken);
             if (employee is null)
-                return new Response<EmployeeDto>(null, "Employee not found", true);
+                return new Response<EmployeeDto>(null!, "Employee not found", true);
 
             EmployeeDto? dto = _mapper.Map<EmployeeDto>(employee);
 
@@ -51,7 +52,7 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDto>(null, ex.Message, true);
+            return new Response<EmployeeDto>(null!, ex.Message, true);
         }
     }
     public async Task<Response<bool>> UpdateEmployeeAsync(int id, UpdateEmployeeDto updateEmployeeDto, CancellationToken cancellationToken = default)
@@ -59,13 +60,14 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
     {
         try
         {
-            Employee? employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
+            Employee? employee = await _unitOfWork.Repository<Employee>().GetByIdAsync(id, cancellationToken);
             if (employee is null)
                 return new Response<bool>(false, "Employee not found", true);
 
             _mapper.Map(updateEmployeeDto, employee);
 
-            await employeeRepository.UpdateAsync(employee, cancellationToken);
+            await _unitOfWork.Repository<Employee>().UpdateAsync(employee, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -78,11 +80,12 @@ public class EmployeeService(IRepository<Employee> employeeRepository, IMapper _
     {
         try
         {
-            Employee? employee = await employeeRepository.GetByIdAsync(id, cancellationToken);
+            Employee? employee = await _unitOfWork.Repository<Employee>().GetByIdAsync(id, cancellationToken);
             if (employee is null)
                 return new Response<bool>(false, "Employee not found", true);
 
-            await employeeRepository.DeleteAsync(id, cancellationToken);
+            await _unitOfWork.Repository<Employee>().DeleteAsync(id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

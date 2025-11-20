@@ -12,6 +12,8 @@ public class Payslip : BaseEntity
     public DateTime GeneratedAt { get; set; }
 
     public Employee Employee { get; set; } = null!;
-    public ICollection<Allowance> Allowances { get; set; } = new List<Allowance>();
-    public ICollection<Deduction> Deductions { get; set; } = new List<Deduction>();
+
+    //public ICollection<Allowance> Allowances { get; set; } = new List<Allowance>();
+    //public ICollection<Deduction> Deductions { get; set; } = new List<Deduction>();
+
 }

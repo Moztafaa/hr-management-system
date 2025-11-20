@@ -1,15 +1,15 @@
-﻿namespace HRManagementSystem.WebApi.Controllers;
+namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+// [Authorize]
 //[Authorize(Roles = "Admin,HR")]
 public class EmployeeDeductionController(IEmployeeDeductionService _employeeDeductionService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var response = await _employeeDeductionService.GetAllAsync();
+        Response<IEnumerable<EmployeeDeductionDto>> response = await _employeeDeductionService.GetAllAsync();
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -19,7 +19,7 @@ public class EmployeeDeductionController(IEmployeeDeductionService _employeeDedu
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var response = await _employeeDeductionService.GetByIdAsync(id);
+        Response<EmployeeDeductionDto> response = await _employeeDeductionService.GetByIdAsync(id);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -29,7 +29,7 @@ public class EmployeeDeductionController(IEmployeeDeductionService _employeeDedu
     [HttpPost]
     public async Task<IActionResult> Create(CreateEmployeeDeductionDto request)
     {
-        var response = await _employeeDeductionService.CreateAsync(request);
+        Response<EmployeeDeductionDto> response = await _employeeDeductionService.CreateAsync(request);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -39,7 +39,7 @@ public class EmployeeDeductionController(IEmployeeDeductionService _employeeDedu
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateEmployeeDeductionDto request)
     {
-        var response = await _employeeDeductionService.UpdateAsync(id, request);
+        Response<EmployeeDeductionDto> response = await _employeeDeductionService.UpdateAsync(id, request);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -49,7 +49,7 @@ public class EmployeeDeductionController(IEmployeeDeductionService _employeeDedu
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var response = await _employeeDeductionService.DeleteAsync(id);
+        Response<bool> response = await _employeeDeductionService.DeleteAsync(id);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 

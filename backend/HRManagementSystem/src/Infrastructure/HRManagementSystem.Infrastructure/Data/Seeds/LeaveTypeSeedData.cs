@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace HRManagementSystem.Infrastructure.Data.Seeds;
 
-namespace HRManagementSystem.Infrastructure.Data;
-public static class SeedData
+public static class LeaveTypeSeedData
 {
     public static void SeedLeaveTypes(this ModelBuilder modelBuilder)
     {
@@ -19,7 +14,7 @@ public static class SeedData
                 CanCarryForward = true,
                 CarryForwardLimit = 5,
                 IsPaid = true,
-                CreatedAt = DateTime.Now,
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 GenderRestriction = null
             },
             new LeaveType
@@ -30,7 +25,7 @@ public static class SeedData
                 MaxDays = 30,
                 CanCarryForward = false,
                 IsPaid = true,
-                CreatedAt = DateTime.Now,
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 GenderRestriction = null
             },
             new LeaveType
@@ -41,7 +36,7 @@ public static class SeedData
                 MaxDays = 90,
                 CanCarryForward = false,
                 IsPaid = true,
-                CreatedAt = DateTime.Now,
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 GenderRestriction = "Female"
             },
             new LeaveType
@@ -52,7 +47,7 @@ public static class SeedData
                 MaxDays = 3,
                 CanCarryForward = false,
                 IsPaid = true,
-                CreatedAt = DateTime.Now,
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 GenderRestriction = "Male"
             },
             new LeaveType
@@ -63,8 +58,8 @@ public static class SeedData
                 MaxDays = 30,
                 CanCarryForward = false,
                 IsPaid = false,
-                CreatedAt = DateTime.Now,
-                GenderRestriction= null
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                GenderRestriction = null
             },
             new LeaveType
             {
@@ -74,8 +69,8 @@ public static class SeedData
                 MaxDays = 5,
                 CanCarryForward = false,
                 IsPaid = true,
-                CreatedAt = DateTime.Now,
-                GenderRestriction= null
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                GenderRestriction = null
             },
             new LeaveType
             {
@@ -85,8 +80,8 @@ public static class SeedData
                 MaxDays = 10,
                 CanCarryForward = false,
                 IsPaid = true,
-                CreatedAt = DateTime.Now,
-                GenderRestriction= null
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                GenderRestriction = null
             }
         );
     }

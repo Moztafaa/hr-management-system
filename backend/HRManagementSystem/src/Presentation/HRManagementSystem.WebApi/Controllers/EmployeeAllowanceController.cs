@@ -1,15 +1,18 @@
-﻿namespace HRManagementSystem.WebApi.Controllers;
+
+﻿
+namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
-//[Authorize(Roles = "Admin,HR")] 
+// [Authorize]
+//[Authorize(Roles = "Admin,HR")]
+
 public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllowanceService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var response = await _employeeAllowanceService.GetAllAsync();
+        Response<IEnumerable<EmployeeAllowanceDto>> response = await _employeeAllowanceService.GetAllAsync();
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -19,7 +22,7 @@ public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllo
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var response = await _employeeAllowanceService.GetByIdAsync(id);
+        Response<EmployeeAllowanceDto> response = await _employeeAllowanceService.GetByIdAsync(id);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -29,7 +32,7 @@ public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllo
     [HttpPost]
     public async Task<IActionResult> Create(CreateEmployeeAllowanceDto request)
     {
-        var response = await _employeeAllowanceService.CreateAsync(request);
+        Response<EmployeeAllowanceDto> response = await _employeeAllowanceService.CreateAsync(request);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -39,7 +42,7 @@ public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllo
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateEmployeeAllowanceDto request)
     {
-        var response = await _employeeAllowanceService.UpdateAsync(id, request);
+        Response<EmployeeAllowanceDto> response = await _employeeAllowanceService.UpdateAsync(id, request);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 
@@ -49,7 +52,7 @@ public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllo
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var response = await _employeeAllowanceService.DeleteAsync(id);
+        Response<bool> response = await _employeeAllowanceService.DeleteAsync(id);
         if (response.HasError)
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
 

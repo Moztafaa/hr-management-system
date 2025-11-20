@@ -7,18 +7,18 @@ using HRManagementSystem.Domain.Interfaces;
 
 namespace HRManagementSystem.Application.Services;
 
-public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapper _mapper) : IJobPostingService
+public class JobPostingService(IUnitOfWork _unitOfWork, IMapper _mapper) : IJobPostingService
 {
     public async Task<Response<JobPostingDto>> CreateJobPostingAsync(CreateJobPostingDto createJobPostingDto, CancellationToken cancellationToken = default)
     {
         try
         {
             JobPosting? jobPosting = _mapper.Map<JobPosting>(createJobPostingDto);
-            if (jobPosting.IsActive == null)
-                jobPosting.IsActive = true;
+            jobPosting.IsActive ??= true;
             jobPosting.CreatedAt = DateTime.UtcNow;
 
-            await jobPostingRepository.AddAsync(jobPosting, cancellationToken);
+            await _unitOfWork.JobPostings.AddAsync(jobPosting, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             JobPostingDto? jobPostingDto = _mapper.Map<JobPostingDto>(jobPosting);
 
@@ -34,13 +34,14 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
     {
         try
         {
-            JobPosting? jobPosting = await jobPostingRepository.GetByIdAsync(id, cancellationToken);
+            JobPosting? jobPosting = await _unitOfWork.JobPostings.GetByIdAsync(id, cancellationToken);
             if (jobPosting == null)
             {
                 return new Response<bool>(false, "Job posting not found.", true);
             }
 
-            await jobPostingRepository.DeleteAsync(jobPosting.Id, cancellationToken);
+            await _unitOfWork.JobPostings.DeleteAsync(jobPosting.Id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -53,7 +54,7 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
     {
         try
         {
-            IEnumerable<JobPosting> jobPostings = await jobPostingRepository.GetActiveJobPostingsAsync();
+            IEnumerable<JobPosting> jobPostings = await _unitOfWork.JobPostings.GetActiveJobPostingsAsync();
             IEnumerable<JobPostingDto> jobPostingDtos = _mapper.Map<IEnumerable<JobPostingDto>>(jobPostings);
 
             return new Response<IEnumerable<JobPostingDto>>(jobPostingDtos, string.Empty, false);
@@ -68,7 +69,7 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
     {
         try
         {
-            IEnumerable<JobPosting> jobPostings = await jobPostingRepository.GetAllAsync(cancellationToken);
+            IEnumerable<JobPosting> jobPostings = await _unitOfWork.JobPostings.GetAllAsync(cancellationToken);
             IEnumerable<JobPostingDto> jobPostingDtos = _mapper.Map<IEnumerable<JobPostingDto>>(jobPostings);
 
             return new Response<IEnumerable<JobPostingDto>>(jobPostingDtos, string.Empty, false);
@@ -83,7 +84,7 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
     {
         try
         {
-            JobPosting? jobPosting = await jobPostingRepository.GetByIdAsync(id, cancellationToken);
+            JobPosting? jobPosting = await _unitOfWork.JobPostings.GetByIdAsync(id, cancellationToken);
             if (jobPosting == null)
             {
                 return new Response<JobPostingDto>(null!, "Job posting not found.", true);
@@ -103,7 +104,7 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
     {
         try
         {
-            JobPosting? jobPosting = await jobPostingRepository.GetByIdAsync(id, cancellationToken);
+            JobPosting? jobPosting = await _unitOfWork.JobPostings.GetByIdAsync(id, cancellationToken);
             if (jobPosting == null)
             {
                 return new Response<bool>(false, "Job posting not found.", true);
@@ -112,7 +113,8 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
             _mapper.Map(updateJobPostingDto, jobPosting);
             jobPosting.UpdatedAt = DateTime.UtcNow;
 
-            await jobPostingRepository.UpdateAsync(jobPosting, cancellationToken);
+            await _unitOfWork.JobPostings.UpdateAsync(jobPosting, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)
@@ -120,14 +122,14 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
             return new Response<bool>(false, $"Error occurred while updating the job posting: {ex.Message}", true);
         }
     }
-    
-    
+
+
     // Get JobPosting by department
     public async Task<Response<IEnumerable<JobPostingDto>>> GetJobPostingsByDepartmentAsync(int departmentId, CancellationToken cancellationToken = default)
     {
         try
         {
-            IEnumerable<JobPosting> jobPostings = await jobPostingRepository.GetJobPostingsByDepartmentAsync(departmentId);
+            IEnumerable<JobPosting> jobPostings = await _unitOfWork.JobPostings.GetJobPostingsByDepartmentAsync(departmentId);
             IEnumerable<JobPostingDto> jobPostingDtos = _mapper.Map<IEnumerable<JobPostingDto>>(jobPostings);
 
             return new Response<IEnumerable<JobPostingDto>>(jobPostingDtos, string.Empty, false);
@@ -137,14 +139,14 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IMapp
             return new Response<IEnumerable<JobPostingDto>>(null!, $"Error occurred while retrieving job postings by department: {ex.Message}", true);
         }
     }
-    
+
     // Get JobPosting by designation
     public async Task<Response<IEnumerable<JobPostingDto>>> GetJobPostingsByDesignationAsync(int designationId,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            IEnumerable<JobPosting> jobPostings = await jobPostingRepository.GetJobPostingsByDesignationAsync(designationId);
+            IEnumerable<JobPosting> jobPostings = await _unitOfWork.JobPostings.GetJobPostingsByDesignationAsync(designationId);
             IEnumerable<JobPostingDto> jobPostingDtos = _mapper.Map<IEnumerable<JobPostingDto>>(jobPostings);
 
             return new Response<IEnumerable<JobPostingDto>>(jobPostingDtos, string.Empty, false);

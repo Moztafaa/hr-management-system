@@ -6,6 +6,8 @@ public class EmployeeDeductionRepository(ApplicationDbContext _context) : Reposi
     {
         return await _dbSet
             .Where(ed => ed.EmployeeId == employeeId)
+
+            .Include(ed => ed.Deduction)
             .ToListAsync(cancellationToken);
     }
 

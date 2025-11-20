@@ -2,7 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+// [Authorize]
 //[Authorize(Roles = "Admin,HR")]
 public class AllowanceController(IAllowanceService _allowanceService) : ControllerBase
 {
