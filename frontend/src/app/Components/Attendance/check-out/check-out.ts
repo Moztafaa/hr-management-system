@@ -30,7 +30,7 @@ capturedImage: string | null = null; // لتخزين الصورة قبل الر�
       .catch(err => console.error("Camera error:", err));
   }
 
-  captureImage() {
+  captureImageAndUpload() {
     const video = this.video.nativeElement;
     const canvas = this.canvas.nativeElement;
 
@@ -42,9 +42,7 @@ capturedImage: string | null = null; // لتخزين الصورة قبل الر�
 
     this.capturedImage = canvas.toDataURL("image/jpeg"); // نعرض الصورة كـ preview
     console.log("Captured Image:", this.capturedImage);
-  }
-
-  uploadImage() {
+  
     if (!this.employeeId) {
       alert("Please enter Employee ID");
       return;
@@ -54,11 +52,12 @@ capturedImage: string | null = null; // لتخزين الصورة قبل الر�
       alert("Please capture an image first!");
       return;
     }
+canvas.toBlob(blob => {
+      if (!blob) return alert('Capture failed');
+      const file = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
 
-    const base64 = this.capturedImage.split(',')[1];
-
-    this.attendanceService.checkOut(this.employeeId, base64)
-      .subscribe({
+      this.attendanceService.checkOut(this.employeeId, file)
+        .subscribe({
         next: res => {
           if (res.id==-1) {
             console.log(res.errorMassage);
@@ -74,5 +73,6 @@ capturedImage: string | null = null; // لتخزين الصورة قبل الر�
           alert("❌ Failed to checkOut");
         }
       });
+    }, 'image/jpeg', 0.9);
   }
 }

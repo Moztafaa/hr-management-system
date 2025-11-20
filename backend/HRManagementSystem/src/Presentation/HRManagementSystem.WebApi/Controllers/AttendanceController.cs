@@ -6,20 +6,24 @@ namespace HRManagementSystem.WebApi.Controllers;
 public class AttendanceController(IAttendanceService _attendanceService) : ControllerBase
 {
 
-    [HttpPost("check-in")]
-    public async Task<IActionResult> CheckIn(CheckInRequestDto request)
+    [HttpPost("{employeeId}/check-in")]
+    public async Task<IActionResult> CheckIn(int employeeId, CheckInRequestDto request)
     {
-        Response<int> result = await _attendanceService.CheckInAsync(request.EmployeeId, request.Base64Image);
+        using var ms = new MemoryStream();
+        await request.Image.CopyToAsync(ms);
+        Response<int> result = await _attendanceService.CheckInAsync(employeeId, ms.ToArray());
         if (result.HasError)
             return Ok(new { errorMassage = result.ErrorMessage, id = result.Data });
 
         return Ok(new { errorMassage = result.ErrorMessage, id = result.Data });
     }
 
-    [HttpPost("check-out")]
-    public async Task<IActionResult> CheckOut(CheckOutRequestDto request)
+    [HttpPost("{employeeId}/check-out")]
+    public async Task<IActionResult> CheckOut(int employeeId, CheckOutRequestDto request)
     {
-        Response<int> result = await _attendanceService.CheckOutAsync(request.EmployeeId, request.Base64Image);
+        using var ms = new MemoryStream();
+        await request.Image.CopyToAsync(ms);
+        Response<int> result = await _attendanceService.CheckOutAsync(employeeId, ms.ToArray());
         if (result.HasError)
             return Ok(new { errorMassage = result.ErrorMessage, id = result.Data });
 

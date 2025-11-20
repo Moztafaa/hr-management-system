@@ -1,5 +1,6 @@
-﻿namespace HRManagementSystem.Application.DTOs.Employee;
+﻿using Microsoft.AspNetCore.Http;
+namespace HRManagementSystem.Application.DTOs.Employee;
 public class UpdateImageRequestDto
 {
-    public string Base64Image { get; set; }
+    public IFormFile Image { get; set; }
 }

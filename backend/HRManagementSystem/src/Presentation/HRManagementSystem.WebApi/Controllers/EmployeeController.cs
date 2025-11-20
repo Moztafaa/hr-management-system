@@ -18,11 +18,12 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
         return Ok(employee);
     }
     [HttpPost("{employeeId}/update-image")]
-    public async Task<IActionResult> UpdateImage(int employeeId, [FromBody] UpdateImageRequestDto request)
+    public async Task<IActionResult> UpdateImage(int employeeId, [FromForm] UpdateImageRequestDto request)
+    //[FromForm] UpdateImageRequestDto request
     {
-        var result = await employeeService.UpdateEmployeeImageAsync(employeeId, request.Base64Image);
-        if (result.HasError)
-            return Ok(new { errorMassage = result.ErrorMessage, employee = result.Data });
+        using var ms = new MemoryStream();
+        await request.Image.CopyToAsync(ms);
+        var result = await employeeService.UpdateEmployeeImageAsync(employeeId, ms.ToArray());
 
         return Ok(new { errorMassage = result.ErrorMessage, employee = result.Data });
     }

@@ -10,7 +10,7 @@
   <br />
 
   <!-- زر التقاط الصورة -->
-  <button (click)="captureImage()">📸 Capture Image</button>
+  <button (click)="captureImageAndUpload()">📸 Capture Image</button>
 
   <!-- عرض الصورة الملتقطة -->
   <div *ngIf="capturedImage" style="margin-top:10px;">
@@ -20,8 +20,6 @@
 
   <br />
 
-  <!-- زر رفع الصورة -->
-  <button (click)="uploadImage()" [disabled]="!capturedImage">⬆️ Check Out</button>
-
+  
   <canvas #canvas style="display:none;"></canvas>
 </div>

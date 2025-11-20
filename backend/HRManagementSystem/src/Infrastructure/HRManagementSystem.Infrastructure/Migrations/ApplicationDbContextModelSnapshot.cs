@@ -672,8 +672,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("FaceEmbedding")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("FaceEmbedding")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

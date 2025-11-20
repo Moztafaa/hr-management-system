@@ -1,7 +1,6 @@
 ﻿namespace HRManagementSystem.Application.Interfaces;
 public interface IFaceRecognitionService
 {
-    float[] ExtractEmbedding(string base64Image);
-    bool CompareEmbeddings(float[] storedEmbedding, float[] newEmbedding, float threshold = 0.6f);
-
+    double[] ExtractEmbedding(byte[] imageBytes);
+    bool CompareEmbeddings(double[] registeredEmbedding, double[] newEmbedding, double tolerance = 0.6);
 }

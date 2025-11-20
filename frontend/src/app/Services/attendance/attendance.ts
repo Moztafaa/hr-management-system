@@ -10,15 +10,16 @@ export class Attendance {
   private apiUrl = 'https://localhost:7005/api/Attendance'; // Backend API URL
 
   constructor(private http: HttpClient) { }  
-  updateEmployeeImage(employeeId: number, base64Image: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${employeeId}/update-image`, { base64Image });
-  }
+ checkIn(employeeId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append("Image", file); // لازم يكون نفس اسم الفيلد في DTO
 
-  checkIn(employeeId: number, base64Image: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/check-in`, { employeeId, base64Image });
+    return this.http.post(`${this.apiUrl}/${employeeId}/check-in`, formData);
   }
+checkOut(employeeId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append("Image", file); // لازم يكون نفس اسم الفيلد في DTO
 
-  checkOut(employeeId: number, base64Image: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/check-out`, { employeeId, base64Image });
+    return this.http.post(`${this.apiUrl}/${employeeId}/check-out`, formData);
   }
 }

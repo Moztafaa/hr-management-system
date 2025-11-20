@@ -1,5 +1,4 @@
-using System.Threading;
-using HRManagementSystem.Domain.Interfaces;
+using HRManagementSystem.Application.Helper;
 
 namespace HRManagementSystem.Application.Services;
 
@@ -78,7 +77,7 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _f
             return new Response<bool>(false, ex.Message, true);
         }
     }
-    public async Task<Response<bool>> UpdateEmployeeImageAsync(int employeeId, string base64Image, CancellationToken cancellationToken = default)
+    public async Task<Response<bool>> UpdateEmployeeImageAsync(int employeeId, byte[] image, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -87,8 +86,8 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _f
                 return new Response<bool>(false, "Employee not found", true);
 
             // Extract embedding for Face Recognition
-            employee.FaceEmbedding = _faceService.ExtractEmbedding(base64Image);
-
+            double[] embedding= _faceService.ExtractEmbedding(image);
+            employee.FaceEmbedding = EmbeddingSerializer.DoubleArrayToBytes(embedding);
             await _unitOfWork.Repository<Employee>().UpdateAsync(employee);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);

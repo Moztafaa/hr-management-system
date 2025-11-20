@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FaceRecognitionDotNet" Version="1.3.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
@@ -24,21 +25,41 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.10" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.23.2" />
+    <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
+    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.11.0.20250507" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.11.0.20250507" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="10.15.0.120848">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common" Version="8.0.22" />
   </ItemGroup>
+
+	
+	
+	<PropertyGroup>
+		<EnableDefaultRuntimeCompilation>false</EnableDefaultRuntimeCompilation>
+		<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+		<DisableCopyLocalForPublish>true</DisableCopyLocalForPublish>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<None Include="Models\arcface.onnx" CopyToOutputDirectory="Always" />
+		<None Update="@(RuntimeHostConfigurationFile)" CopyToOutputDirectory="Never" />
+		<None Update="@(NativeCopyLocalItems)" CopyToOutputDirectory="Never" />
+		<NativeCopyLocalItems Remove="DlibDotNetNativeDnnAgeClassification.dll" />
+		<NativeCopyLocalItems Remove="DlibDotNetNativeDnnGenderClassification.dll" />
+		<NativeCopyLocalItems Remove="DlibDotNetNativeDnnFaceRecognition.dll" />
+		<NativeCopyLocalItems Remove="DlibDotNetNativeDnnShapePredictor.dll" />
 	</ItemGroup>
 
+	
+	
 
 	<PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
 </Project>

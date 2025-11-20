@@ -1,3 +1,4 @@
+using FaceRecognitionDotNet;
 using HRManagementSystem.Application.Services;
 using HRManagementSystem.WebApi.Middleware;
 
@@ -36,6 +37,13 @@ builder.Services.AddSwaggerGen(c =>
                         new string[] {}
                     }
                 });
+});
+
+var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
+Console.WriteLine($"Loading face models from: {modelPath}");
+builder.Services.AddSingleton(sp =>
+{
+    return FaceRecognition.Create(modelPath);
 });
 
 builder.Services.AddScoped<IAccountService, AccountService>();
