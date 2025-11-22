@@ -21,6 +21,8 @@ public interface IUnitOfWork : IDisposable
     IEmployeeAllowanceRepository EmployeeAllowances { get; }
     IEmployeeDeductionRepository EmployeeDeductions { get; }
     IEmployeeRepository Employees { get; }
+    ITrainingCourseRepository TrainingCourses { get; }
+    IEmployeeTrainingRepository EmployeeTrainings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);

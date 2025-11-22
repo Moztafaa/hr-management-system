@@ -23,13 +23,7 @@ public class MappingHelper:Profile
         CreateMap<Designation, DesignationDto>().ReverseMap();
         CreateMap<Designation, DesignationDetailsDto>().ReverseMap();
         CreateMap<Designation, DesignationWithEmployeesDto>().ReverseMap();
-        //CreateMap<Payslip, PayslipDto>().ForMember(dest => dest.EmployeeName,opt => opt.MapFrom(src =>(src.Employee != null
-        //                                           ? (src.Employee.FirstName + " " + src.Employee.LastName): string.Empty).Trim()))
-        //                                           .ReverseMap();
-        //CreateMap<CreatePayslipDto, Payslip>();
         CreateMap<Payslip, CreatePayslipDto>().ReverseMap();
-
-        CreateMap<Payslip, UpdatePayslipDto>().ReverseMap();
         CreateMap<Payslip, PayslipDto>()
             .ForMember(dest => dest.EmployeeName,
                 opt => opt.MapFrom(src =>
@@ -68,9 +62,5 @@ public class MappingHelper:Profile
         CreateMap<LeaveBalanceDto, EmployeeLeaveBalance>().ReverseMap();
         CreateMap<LeaveRequestDto, UpdateLeaveRequestDto>().ReverseMap();
         CreateMap<LeaveApproval, LeaveApprovalDto>().ReverseMap();
-
-
-
-
     }
 }

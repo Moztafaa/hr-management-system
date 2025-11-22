@@ -32,6 +32,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.ApplyConfiguration(new EmployeeAllowanceConfiguration());
         builder.ApplyConfiguration(new EmployeeDeductionConfiguration());
         builder.ApplyConfiguration(new PayslipConfiguration());
+        builder.ApplyConfiguration(new EmployeeTrainingConfiguration());
+        builder.ApplyConfiguration(new TrainingCourseConfiguration());
 
         // Seed initial data
         builder.SeedDepartments();
@@ -48,6 +50,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.SeedEmployeeAllowances();
         builder.SeedEmployeeDeductions();
         builder.SeedPayslips();
+
+        builder.SeedTrainingCourses();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -87,4 +91,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<Candidate> Candidates { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
+
+    public DbSet<TrainingCourse> TrainingCourses { get; set; }
+    public DbSet<EmployeeTraining> EmployeeTrainings { get; set; }
 }

@@ -17,3 +17,5 @@ global using HRManagementSystem.Application.DTOs.Payroll.EmployeeDeduction;
 global using HRManagementSystem.Application.DTOs.Leaves.LeaveRequestDtos;
 global using HRManagementSystem.Application.Interfaces.ILeaveServices;
 global using HRManagementSystem.Application.DTOs.Leaves.LeaveTypeDtos;
+global using HRManagementSystem.Application.DTOs.Payroll.Payslip;
+global using HRManagementSystem.Application.DTOs.Training;

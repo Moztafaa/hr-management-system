@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateWithAllSeedData : Migration
+    public partial class AddingTrainingModule : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -140,6 +140,23 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LeaveTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TrainingCourses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    DurationHours = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrainingCourses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -455,6 +472,35 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         principalTable: "LeaveTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeeTrainings",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    TrainingCourseId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Enrolled"),
+                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeTrainings", x => new { x.EmployeeId, x.TrainingCourseId });
+                    table.ForeignKey(
+                        name: "FK_EmployeeTrainings_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmployeeTrainings_TrainingCourses_TrainingCourseId",
+                        column: x => x.TrainingCourseId,
+                        principalTable: "TrainingCourses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -883,6 +929,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 column: "DesignationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeTrainings_TrainingCourseId",
+                table: "EmployeeTrainings",
+                column: "TrainingCourseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_AssignedRecruiterId",
                 table: "JobApplications",
                 column: "AssignedRecruiterId");
@@ -971,6 +1022,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "EmployeeLeaveBalances");
 
             migrationBuilder.DropTable(
+                name: "EmployeeTrainings");
+
+            migrationBuilder.DropTable(
                 name: "JobApplications");
 
             migrationBuilder.DropTable(
@@ -990,6 +1044,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Deductions");
+
+            migrationBuilder.DropTable(
+                name: "TrainingCourses");
 
             migrationBuilder.DropTable(
                 name: "Candidates");

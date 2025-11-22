@@ -25,6 +25,8 @@ public class UnitOfWork : IUnitOfWork
     private IEmployeeAllowanceRepository? _employeeAllowances;
     private IEmployeeDeductionRepository? _employeeDeductions;
     private IEmployeeRepository? _employees;
+    private ITrainingCourseRepository? _trainingCourses;
+    private IEmployeeTrainingRepository? _employeeTrainings;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -61,7 +63,9 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeDeductionRepository EmployeeDeductions => _employeeDeductions ??= new EmployeeDeductionRepository(_context);
 
     public IEmployeeRepository Employees => _employees ??= new EmployeeRepository(_context);
+    public ITrainingCourseRepository TrainingCourses => _trainingCourses ??= new TrainingCourseRepository(_context);
 
+    public IEmployeeTrainingRepository EmployeeTrainings => _employeeTrainings ??= new EmployeeTrainingRepository(_context);
     public IRepository<T> Repository<T>() where T : class
     {
         Type type = typeof(T);

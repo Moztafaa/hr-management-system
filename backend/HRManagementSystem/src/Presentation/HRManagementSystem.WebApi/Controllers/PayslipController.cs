@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using HRManagementSystem.Application.DTOs.Payroll.Payslip;
-
-namespace HRManagementSystem.WebApi.Controllers;
+﻿namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

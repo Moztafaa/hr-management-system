@@ -12,7 +12,9 @@ public abstract class BaseApiController : ControllerBase
         {
             // If the service says the resource is missing → NotFound
             if (response.ErrorMessage?.Contains("not found", StringComparison.OrdinalIgnoreCase) == true)
+            {
                 return NotFound(new { response.HasError, response.ErrorMessage });
+            }
 
             return BadRequest(new { response.HasError, response.ErrorMessage });
         }

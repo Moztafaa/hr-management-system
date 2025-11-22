@@ -1172,6 +1172,41 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.ToTable("EmployeeLeaveBalances", (string)null);
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeTraining", b =>
+                {
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrainingCourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EnrollmentDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Enrolled");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("EmployeeId", "TrainingCourseId");
+
+                    b.HasIndex("TrainingCourseId");
+
+                    b.ToTable("EmployeeTrainings", (string)null);
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.JobApplication", b =>
                 {
                     b.Property<int>("Id")
@@ -1829,6 +1864,103 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.TrainingCourse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int?>("DurationHours")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TrainingCourses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Improve interpersonal and workplace communication skills.",
+                            DurationHours = 8,
+                            Title = "Effective Communication"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Core leadership principles and team management skills.",
+                            DurationHours = 16,
+                            Title = "Leadership Essentials"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Basics of project planning, scope, scheduling, and risk.",
+                            DurationHours = 40,
+                            Title = "Project Management Fundamentals"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Workshop covering Agile principles and Scrum ceremonies.",
+                            DurationHours = 16,
+                            Title = "Agile & Scrum Workshop"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Prioritization and productivity techniques.",
+                            DurationHours = 4,
+                            Title = "Time Management"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Deep dive into C# features and best practices.",
+                            DurationHours = 40,
+                            Title = "Advanced C# Programming"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Secure coding, compliance, and data protection essentials.",
+                            DurationHours = 8,
+                            Title = "Data Protection & Security"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Best practices for customer interactions.",
+                            DurationHours = 8,
+                            Title = "Customer Service Excellence"
+                        });
+                });
+
             modelBuilder.Entity("HRManagementSystem.Infrastructure.Identity.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2115,6 +2247,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("LeaveType");
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeTraining", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("EmployeeTrainings")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.TrainingCourse", "TrainingCourse")
+                        .WithMany("EmployeeTrainings")
+                        .HasForeignKey("TrainingCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("TrainingCourse");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.JobApplication", b =>
                 {
                     b.HasOne("HRManagementSystem.Domain.Entities.Employee", "AssignedRecruiter")
@@ -2303,6 +2454,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     b.Navigation("EmployeeDeductions");
 
+                    b.Navigation("EmployeeTrainings");
+
                     b.Navigation("LeaveApprovals");
 
                     b.Navigation("LeaveBalances");
@@ -2327,6 +2480,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("EmployeeLeaveBalances");
 
                     b.Navigation("LeaveRequests");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.TrainingCourse", b =>
+                {
+                    b.Navigation("EmployeeTrainings");
                 });
 #pragma warning restore 612, 618
         }
