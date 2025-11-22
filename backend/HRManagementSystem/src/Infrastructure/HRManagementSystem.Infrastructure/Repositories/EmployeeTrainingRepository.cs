@@ -13,10 +13,12 @@ public class EmployeeTrainingRepository(ApplicationDbContext context) : Reposito
     public async Task<IEnumerable<EmployeeTraining>> GetEnrollmentsByEmployeeAsync(int employeeId, CancellationToken cancellationToken = default) => await _context.EmployeeTrainings
             .Where(et => et.EmployeeId == employeeId)
             .Include(et => et.TrainingCourse)
+            .Include(et => et.Employee)
             .ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<EmployeeTraining>> GetEnrollmentsByCourseAsync(int courseId, CancellationToken cancellationToken = default) => await _context.EmployeeTrainings
             .Where(et => et.TrainingCourseId == courseId)
             .Include(et => et.Employee)
+            .Include(et => et.TrainingCourse)
             .ToListAsync(cancellationToken);
 }

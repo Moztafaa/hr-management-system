@@ -18,6 +18,12 @@ public class EmployeeTrainingConfiguration : IEntityTypeConfiguration<EmployeeTr
         builder.Property(et => et.EnrollmentDate)
                 .HasDefaultValueSql("GETDATE()");
 
+        builder.Property(et => et.CompletionDate)
+       .IsRequired(false);
+
+        builder.Property(et => et.RewardGiven)
+       .HasDefaultValue(false);
+
         builder.Property(et => et.Status)
                     .HasConversion<string>()
                     .HasDefaultValue(TrainingStatus.Enrolled)

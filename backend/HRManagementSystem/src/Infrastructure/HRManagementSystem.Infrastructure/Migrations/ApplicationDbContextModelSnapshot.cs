@@ -96,6 +96,13 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Health Insurance"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Amount = 1700.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Training Completion Bonus"
                         });
                 });
 
@@ -862,8 +869,14 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -880,7 +893,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 1,
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 1
+                            EmployeeId = 1,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -888,7 +903,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 1
+                            EmployeeId = 1,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -896,7 +913,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 4,
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 1
+                            EmployeeId = 1,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -904,7 +923,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 1,
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 2
+                            EmployeeId = 2,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -912,7 +933,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 2
+                            EmployeeId = 2,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -920,7 +943,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 5,
                             Amount = 200.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 2
+                            EmployeeId = 2,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -928,7 +953,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 1,
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 3
+                            EmployeeId = 3,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -936,7 +963,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 2,
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 3
+                            EmployeeId = 3,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -944,7 +973,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 1,
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 4
+                            EmployeeId = 4,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -952,7 +983,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 4
+                            EmployeeId = 4,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -960,7 +993,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 4,
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 4
+                            EmployeeId = 4,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -968,7 +1003,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 1,
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 5
+                            EmployeeId = 5,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -976,7 +1013,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 2,
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 5
+                            EmployeeId = 5,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -984,7 +1023,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 1,
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 6
+                            EmployeeId = 6,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -992,7 +1033,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 6
+                            EmployeeId = 6,
+                            Month = 0,
+                            Year = 0
                         },
                         new
                         {
@@ -1000,7 +1043,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             AllowanceId = 4,
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 6
+                            EmployeeId = 6,
+                            Month = 0,
+                            Year = 0
                         });
                 });
 
@@ -1180,6 +1225,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<int>("TrainingCourseId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CompletionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -1190,6 +1238,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
+
+                    b.Property<bool>("RewardGiven")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -1205,6 +1256,39 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("TrainingCourseId");
 
                     b.ToTable("EmployeeTrainings", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            EmployeeId = 1,
+                            TrainingCourseId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnrollmentDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Id = 1,
+                            RewardGiven = false,
+                            Status = "Enrolled"
+                        },
+                        new
+                        {
+                            EmployeeId = 2,
+                            TrainingCourseId = 3,
+                            CompletionDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnrollmentDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Id = 2,
+                            RewardGiven = false,
+                            Status = "Completed"
+                        },
+                        new
+                        {
+                            EmployeeId = 3,
+                            TrainingCourseId = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnrollmentDate = new DateTime(2025, 3, 22, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Id = 3,
+                            RewardGiven = false,
+                            Status = "Cancelled"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.JobApplication", b =>

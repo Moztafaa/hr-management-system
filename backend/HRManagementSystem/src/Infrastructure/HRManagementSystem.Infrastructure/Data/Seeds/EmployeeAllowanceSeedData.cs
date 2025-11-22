@@ -12,6 +12,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 1,
                 AllowanceId = 1, // Housing
                 Amount = 2000.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -20,6 +22,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 1,
                 AllowanceId = 2, // Transportation
                 Amount = 800.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -28,6 +32,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 1,
                 AllowanceId = 4, // Mobile
                 Amount = 300.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -38,6 +44,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 2,
                 AllowanceId = 1, // Housing
                 Amount = 1800.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -46,6 +54,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 2,
                 AllowanceId = 2, // Transportation
                 Amount = 800.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -54,6 +64,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 2,
                 AllowanceId = 5, // Internet
                 Amount = 200.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -64,6 +76,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 3,
                 AllowanceId = 1, // Housing
                 Amount = 1500.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -72,6 +86,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 3,
                 AllowanceId = 2, // Transportation
                 Amount = 700.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -82,6 +98,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 4,
                 AllowanceId = 1, // Housing
                 Amount = 1800.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -90,6 +108,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 4,
                 AllowanceId = 2, // Transportation
                 Amount = 800.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -98,6 +118,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 4,
                 AllowanceId = 4, // Mobile
                 Amount = 300.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -108,6 +130,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 5,
                 AllowanceId = 1, // Housing
                 Amount = 1500.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -116,6 +140,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 5,
                 AllowanceId = 2, // Transportation
                 Amount = 700.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -126,6 +152,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 6,
                 AllowanceId = 1, // Housing
                 Amount = 2000.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -134,6 +162,8 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 6,
                 AllowanceId = 2, // Transportation
                 Amount = 800.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeAllowance
@@ -142,8 +172,20 @@ public static class EmployeeAllowanceSeedData
                 EmployeeId = 6,
                 AllowanceId = 4, // Mobile
                 Amount = 300.00m,
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-            }
+            },
+            new EmployeeAllowance
+            {
+                Id = 17,
+                EmployeeId = 2,
+                AllowanceId = 8, // Bonus
+                Amount = 1700.00m,
+                Month = 5,
+                Year = 2025,
+                CreatedAt = new DateTime(2025, 5, 1, 0, 0, 0, DateTimeKind.Utc)
+            } 
         );
     }
 }

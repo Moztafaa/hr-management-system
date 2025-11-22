@@ -58,20 +58,69 @@ public class EmployeeTrainingService(IUnitOfWork unitOfWork, IMapper mapper) : I
     public async Task<Response<bool>> CompleteAsync(int employeeId, int courseId, CancellationToken cancellationToken = default)
     {
         EmployeeTraining? enrollment = await _unitOfWork.EmployeeTrainings
-            .GetByEmployeeAndCourseAsync(employeeId, courseId);
+            .GetByEmployeeAndCourseAsync(employeeId, courseId, cancellationToken);
 
         if (enrollment == null)
         {
-            return new Response<bool>(false, string.Empty, true);
+            return new Response<bool>(false, "Enrollment not found", true);
+        }
+
+        if (enrollment.Status == TrainingStatus.Completed)
+        {
+            return new Response<bool>(false, "Course already completed", true);
+        }
+
+        if (enrollment.Status == TrainingStatus.Cancelled)
+        {
+            return new Response<bool>(false, "This enrollment was cancelled", true);
         }
 
         enrollment.Status = TrainingStatus.Completed;
+        enrollment.CompletionDate = DateTime.UtcNow;
 
-        await _unitOfWork.EmployeeTrainings.UpdateAsync(enrollment);
-        await _unitOfWork.SaveChangesAsync();
+        //  Prevent double bonus 
+        if (enrollment.RewardGiven)
+        {
+            await _unitOfWork.EmployeeTrainings.UpdateAsync(enrollment, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new Response<bool>(true, string.Empty, false);
+            return new Response<bool>(true, "Training completed (bonus already given previously)", false);
+        }
+
+        // Save new training status changes
+        await _unitOfWork.EmployeeTrainings.UpdateAsync(enrollment, cancellationToken);
+
+        Allowance? trainingBonusAllowance = await _unitOfWork.Allowances
+            .GetByIdAsync(8, cancellationToken);
+
+        if (trainingBonusAllowance == null)
+        {
+            return new Response<bool>(false, "Training bonus allowance (ID = 8) not found", true);
+        }
+
+        //  Add employee allowance for the SAME MONTH the training was completed
+        DateTime date = enrollment.CompletionDate.Value;
+
+        var employeeAllowance = new EmployeeAllowance
+        {
+            EmployeeId = enrollment.EmployeeId,
+            AllowanceId = trainingBonusAllowance.Id,
+            Amount = trainingBonusAllowance.Amount,
+            Month = date.Month,
+            Year = date.Year,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _unitOfWork.EmployeeAllowances.AddAsync(employeeAllowance, cancellationToken);
+
+        enrollment.RewardGiven = true;
+        await _unitOfWork.EmployeeTrainings.UpdateAsync(enrollment, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new Response<bool>(true, "Training completed and bonus granted", false);
     }
+
     public async Task<IEnumerable<EmployeeTrainingDto>> GetEnrollmentsByEmployeeAsync(int employeeId, CancellationToken cancellationToken = default)
     {
         IEnumerable<EmployeeTraining> enrollments = await _unitOfWork.EmployeeTrainings.GetEnrollmentsByEmployeeAsync(employeeId, cancellationToken);

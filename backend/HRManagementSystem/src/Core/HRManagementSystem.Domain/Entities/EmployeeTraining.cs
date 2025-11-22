@@ -10,5 +10,7 @@ public class EmployeeTraining : BaseEntity
     public TrainingCourse? TrainingCourse { get; set; }
 
     public TrainingStatus Status { get; set; }
-    public DateTime EnrollmentDate { get; set; } = DateTime.Now;
+    public DateTime EnrollmentDate { get; set; } = DateTime.UtcNow;
+    public DateTime? CompletionDate { get; set; }
+    public bool RewardGiven { get; set; } = false;     // prevents double bonus
 }

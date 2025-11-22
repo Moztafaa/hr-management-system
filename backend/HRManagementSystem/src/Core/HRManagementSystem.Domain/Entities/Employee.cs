@@ -16,8 +16,8 @@ public class Employee : BaseEntity
     public string? ApplicationUserId { get; set; }
 
     public ICollection<Payslip>? Payslips { get; set; }
-    public ICollection<EmployeeAllowance>? EmployeeAllowances { get; set; }
-    public ICollection<EmployeeDeduction>? EmployeeDeductions { get; set; }
+    public ICollection<EmployeeAllowance> EmployeeAllowances { get; set; }
+    public ICollection<EmployeeDeduction> EmployeeDeductions { get; set; }
 
     public int? DepartmentId { get; set; }
     public int? DesignationId { get; set; }
@@ -25,9 +25,9 @@ public class Employee : BaseEntity
 
     public Department? Department { get; set; }
     public Designation? Designation { get; set; }
-    public ICollection<LeaveRequest>? LeaveRequests { get; set; }
-    public ICollection<LeaveApproval>? LeaveApprovals { get; set; }
-    public ICollection<EmployeeLeaveBalance>? LeaveBalances { get; set; }
+    public ICollection<LeaveRequest> LeaveRequests { get; set; }
+    public ICollection<LeaveApproval> LeaveApprovals { get; set; }
+    public ICollection<EmployeeLeaveBalance> LeaveBalances { get; set; }
 
     public ICollection<EmployeeTraining>? EmployeeTrainings { get; set; }
 

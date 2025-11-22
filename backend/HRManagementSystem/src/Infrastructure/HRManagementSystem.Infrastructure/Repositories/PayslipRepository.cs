@@ -5,32 +5,32 @@ public class PayslipRepository(ApplicationDbContext context) : Repository<Paysli
     public async Task<IEnumerable<Payslip>> GetByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default) => await _dbSet
             .Where(p => p.EmployeeId == employeeId)
             .Include(p => p.Employee)
-                .ThenInclude(e => (IEnumerable<EmployeeAllowance>)e.EmployeeAllowances!)
+                .ThenInclude(e => e.EmployeeAllowances)
                     .ThenInclude(ea => ea.Allowance)
             .Include(p => p.Employee)
-                .ThenInclude(e => (IEnumerable<EmployeeDeduction>)e.EmployeeDeductions!)
+                .ThenInclude(e => e.EmployeeDeductions)
                     .ThenInclude(ed => ed.Deduction)
             .ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<Payslip>> GetByMonthAsync(int month, int year, CancellationToken cancellationToken = default) => await _dbSet
+            .Where(p => p.Month == month && p.Year == year)
             .Include(p => p.Employee)
-                .ThenInclude(e => (IEnumerable<EmployeeAllowance>)e.EmployeeAllowances!)
+                .ThenInclude(e => e.EmployeeAllowances)
                     .ThenInclude(ea => ea.Allowance)
             .Include(p => p.Employee)
-                .ThenInclude(e => (IEnumerable<EmployeeDeduction>)e.EmployeeDeductions!)
+                .ThenInclude(e => e.EmployeeDeductions)
                     .ThenInclude(ed => ed.Deduction)
-            .Where(p => p.Month == month && p.Year == year)
             .ToListAsync(cancellationToken);
 
     public async Task<Payslip?> GetByEmployeeAndMonthAsync(int employeeId, int month, int year, CancellationToken cancellationToken = default) => await _dbSet
+            .Where(p => p.EmployeeId == employeeId && p.Month == month && p.Year == year)
             .Include(p => p.Employee)
-                .ThenInclude(e => (IEnumerable<EmployeeAllowance>)e.EmployeeAllowances!)
+                .ThenInclude(e => e.EmployeeAllowances)
                     .ThenInclude(ea => ea.Allowance)
             .Include(p => p.Employee)
-                .ThenInclude(e => (IEnumerable<EmployeeDeduction>)e.EmployeeDeductions!)
+                .ThenInclude(e => e.EmployeeDeductions)
                     .ThenInclude(ed => ed.Deduction)
-            .FirstOrDefaultAsync(p =>
-                p.EmployeeId == employeeId &&
-                p.Month == month &&
-                p.Year == year, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
+
+
 }
