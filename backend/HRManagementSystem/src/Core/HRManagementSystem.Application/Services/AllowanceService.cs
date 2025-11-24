@@ -75,7 +75,7 @@ public class AllowanceService(IUnitOfWork _unitOfWork, IMapper _mapper) : IAllow
             }
 
             allowance.Name = request.Name;
-            allowance.Amount = request.Amount;
+            allowance.Value = request.Value;
             allowance.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Allowances.UpdateAsync(allowance);

@@ -48,6 +48,8 @@ public static class DependencyInjection
         services.AddAutoMapper(x => x.AddProfile(new CandidateProfile()));
         services.AddAutoMapper(x => x.AddProfile(new JobApplicationProfile()));
 
+        services.AddAutoMapper(x => x.AddProfile(new PayrollProfile()));
+
         services.AddAutoMapper(x => x.AddProfile(new TrainingProfile()));
 
 

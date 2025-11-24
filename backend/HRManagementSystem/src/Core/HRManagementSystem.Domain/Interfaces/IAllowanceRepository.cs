@@ -4,6 +4,6 @@ namespace HRManagementSystem.Domain.Interfaces;
 
 public interface IAllowanceRepository: IRepository<Allowance>
 {
-    Task<IEnumerable<Allowance>> GetByMinAmountAsync(decimal minAmount, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Allowance>> GetByMinValueAsync(decimal minValue, CancellationToken cancellationToken = default);
     Task<Allowance?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
 }

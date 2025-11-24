@@ -12,9 +12,9 @@ public class TrainingProfile : Profile
         // EmployeeTraining mappings
         CreateMap<EmployeeTraining, EmployeeTrainingDto>()
             .ForMember(dest => dest.EmployeeName,
-                       opt => opt.MapFrom(src => src.Employee.FirstName + " " + src.Employee.LastName))
+                       opt => opt.MapFrom(src => src.Employee!.FirstName + " " + src.Employee.LastName))
             .ForMember(dest => dest.TrainingCourseTitle,
-                       opt => opt.MapFrom(src => src.TrainingCourse.Title))
+                       opt => opt.MapFrom(src => src.TrainingCourse!.Title))
             .ForMember(dest => dest.Status,
                        opt => opt.MapFrom(src => src.Status.ToString()));
 

@@ -105,7 +105,7 @@ public class EmployeeTrainingService(IUnitOfWork unitOfWork, IMapper mapper) : I
         {
             EmployeeId = enrollment.EmployeeId,
             AllowanceId = trainingBonusAllowance.Id,
-            Amount = trainingBonusAllowance.Amount,
+            Amount = trainingBonusAllowance.Value,
             Month = date.Month,
             Year = date.Year,
             CreatedAt = DateTime.UtcNow

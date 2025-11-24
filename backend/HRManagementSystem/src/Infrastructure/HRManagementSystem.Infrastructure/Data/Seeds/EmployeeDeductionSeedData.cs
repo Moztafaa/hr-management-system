@@ -12,6 +12,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 1,
                 DeductionId = 1, // Social Insurance
                 Amount = 2250.00m, // 9% of basic salary (25000 * 0.09)
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeDeduction
@@ -20,6 +22,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 1,
                 DeductionId = 2, // Income Tax
                 Amount = 3750.00m, // 15% of basic salary
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -30,6 +34,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 2,
                 DeductionId = 1, // Social Insurance
                 Amount = 1800.00m, // 9% of 20000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeDeduction
@@ -38,6 +44,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 2,
                 DeductionId = 2, // Income Tax
                 Amount = 2500.00m, // 12.5% of 20000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -48,6 +56,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 3,
                 DeductionId = 1, // Social Insurance
                 Amount = 1350.00m, // 9% of 15000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeDeduction
@@ -56,6 +66,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 3,
                 DeductionId = 2, // Income Tax
                 Amount = 1500.00m, // 10% of 15000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -66,6 +78,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 4,
                 DeductionId = 1, // Social Insurance
                 Amount = 1980.00m, // 9% of 22000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeDeduction
@@ -74,6 +88,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 4,
                 DeductionId = 2, // Income Tax
                 Amount = 2750.00m, // 12.5% of 22000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -84,6 +100,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 5,
                 DeductionId = 1, // Social Insurance
                 Amount = 1440.00m, // 9% of 16000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeDeduction
@@ -92,6 +110,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 5,
                 DeductionId = 2, // Income Tax
                 Amount = 1600.00m, // 10% of 16000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
 
@@ -102,6 +122,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 6,
                 DeductionId = 1, // Social Insurance
                 Amount = 2160.00m, // 9% of 24000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new EmployeeDeduction
@@ -110,6 +132,8 @@ public static class EmployeeDeductionSeedData
                 EmployeeId = 6,
                 DeductionId = 2, // Income Tax
                 Amount = 3000.00m, // 12.5% of 24000
+                Month = 1,
+                Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );

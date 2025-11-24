@@ -56,20 +56,37 @@ public class EmployeeDeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) 
     {
         try
         {
-            EmployeeDeduction? existing = await _unitOfWork.EmployeeDeductions.GetByIdAsync(id);
-            if (existing == null)
-                return new Response<EmployeeDeductionDto>(null!, "Employee deduction not found", true);
+            EmployeeDeduction? existingDeduction = await _unitOfWork.EmployeeDeductions.GetByIdAsync(id);
+            if (existingDeduction == null)
+                return new Response<EmployeeDeductionDto>(null!, "Employee deduction not found.", true);
 
-            _mapper.Map(request, existing);
-            await _unitOfWork.EmployeeDeductions.UpdateAsync(existing);
+            Deduction? deduction = await _unitOfWork.Deductions.GetByIdAsync(request.DeductionId);
+            if (deduction == null)
+                return new Response<EmployeeDeductionDto>(null!, "Invalid deduction ID.", true);
+
+            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions
+                .GetByEmployeeAndMonthAsync(request.EmployeeId, existingDeduction.Month, existingDeduction.Year);
+
+            EmployeeDeduction? duplicate = employeeDeductions.FirstOrDefault(d => d.DeductionId == request.DeductionId && d.Id != id);
+            if (duplicate != null)
+            {
+                await _unitOfWork.EmployeeDeductions.DeleteAsync(duplicate.Id);
+            }
+
+            existingDeduction.DeductionId = request.DeductionId;
+            existingDeduction.EmployeeId = request.EmployeeId;
+            existingDeduction.Amount = request.Amount;
+            existingDeduction.UpdatedAt = DateTime.UtcNow;
+
+            await _unitOfWork.EmployeeDeductions.UpdateAsync(existingDeduction);
             await _unitOfWork.SaveChangesAsync();
 
-            EmployeeDeductionDto dto = _mapper.Map<EmployeeDeductionDto>(existing);
+            EmployeeDeductionDto dto = _mapper.Map<EmployeeDeductionDto>(existingDeduction);
             return new Response<EmployeeDeductionDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDeductionDto>(null!, ex.Message, true);
+            return new Response<EmployeeDeductionDto>(null!, $"Error occurred while updating the employee deduction: {ex.Message}", true);
         }
     }
 

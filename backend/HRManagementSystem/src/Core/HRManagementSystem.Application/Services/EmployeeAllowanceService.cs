@@ -43,7 +43,7 @@ public class EmployeeAllowanceService(
             if (allowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Invalid allowance ID.", true);
 
-            IEnumerable<EmployeeAllowance> existingAllowances = await _unitOfWork.EmployeeAllowances.GetByEmployeeIdAsync(request.EmployeeId);
+            IEnumerable<EmployeeAllowance> existingAllowances = await _unitOfWork.EmployeeAllowances.GetByEmployeeAndMonthAsync(request.EmployeeId,request.Month,request.Year);
             if (existingAllowances.Any(a => a.AllowanceId == request.AllowanceId))
                 return new Response<EmployeeAllowanceDto>(default!, "Employee already has this allowance assigned.", true);
 
@@ -70,10 +70,18 @@ public class EmployeeAllowanceService(
             if (employeeAllowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Employee allowance not found.", true);
 
-
             Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(request.AllowanceId);
             if (allowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Invalid allowance ID.", true);
+
+            IEnumerable<EmployeeAllowance> existingAllowances = await _unitOfWork.EmployeeAllowances
+                .GetByEmployeeAndMonthAsync(request.EmployeeId, employeeAllowance.Month, employeeAllowance.Year);
+
+            EmployeeAllowance? duplicate = existingAllowances.FirstOrDefault(a => a.AllowanceId == request.AllowanceId && a.Id != id);
+            if (duplicate != null)
+            {
+                await _unitOfWork.EmployeeAllowances.DeleteAsync(duplicate.Id);
+            }
 
             employeeAllowance.AllowanceId = request.AllowanceId;
             employeeAllowance.EmployeeId = request.EmployeeId;

@@ -30,11 +30,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPercentage")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -42,6 +42,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -51,58 +54,66 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Housing Allowance"
+                            IsPercentage = false,
+                            Name = "Housing Allowance",
+                            Value = 2000.00m
                         },
                         new
                         {
                             Id = 2,
-                            Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Transportation Allowance"
+                            IsPercentage = true,
+                            Name = "Transportation Allowance",
+                            Value = 8m
                         },
                         new
                         {
                             Id = 3,
-                            Amount = 500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Food Allowance"
+                            IsPercentage = false,
+                            Name = "Food Allowance",
+                            Value = 500.00m
                         },
                         new
                         {
                             Id = 4,
-                            Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Mobile Allowance"
+                            IsPercentage = false,
+                            Name = "Mobile Allowance",
+                            Value = 300.00m
                         },
                         new
                         {
                             Id = 5,
-                            Amount = 200.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Internet Allowance"
+                            IsPercentage = false,
+                            Name = "Internet Allowance",
+                            Value = 200.00m
                         },
                         new
                         {
                             Id = 6,
-                            Amount = 3000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Performance Bonus"
+                            IsPercentage = false,
+                            Name = "Performance Bonus",
+                            Value = 3000.00m
                         },
                         new
                         {
                             Id = 7,
-                            Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Health Insurance"
+                            IsPercentage = true,
+                            Name = "Health Insurance",
+                            Value = 15m
                         },
                         new
                         {
                             Id = 8,
-                            Amount = 1700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Training Completion Bonus"
+                            IsPercentage = false,
+                            Name = "Training Completion Bonus",
+                            Value = 1700.00m
                         });
                 });
 
@@ -311,11 +322,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPercentage")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -323,6 +334,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -332,37 +346,42 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Amount = 0.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Social Insurance"
+                            IsPercentage = true,
+                            Name = "Social Insurance",
+                            Value = 9m
                         },
                         new
                         {
                             Id = 2,
-                            Amount = 0.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Income Tax"
+                            IsPercentage = true,
+                            Name = "Income Tax",
+                            Value = 15m
                         },
                         new
                         {
                             Id = 3,
-                            Amount = 0.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Absence Deduction"
+                            IsPercentage = true,
+                            Name = "Absence Deduction",
+                            Value = 0.00m
                         },
                         new
                         {
                             Id = 4,
-                            Amount = 100.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Late Arrival Penalty"
+                            IsPercentage = false,
+                            Name = "Loan Installment",
+                            Value = 1000m
                         },
                         new
                         {
                             Id = 5,
-                            Amount = 0.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Loan Installment"
+                            IsPercentage = false,
+                            Name = "Late Arrival Penalty",
+                            Value = 100m
                         });
                 });
 
@@ -894,8 +913,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 1,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -904,8 +923,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 1,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -914,8 +933,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 1,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -924,8 +943,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 2,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -934,8 +953,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 2,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -944,8 +963,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 200.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 2,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -954,8 +973,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 3,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -964,8 +983,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 3,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -974,8 +993,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 4,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -984,8 +1003,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 4,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -994,8 +1013,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 4,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1004,8 +1023,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 5,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1014,8 +1033,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 5,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1024,8 +1043,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 6,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1034,8 +1053,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 6,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1044,8 +1063,18 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 6,
-                            Month = 0,
-                            Year = 0
+                            Month = 1,
+                            Year = 2024
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AllowanceId = 8,
+                            Amount = 1700.00m,
+                            CreatedAt = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 2,
+                            Month = 5,
+                            Year = 2025
                         });
                 });
 
@@ -1069,8 +1098,14 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1087,7 +1122,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2250.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 1,
-                            EmployeeId = 1
+                            EmployeeId = 1,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1095,7 +1132,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 3750.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 2,
-                            EmployeeId = 1
+                            EmployeeId = 1,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1103,7 +1142,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 1,
-                            EmployeeId = 2
+                            EmployeeId = 2,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1111,7 +1152,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 2,
-                            EmployeeId = 2
+                            EmployeeId = 2,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1119,7 +1162,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1350.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 1,
-                            EmployeeId = 3
+                            EmployeeId = 3,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1127,7 +1172,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 2,
-                            EmployeeId = 3
+                            EmployeeId = 3,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1135,7 +1182,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1980.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 1,
-                            EmployeeId = 4
+                            EmployeeId = 4,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1143,7 +1192,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2750.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 2,
-                            EmployeeId = 4
+                            EmployeeId = 4,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1151,7 +1202,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1440.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 1,
-                            EmployeeId = 5
+                            EmployeeId = 5,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1159,7 +1212,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1600.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 2,
-                            EmployeeId = 5
+                            EmployeeId = 5,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1167,7 +1222,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2160.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 1,
-                            EmployeeId = 6
+                            EmployeeId = 6,
+                            Month = 1,
+                            Year = 2024
                         },
                         new
                         {
@@ -1175,7 +1232,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 3000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             DeductionId = 2,
-                            EmployeeId = 6
+                            EmployeeId = 6,
+                            Month = 1,
+                            Year = 2024
                         });
                 });
 
@@ -1240,7 +1299,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("RewardGiven")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -1276,7 +1337,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnrollmentDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Id = 2,
-                            RewardGiven = false,
+                            RewardGiven = true,
                             Status = "Completed"
                         },
                         new

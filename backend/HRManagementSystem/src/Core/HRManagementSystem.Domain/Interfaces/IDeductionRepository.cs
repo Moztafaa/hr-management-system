@@ -4,7 +4,7 @@ namespace HRManagementSystem.Domain.Interfaces;
 
 public interface IDeductionRepository:IRepository<Deduction>
 {
-    Task<IEnumerable<Deduction>> GetByMinAmountAsync(decimal minAmount, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Deduction>> GetByMinValueAsync(decimal minValue, CancellationToken cancellationToken = default);
     Task<Deduction?> GetByNameAsync(string name , CancellationToken cancellationToken = default);
 
 }

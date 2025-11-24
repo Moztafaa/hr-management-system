@@ -21,29 +21,17 @@ public class PayslipService(
             }
 
             var employeeAllowances = (await _unitOfWork.EmployeeAllowances
-                .GetByEmployeeIdAsync(employeeId, cancellationToken))
+                .GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken))
                 .Where(a => a.Month == month && a.Year == year)
                 .ToList();
 
-            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions.GetByEmployeeIdAsync(employeeId, cancellationToken);
+            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
 
-            var allowancesForDto = employeeAllowances.Select(ea => new AllowanceDto
-            {
-                Id = ea.AllowanceId,
-                Name = ea.Allowance.Name ?? "No Allowance",
-                Amount = ea.Amount != 0 ? ea.Amount : ea.Allowance?.Amount ?? 0
-            }).ToList();
+            List<AllowanceDto> allowancesForDto = MapEmployeeAllowances(employeeAllowances, month, year);
+            List<DeductionDto> deductionsForDto = MapEmployeeDeductions(employeeDeductions, month, year);
 
-            decimal totalAllowances = allowancesForDto.Sum(a => a.Amount);
-
-            var deductionsForDto = employeeDeductions.Select(ed => new DeductionDto
-            {
-                Id = ed.DeductionId,
-                Name = ed.Deduction.Name,
-                Amount = ed.Amount != 0 ? ed.Amount : ed.Deduction.Amount
-            }).ToList();
-
-            decimal totalDeductions = deductionsForDto.Sum(d => d.Amount);
+            decimal totalAllowances = allowancesForDto.Sum(a => a.Value);
+            decimal totalDeductions = deductionsForDto.Sum(d => d.Value);
 
             decimal netSalary = employee.BasicSalary + totalAllowances - totalDeductions;
 
@@ -63,8 +51,8 @@ public class PayslipService(
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             PayslipDto payslipDto = _mapper.Map<PayslipDto>(payslip);
-            payslipDto.Allowances = _mapper.Map<List<AllowanceDto>>(allowancesForDto);
-            payslipDto.Deductions = _mapper.Map<List<DeductionDto>>(deductionsForDto);
+            payslipDto.Allowances = allowancesForDto;
+            payslipDto.Deductions = deductionsForDto;
 
             return new Response<PayslipDto>(payslipDto, string.Empty, false);
         }
@@ -131,22 +119,8 @@ public class PayslipService(
             {
                 PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
 
-                var allowances = payslip.Employee.EmployeeAllowances
-                    .Where(a => a.Month == payslip.Month && a.Year == payslip.Year)
-                    .Select(ea => new AllowanceDto
-                    {
-                        Id = ea.AllowanceId,
-                        Name = ea.Allowance.Name,
-                        Amount = ea.Amount != 0 ? ea.Amount : ea.Allowance.Amount
-                    }).ToList();
-
-                var deductions = payslip.Employee.EmployeeDeductions
-                    .Select(ed => new DeductionDto
-                    {
-                        Id = ed.DeductionId,
-                        Name = ed.Deduction.Name,
-                        Amount = ed.Amount != 0 ? ed.Amount : ed.Deduction.Amount
-                    }).ToList();
+                List<AllowanceDto> allowances = MapEmployeeAllowances(payslip.Employee.EmployeeAllowances, payslip.Month, payslip.Year);
+                List<DeductionDto> deductions = MapEmployeeDeductions(payslip.Employee.EmployeeDeductions, payslip.Month, payslip.Year);
 
                 dto.Allowances = allowances;
                 dto.Deductions = deductions;
@@ -180,22 +154,8 @@ public class PayslipService(
 
             PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
 
-            var allowances = payslip.Employee.EmployeeAllowances
-                .Where(a => a.Month == payslip.Month && a.Year == payslip.Year)
-                .Select(ea => new AllowanceDto
-                {
-                    Id = ea.AllowanceId,
-                    Name = ea.Allowance.Name,
-                    Amount = ea.Amount != 0 ? ea.Amount : ea.Allowance.Amount
-                }).ToList();
-
-            var deductions = payslip.Employee.EmployeeDeductions
-                .Select(ed => new DeductionDto
-                {
-                    Id = ed.DeductionId,
-                    Name = ed.Deduction.Name,
-                    Amount = ed.Amount != 0 ? ed.Amount : ed.Deduction.Amount
-                }).ToList();
+            List<AllowanceDto> allowances = MapEmployeeAllowances(payslip.Employee.EmployeeAllowances, payslip.Month, payslip.Year);
+            List<DeductionDto> deductions = MapEmployeeDeductions(payslip.Employee.EmployeeDeductions, payslip.Month, payslip.Year);
 
             dto.Allowances = allowances;
             dto.Deductions = deductions;
@@ -218,22 +178,8 @@ public class PayslipService(
             {
                 PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
 
-                var allowances = payslip.Employee.EmployeeAllowances
-                    .Where(a => a.Month == payslip.Month && a.Year == payslip.Year)
-                    .Select(ea => new AllowanceDto
-                    {
-                        Id = ea.AllowanceId,
-                        Name = ea.Allowance.Name,
-                        Amount = ea.Amount != 0 ? ea.Amount : ea.Allowance.Amount
-                    }).ToList();
-
-                var deductions = payslip.Employee.EmployeeDeductions
-                    .Select(ed => new DeductionDto
-                    {
-                        Id = ed.DeductionId,
-                        Name = ed.Deduction.Name,
-                        Amount = ed.Amount != 0 ? ed.Amount : ed.Deduction.Amount
-                    }).ToList();
+                List<AllowanceDto> allowances = MapEmployeeAllowances(payslip.Employee.EmployeeAllowances, payslip.Month, payslip.Year);
+                List<DeductionDto> deductions = MapEmployeeDeductions(payslip.Employee.EmployeeDeductions, payslip.Month, payslip.Year);
 
                 dto.Allowances = allowances;
                 dto.Deductions = deductions;
@@ -267,4 +213,29 @@ public class PayslipService(
             return new Response<bool>(false, $"Error deleting payslip: {ex.Message}", true);
         }
     }
+
+    private List<AllowanceDto> MapEmployeeAllowances(IEnumerable<EmployeeAllowance> employeeAllowances, int month, int year) =>
+    employeeAllowances
+        .Where(a => a.Month == month && a.Year == year)
+        .Select(ea => new AllowanceDto
+        {
+            Id = ea.AllowanceId,
+            Name = ea.Allowance?.Name ?? "No Allowance",
+            Value = ea.Amount != 0 ? ea.Amount : ea.Allowance?.Value ?? 0,
+            IsPercentage = ea.Allowance?.IsPercentage ?? false
+        })
+        .ToList();
+
+    private List<DeductionDto> MapEmployeeDeductions(IEnumerable<EmployeeDeduction> employeeDeductions, int month, int year) =>
+        employeeDeductions
+            .Where(a => a.Month == month && a.Year == year)
+            .Select(ed => new DeductionDto
+            {
+                Id = ed.DeductionId,
+                Name = ed.Deduction?.Name ?? "No Deduction",
+                Value = ed.Amount != 0 ? ed.Amount : ed.Deduction?.Value ?? 0,
+                IsPercentage = ed.Deduction?.IsPercentage ?? false
+            })
+            .ToList();
+
 }

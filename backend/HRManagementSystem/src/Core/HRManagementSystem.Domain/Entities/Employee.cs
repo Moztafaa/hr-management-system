@@ -16,8 +16,8 @@ public class Employee : BaseEntity
     public string? ApplicationUserId { get; set; }
 
     public ICollection<Payslip>? Payslips { get; set; }
-    public ICollection<EmployeeAllowance> EmployeeAllowances { get; set; }
-    public ICollection<EmployeeDeduction> EmployeeDeductions { get; set; }
+    public ICollection<EmployeeAllowance> EmployeeAllowances { get; set; } = new List<EmployeeAllowance>();
+    public ICollection<EmployeeDeduction> EmployeeDeductions { get; set; } = new List<EmployeeDeduction>();
 
     public int? DepartmentId { get; set; }
     public int? DesignationId { get; set; }

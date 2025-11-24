@@ -74,7 +74,7 @@ public class DeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) : IDeduc
             }
 
             deduction.Name = request.Name;
-            deduction.Amount = request.Amount;
+            deduction.Value = request.Value;
             deduction.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Deductions.UpdateAsync(deduction);
