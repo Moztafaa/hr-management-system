@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateWithAllSeedData : Migration
+    public partial class InitDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1134,40 +1134,13 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         });
                 });
 
-            //modelBuilder.Entity("HRManagementSystem.Domain.Entities.Payslip", b =>
-
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeLeaveBalance", b =>
-
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("BasicSalary")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Month")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("NetSalary")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalAllowances")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalDeductions")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
@@ -1187,16 +1160,12 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<int>("UsedDays")
                         .HasColumnType("int");
 
-
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
-
-
-                    b.ToTable("Payslips");
 
                     b.HasIndex("LeaveTypeId");
 
@@ -1681,7 +1650,6 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             MaxDays = 10,
                             Name = "Hajj Leave"
                         });
-
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Payslip", b =>
