@@ -1,38 +1,35 @@
-﻿namespace HRManagementSystem.Application.Services;
+﻿using System.Collections.Generic;
 
-public class PayslipService(
-    IUnitOfWork _unitOfWork,
-    IMapper _mapper) : IPayslipService
+namespace HRManagementSystem.Application.Services;
+
+public class PayslipService( IUnitOfWork _unitOfWork,IMapper _mapper) : IPayslipService
 {
-    public async Task<Response<PayslipDto>> GeneratePayslipAsync(int employeeId, int month, int year, CancellationToken cancellationToken)
+    public async Task<Response<PayslipDto>> GeneratePayslipAsync(int employeeId, int month, int year, IEnumerable<Deduction> fixedDeductions, CancellationToken cancellationToken)
     {
         try
         {
             Employee? employee = await _unitOfWork.Employees.GetByIdAsync(employeeId, cancellationToken);
             if (employee == null)
-            {
                 return new Response<PayslipDto>(null!, "Employee not found.", true);
-            }
 
+            // To allow regeneration if there is any edits in the allowances/deductions
             Payslip? existingPayslip = await _unitOfWork.Payslips.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
             if (existingPayslip != null)
             {
                 await _unitOfWork.Payslips.DeleteAsync(existingPayslip.Id, cancellationToken);
             }
 
-            var employeeAllowances = (await _unitOfWork.EmployeeAllowances
-                .GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken))
-                .Where(a => a.Month == month && a.Year == year)
-                .ToList();
+            IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances
+                .GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
 
-            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
+            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions
+                .GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
 
-            List<AllowanceDto> allowancesForDto = MapEmployeeAllowances(employeeAllowances, month, year);
-            List<DeductionDto> deductionsForDto = MapEmployeeDeductions(employeeDeductions, month, year);
+            List<AllowanceDto> allowancesForDto = MapEmployeeAllowances(employeeAllowances, employee.BasicSalary, month, year);
+            List<DeductionDto> deductionsForDto = MapEmployeeDeductions(employeeDeductions, employee.BasicSalary, month, year,fixedDeductions);
 
             decimal totalAllowances = allowancesForDto.Sum(a => a.Value);
             decimal totalDeductions = deductionsForDto.Sum(d => d.Value);
-
             decimal netSalary = employee.BasicSalary + totalAllowances - totalDeductions;
 
             var payslip = new Payslip
@@ -62,56 +59,161 @@ public class PayslipService(
         }
     }
 
-    public async Task<Response<IEnumerable<PayslipDto>>> GeneratePayslipsForMonthAsync(int month, int year, CancellationToken cancellationToken)
+    public async Task<Response<PayslipDto>> GetByIdAsync(int id, IEnumerable<Deduction> fixedDeductions, CancellationToken cancellationToken)
     {
         try
         {
-            IEnumerable<Employee> employees = await _unitOfWork.Employees.GetAllAsync(cancellationToken);
-            var payslipDtos = new List<PayslipDto>();
+            Payslip? payslip = await _unitOfWork.Payslips.GetByIdAsync(id, cancellationToken);
+            if (payslip == null)
+                return new Response<PayslipDto>(null!, "Payslip not found.", true);
 
-            foreach (Employee employee in employees)
-            {
-                Response<PayslipDto> result = await GeneratePayslipAsync(employee.Id, month, year, cancellationToken);
-                if (!result.HasError && result.Data != null)
-                {
-                    payslipDtos.Add(result.Data);
-                }
-            }
+            IEnumerable<EmployeeAllowance> allowances =
+                await _unitOfWork.EmployeeAllowances.GetByEmployeeAndMonthAsync(
+                    payslip.EmployeeId, payslip.Month, payslip.Year, cancellationToken);
 
-            return new Response<IEnumerable<PayslipDto>>(payslipDtos, string.Empty, false);
+            IEnumerable<EmployeeDeduction> deductions =
+                await _unitOfWork.EmployeeDeductions.GetByEmployeeAndMonthAsync(
+                    payslip.EmployeeId, payslip.Month, payslip.Year, cancellationToken);
+
+            PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
+            dto.Allowances = MapEmployeeAllowances(allowances, payslip.BasicSalary, payslip.Month, payslip.Year);
+            dto.Deductions = MapEmployeeDeductions(deductions, payslip.BasicSalary, payslip.Month, payslip.Year, fixedDeductions);
+
+            dto.TotalAllowances = dto.Allowances.Sum(a => a.Value);
+            dto.TotalDeductions = dto.Deductions.Sum(d => d.Value);
+            dto.NetSalary = payslip.BasicSalary + dto.TotalAllowances - dto.TotalDeductions;
+
+            return new Response<PayslipDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<IEnumerable<PayslipDto>>(null!, $"Error generating payslips for month: {ex.Message}", true);
+            return new Response<PayslipDto>(null!, $"Error retrieving payslip: {ex.Message}", true);
         }
     }
 
-    //public async Task<Response<PayslipDto>> GetByIdAsync(int id, CancellationToken cancellationToken)
-    //{
-    //    try
-    //    {
-    //        Payslip? payslip = await _payslipRepository.GetByIdAsync(id, cancellationToken);
-    //        if (payslip == null)
-    //        {
-    //            return new Response<PayslipDto>(null!, "Payslip not found.", true);
-    //        }
+    // Mapping Methods with Percentage Logic
+    private List<AllowanceDto> MapEmployeeAllowances(IEnumerable<EmployeeAllowance> employeeAllowances,decimal baseSalary,int month,int year)
+    {
+        return employeeAllowances
+            .Where(a => a.Month == month && a.Year == year)
+            .Select(ea =>
+            {
+                bool isPercentage = ea.Allowance?.IsPercentage ?? false;
 
-    //        PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
-    //        dto.Allowances = _mapper.Map<List<AllowanceDto>>(payslip.Employee.EmployeeAllowances.Select(ea => ea.Allowance));
-    //        dto.Deductions = _mapper.Map<List<DeductionDto>>(payslip.Employee.EmployeeDeductions.Select(ed => ed.Deduction));
+                decimal finalValue;
+                if (isPercentage)
+                {
+                    decimal percentage = ea.Amount > 0 ? ea.Amount : ea.Allowance?.Value ?? 0;
+                    finalValue = baseSalary * percentage / 100;
+                }
+                else
+                {
+                    finalValue = ea.Amount > 0 ? ea.Amount : ea.Allowance?.Value ?? 0;
+                }
 
-    //        return new Response<PayslipDto>(dto, string.Empty, false);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return new Response<PayslipDto>(null!, $"Error retrieving payslip: {ex.Message}", true);
-    //    }
-    //}
+                return new AllowanceDto
+                {
+                    Id = ea.AllowanceId,
+                    Name = ea.Allowance?.Name ?? "No Allowance",
+                    Value = finalValue,
+                    IsPercentage = isPercentage
+                };
+            })
+            .ToList();
+    }
+    private List<DeductionDto> MapEmployeeDeductions(IEnumerable<EmployeeDeduction> employeeDeductions,decimal baseSalary
+                                                     ,int month,int year,IEnumerable<Deduction> fixedDeductions)
+    {
+        var result = new List<DeductionDto>();
 
-    public async Task<Response<IEnumerable<PayslipDto>>> GetByEmployeeAsync(int employeeId, CancellationToken cancellationToken)
+        // Employee-specific deductions 
+        IEnumerable<EmployeeDeduction> monthlyEmployeeDeductions = employeeDeductions.Where(d => d.Month == month && d.Year == year);
+
+        foreach (EmployeeDeduction ed in monthlyEmployeeDeductions)
+        {
+            bool isPercentage = ed.Deduction?.IsPercentage ?? false;
+            decimal finalValue;
+
+            if (isPercentage)
+            {
+                decimal percentage = ed.Amount > 0 ? ed.Amount : (ed.Deduction?.Value ?? 0);
+                finalValue = baseSalary * percentage / 100;
+            }
+            else
+            {
+                finalValue = ed.Amount > 0 ? ed.Amount : (ed.Deduction?.Value ?? 0);
+            }
+
+            result.Add(new DeductionDto
+            {
+                Id = ed.DeductionId,
+                Name = ed.Deduction?.Name ?? "No Deduction",
+                Value = finalValue,
+                IsPercentage = isPercentage
+            });
+        }
+
+        // Fixed deductions: ALWAYS percentage (social insurance, income tax)
+        foreach (Deduction fd in fixedDeductions)
+        {
+            decimal percentage = fd.Value;   
+            decimal finalValue = baseSalary * percentage / 100;
+
+            result.Add(new DeductionDto
+            {
+                Id = fd.Id,
+                Name = fd.Name,
+                Value = finalValue,
+                IsPercentage = true
+            });
+        }
+
+        return result;
+    }
+
+    public async Task<Response<IEnumerable<PayslipDto>>> GeneratePayslipsForMonthAsync(int month, int year, IEnumerable<Deduction> fixedDeductions, CancellationToken cancellationToken)
+    {
+        IEnumerable<Employee> employees = await _unitOfWork.Employees.GetAllAsync(cancellationToken);
+        var payslipDtos = new List<PayslipDto>();
+
+        foreach (Employee employee in employees)
+        {
+            Response<PayslipDto> result = await GeneratePayslipAsync(employee.Id, month, year, fixedDeductions, cancellationToken);
+            if (!result.HasError && result.Data != null)
+                payslipDtos.Add(result.Data);
+        }
+
+        return new Response<IEnumerable<PayslipDto>>(payslipDtos, string.Empty, false);
+    }
+
+    public async Task<Response<PayslipDto>> GetEmployeePayslipForMonthAsync(int employeeId, int month, int year, IEnumerable<Deduction> fixedDeductions, CancellationToken cancellationToken)
+    {
+        Payslip? payslip = await _unitOfWork.Payslips.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
+        if (payslip == null)
+            return new Response<PayslipDto>(null!, "Payslip not found.", true);
+
+        List<AllowanceDto> allowances = MapEmployeeAllowances(await _unitOfWork.EmployeeAllowances
+            .GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken), payslip.BasicSalary,month,year);
+
+        List<DeductionDto> deductions = MapEmployeeDeductions(await _unitOfWork.EmployeeDeductions
+            .GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken), payslip.BasicSalary,month, year, fixedDeductions);
+
+        PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
+        dto.Allowances = allowances;
+        dto.Deductions = deductions;
+
+        return new Response<PayslipDto>(dto, string.Empty, false);
+    }
+
+
+    public async Task<Response<IEnumerable<PayslipDto>>> GetByEmployeeAsync(int employeeId, IEnumerable<Deduction> fixedDeductions, CancellationToken cancellationToken)
     {
         try
         {
+            Employee? employee = await _unitOfWork.Employees.GetByIdAsync(employeeId, cancellationToken);
+            if (employee == null)
+                return new Response<IEnumerable<PayslipDto>>(null!, "Employee not found.", true);
+
             IEnumerable<Payslip> payslips = await _unitOfWork.Payslips.GetByEmployeeIdAsync(employeeId, cancellationToken);
             var dtoList = new List<PayslipDto>();
 
@@ -119,11 +221,18 @@ public class PayslipService(
             {
                 PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
 
-                List<AllowanceDto> allowances = MapEmployeeAllowances(payslip.Employee.EmployeeAllowances, payslip.Month, payslip.Year);
-                List<DeductionDto> deductions = MapEmployeeDeductions(payslip.Employee.EmployeeDeductions, payslip.Month, payslip.Year);
+                IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances
+                    .GetByEmployeeAndMonthAsync(employeeId, payslip.Month, payslip.Year, cancellationToken);
 
-                dto.Allowances = allowances;
-                dto.Deductions = deductions;
+                IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions
+                    .GetByEmployeeAndMonthAsync(employeeId, payslip.Month, payslip.Year, cancellationToken);
+
+                dto.Allowances = MapEmployeeAllowances(employeeAllowances, payslip.BasicSalary, payslip.Month, payslip.Year);
+                dto.Deductions = MapEmployeeDeductions(employeeDeductions, payslip.BasicSalary, payslip.Month, payslip.Year, fixedDeductions);
+
+                dto.TotalAllowances = dto.Allowances.Sum(a => a.Value);
+                dto.TotalDeductions = dto.Deductions.Sum(d => d.Value);
+                dto.NetSalary = payslip.BasicSalary + dto.TotalAllowances - dto.TotalDeductions;
 
                 dtoList.Add(dto);
             }
@@ -136,38 +245,7 @@ public class PayslipService(
         }
     }
 
-    public async Task<Response<PayslipDto>> GetEmployeePayslipForMonthAsync(int employeeId, int month, int year, CancellationToken cancellationToken)
-    {
-        try
-        {
-            Employee? employee = await _unitOfWork.Employees.GetByIdAsync(employeeId, cancellationToken);
-            if (employee == null)
-            {
-                return new Response<PayslipDto>(null!, "Employee not found.", true);
-            }
-
-            Payslip? payslip = await _unitOfWork.Payslips.GetByEmployeeAndMonthAsync(employeeId, month, year, cancellationToken);
-            if (payslip == null)
-            {
-                return new Response<PayslipDto>(null!, "Payslip not found for this employee and month.", true);
-            }
-
-            PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
-
-            List<AllowanceDto> allowances = MapEmployeeAllowances(payslip.Employee.EmployeeAllowances, payslip.Month, payslip.Year);
-            List<DeductionDto> deductions = MapEmployeeDeductions(payslip.Employee.EmployeeDeductions, payslip.Month, payslip.Year);
-
-            dto.Allowances = allowances;
-            dto.Deductions = deductions;
-
-            return new Response<PayslipDto>(dto, string.Empty, false);
-        }
-        catch (Exception ex)
-        {
-            return new Response<PayslipDto>(null!, $"Error retrieving employee payslip for month: {ex.Message}", true);
-        }
-    }
-    public async Task<Response<IEnumerable<PayslipDto>>> GetByMonthAsync(int month, int year, CancellationToken cancellationToken)
+    public async Task<Response<IEnumerable<PayslipDto>>> GetByMonthAsync(int month, int year, IEnumerable<Deduction> fixedDeductions, CancellationToken cancellationToken)
     {
         try
         {
@@ -178,11 +256,18 @@ public class PayslipService(
             {
                 PayslipDto dto = _mapper.Map<PayslipDto>(payslip);
 
-                List<AllowanceDto> allowances = MapEmployeeAllowances(payslip.Employee.EmployeeAllowances, payslip.Month, payslip.Year);
-                List<DeductionDto> deductions = MapEmployeeDeductions(payslip.Employee.EmployeeDeductions, payslip.Month, payslip.Year);
+                IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances
+                    .GetByEmployeeAndMonthAsync(payslip.EmployeeId, month, year, cancellationToken);
 
-                dto.Allowances = allowances;
-                dto.Deductions = deductions;
+                IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions
+                    .GetByEmployeeAndMonthAsync(payslip.EmployeeId, month, year, cancellationToken);
+
+                dto.Allowances = MapEmployeeAllowances(employeeAllowances, payslip.BasicSalary, month, year);
+                dto.Deductions = MapEmployeeDeductions(employeeDeductions, payslip.BasicSalary, month, year, fixedDeductions);
+
+                dto.TotalAllowances = dto.Allowances.Sum(a => a.Value);
+                dto.TotalDeductions = dto.Deductions.Sum(d => d.Value);
+                dto.NetSalary = payslip.BasicSalary + dto.TotalAllowances - dto.TotalDeductions;
 
                 dtoList.Add(dto);
             }
@@ -214,28 +299,5 @@ public class PayslipService(
         }
     }
 
-    private List<AllowanceDto> MapEmployeeAllowances(IEnumerable<EmployeeAllowance> employeeAllowances, int month, int year) =>
-    employeeAllowances
-        .Where(a => a.Month == month && a.Year == year)
-        .Select(ea => new AllowanceDto
-        {
-            Id = ea.AllowanceId,
-            Name = ea.Allowance?.Name ?? "No Allowance",
-            Value = ea.Amount != 0 ? ea.Amount : ea.Allowance?.Value ?? 0,
-            IsPercentage = ea.Allowance?.IsPercentage ?? false
-        })
-        .ToList();
-
-    private List<DeductionDto> MapEmployeeDeductions(IEnumerable<EmployeeDeduction> employeeDeductions, int month, int year) =>
-        employeeDeductions
-            .Where(a => a.Month == month && a.Year == year)
-            .Select(ed => new DeductionDto
-            {
-                Id = ed.DeductionId,
-                Name = ed.Deduction?.Name ?? "No Deduction",
-                Value = ed.Amount != 0 ? ed.Amount : ed.Deduction?.Value ?? 0,
-                IsPercentage = ed.Deduction?.IsPercentage ?? false
-            })
-            .ToList();
 
 }

@@ -32,5 +32,14 @@ public class PayslipRepository(ApplicationDbContext context) : Repository<Paysli
                     .ThenInclude(ed => ed.Deduction)
             .FirstOrDefaultAsync(cancellationToken);
 
+    public override async Task<Payslip?> GetByIdAsync(int id, CancellationToken cancellationToken = default) => await _dbSet
+            .Include(p => p.Employee)
+                .ThenInclude(e => e.EmployeeAllowances)
+                    .ThenInclude(ea => ea.Allowance)
+            .Include(p => p.Employee)
+                .ThenInclude(e => e.EmployeeDeductions)
+                    .ThenInclude(ed => ed.Deduction)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+
 
 }

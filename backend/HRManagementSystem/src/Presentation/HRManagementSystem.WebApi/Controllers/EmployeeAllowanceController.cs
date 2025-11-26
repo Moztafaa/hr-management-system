@@ -56,4 +56,15 @@ public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllo
 
         return NoContent();
     }
+
+    [HttpGet("Employee/{employeeId}/Month/{month}/Year/{year}")]
+    public async Task<IActionResult> GetByEmployeeAndMonth(int employeeId, int month, int year)
+    {
+        Response<IEnumerable<EmployeeAllowanceDto>> response = await _employeeAllowanceService.GetByEmployeeAndMonthAsync(employeeId, month, year);
+        if (response.HasError)
+            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+
+        return Ok(response);
+    }
+
 }

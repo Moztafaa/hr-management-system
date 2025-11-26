@@ -113,7 +113,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
                             Name = "Training Completion Bonus",
-                            Value = 1700.00m
+                            Value = 2000.00m
                         });
                 });
 
@@ -920,7 +920,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 2,
                             AllowanceId = 2,
-                            Amount = 800.00m,
+                            Amount = 8m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 1,
                             Month = 1,
@@ -950,7 +950,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 5,
                             AllowanceId = 2,
-                            Amount = 800.00m,
+                            Amount = 8m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 2,
                             Month = 1,
@@ -980,7 +980,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 8,
                             AllowanceId = 2,
-                            Amount = 700.00m,
+                            Amount = 7m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 3,
                             Month = 1,
@@ -1000,7 +1000,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 10,
                             AllowanceId = 2,
-                            Amount = 800.00m,
+                            Amount = 8m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 4,
                             Month = 1,
@@ -1030,7 +1030,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 13,
                             AllowanceId = 2,
-                            Amount = 700.00m,
+                            Amount = 7m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 5,
                             Month = 1,
@@ -1050,7 +1050,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 15,
                             AllowanceId = 2,
-                            Amount = 800.00m,
+                            Amount = 8m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 6,
                             Month = 1,
@@ -1070,7 +1070,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 17,
                             AllowanceId = 8,
-                            Amount = 1700.00m,
+                            Amount = 2000.00m,
                             CreatedAt = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             EmployeeId = 2,
                             Month = 5,
@@ -1119,9 +1119,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Amount = 2250.00m,
+                            Amount = 1000m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
+                            DeductionId = 4,
                             EmployeeId = 1,
                             Month = 1,
                             Year = 2024
@@ -1129,9 +1129,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            Amount = 3750.00m,
+                            Amount = 100m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
+                            DeductionId = 5,
                             EmployeeId = 1,
                             Month = 1,
                             Year = 2024
@@ -1139,100 +1139,50 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            Amount = 1800.00m,
+                            Amount = 500m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 2,
+                            DeductionId = 3,
+                            EmployeeId = 3,
                             Month = 1,
                             Year = 2024
                         },
                         new
                         {
                             Id = 4,
-                            Amount = 2500.00m,
+                            Amount = 1000m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 2,
+                            DeductionId = 4,
+                            EmployeeId = 4,
                             Month = 1,
                             Year = 2024
                         },
                         new
                         {
                             Id = 5,
-                            Amount = 1350.00m,
+                            Amount = 100m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 3,
+                            DeductionId = 5,
+                            EmployeeId = 5,
                             Month = 1,
                             Year = 2024
                         },
                         new
                         {
                             Id = 6,
-                            Amount = 1500.00m,
+                            Amount = 300m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 3,
+                            DeductionId = 3,
+                            EmployeeId = 7,
                             Month = 1,
                             Year = 2024
                         },
                         new
                         {
                             Id = 7,
-                            Amount = 1980.00m,
+                            Amount = 100m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 4,
-                            Month = 1,
-                            Year = 2024
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Amount = 2750.00m,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 4,
-                            Month = 1,
-                            Year = 2024
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Amount = 1440.00m,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 5,
-                            Month = 1,
-                            Year = 2024
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Amount = 1600.00m,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 5,
-                            Month = 1,
-                            Year = 2024
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Amount = 2160.00m,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 6,
-                            Month = 1,
-                            Year = 2024
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Amount = 3000.00m,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 6,
+                            DeductionId = 5,
+                            EmployeeId = 7,
                             Month = 1,
                             Year = 2024
                         });
@@ -1958,53 +1908,53 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = 7,
-                            BasicSalary = 25000.00m,
-                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 1,
-                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Month = 9,
-                            NetSalary = 22100.00m,
-                            TotalAllowances = 3100.00m,
-                            TotalDeductions = 6000.00m,
+                            BasicSalary = 14000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 7,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 13600.00m,
+                            TotalAllowances = 2100.00m,
+                            TotalDeductions = 2500.00m,
                             Year = 2024
                         },
                         new
                         {
                             Id = 8,
-                            BasicSalary = 20000.00m,
-                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 2,
-                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Month = 9,
-                            NetSalary = 18500.00m,
-                            TotalAllowances = 2800.00m,
-                            TotalDeductions = 4300.00m,
+                            BasicSalary = 23000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 8,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 21500.00m,
+                            TotalAllowances = 3000.00m,
+                            TotalDeductions = 4500.00m,
                             Year = 2024
                         },
                         new
                         {
                             Id = 9,
-                            BasicSalary = 22000.00m,
-                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 4,
-                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Month = 9,
-                            NetSalary = 20170.00m,
-                            TotalAllowances = 2900.00m,
-                            TotalDeductions = 4730.00m,
+                            BasicSalary = 13000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 9,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 12700.00m,
+                            TotalAllowances = 2000.00m,
+                            TotalDeductions = 2300.00m,
                             Year = 2024
                         },
                         new
                         {
                             Id = 10,
-                            BasicSalary = 24000.00m,
-                            CreatedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 6,
-                            GeneratedAt = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Month = 9,
-                            NetSalary = 21940.00m,
-                            TotalAllowances = 3100.00m,
-                            TotalDeductions = 5160.00m,
+                            BasicSalary = 26000.00m,
+                            CreatedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmployeeId = 10,
+                            GeneratedAt = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Month = 10,
+                            NetSalary = 24000.00m,
+                            TotalAllowances = 3200.00m,
+                            TotalDeductions = 5200.00m,
                             Year = 2024
                         });
                 });

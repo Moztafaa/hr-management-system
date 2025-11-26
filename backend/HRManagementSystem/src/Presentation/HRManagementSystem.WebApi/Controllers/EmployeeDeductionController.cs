@@ -56,4 +56,15 @@ public class EmployeeDeductionController(IEmployeeDeductionService _employeeDedu
 
         return NoContent();
     }
+
+    [HttpGet("Employee/{employeeId}/Month/{month}/Year/{year}")]
+    public async Task<IActionResult> GetByEmployeeAndMonth(int employeeId, int month, int year)
+    {
+        Response<IEnumerable<EmployeeDeductionDto>> response = await _employeeDeductionService.GetByEmployeeAndMonthAsync(employeeId, month, year);
+        if (response.HasError)
+            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+
+        return Ok(response);
+    }
+
 }

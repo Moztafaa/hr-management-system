@@ -65,16 +65,24 @@ public class DeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) : IDeduc
             if (deduction == null)
                 return new Response<DeductionDto>(default!, "Deduction not found.", true);
 
-
-            if (!string.Equals(deduction.Name, request.Name, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(request.Name))
             {
-                Deduction? existing = await _unitOfWork.Deductions.GetByNameAsync(request.Name);
-                if (existing != null && existing.Id != id)
-                    return new Response<DeductionDto>(default!, "Another deduction with this name already exists.", true);
+                if (!string.Equals(deduction.Name, request.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    Deduction? existing = await _unitOfWork.Deductions.GetByNameAsync(request.Name);
+                    if (existing != null && existing.Id != id)
+                        return new Response<DeductionDto>(default!, "Another deduction with this name already exists.", true);
+                }
+
+                deduction.Name = request.Name;
             }
 
-            deduction.Name = request.Name;
-            deduction.Value = request.Value;
+            if (request.IsPercentage.HasValue)
+                deduction.IsPercentage = request.IsPercentage.Value;
+
+            if (request.Value.HasValue)
+                deduction.Value = request.Value.Value;
+
             deduction.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Deductions.UpdateAsync(deduction);

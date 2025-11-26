@@ -8,7 +8,7 @@ public class EmployeeAllowanceService(
     {
         try
         {
-            IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances.GetAllAsync();
+            IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances.GetAllWithDetailsAsync();
             IEnumerable<EmployeeAllowanceDto> employeeAllowanceDtos = _mapper.Map<IEnumerable<EmployeeAllowanceDto>>(employeeAllowances);
             return new Response<IEnumerable<EmployeeAllowanceDto>>(employeeAllowanceDtos, string.Empty, false);
         }
@@ -22,7 +22,7 @@ public class EmployeeAllowanceService(
     {
         try
         {
-            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdAsync(id);
+            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdWithDetailsAsync(id);
             if (employeeAllowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Employee allowance not found.", true);
 
@@ -70,33 +70,31 @@ public class EmployeeAllowanceService(
             if (employeeAllowance == null)
                 return new Response<EmployeeAllowanceDto>(default!, "Employee allowance not found.", true);
 
-            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(request.AllowanceId);
-            if (allowance == null)
-                return new Response<EmployeeAllowanceDto>(default!, "Invalid allowance ID.", true);
+            if (request.Amount.HasValue)
+                employeeAllowance.Amount = request.Amount.Value;
 
-            IEnumerable<EmployeeAllowance> existingAllowances = await _unitOfWork.EmployeeAllowances
-                .GetByEmployeeAndMonthAsync(request.EmployeeId, employeeAllowance.Month, employeeAllowance.Year);
+            if (request.Month.HasValue && request.Month.Value > 0)
+                employeeAllowance.Month = request.Month.Value;
 
-            EmployeeAllowance? duplicate = existingAllowances.FirstOrDefault(a => a.AllowanceId == request.AllowanceId && a.Id != id);
-            if (duplicate != null)
-            {
-                await _unitOfWork.EmployeeAllowances.DeleteAsync(duplicate.Id);
-            }
+            if (request.Year.HasValue && request.Year.Value > 0)
+                employeeAllowance.Year = request.Year.Value;
 
-            employeeAllowance.AllowanceId = request.AllowanceId;
-            employeeAllowance.EmployeeId = request.EmployeeId;
-            employeeAllowance.Amount = request.Amount;
             employeeAllowance.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.EmployeeAllowances.UpdateAsync(employeeAllowance);
             await _unitOfWork.SaveChangesAsync();
 
             EmployeeAllowanceDto dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
-            return new Response<EmployeeAllowanceDto>(dto, string.Empty, false);
+
+            return new Response<EmployeeAllowanceDto>(dto, "", false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeAllowanceDto>(default!, $"Error occurred while updating the employee allowance: {ex.Message}", true);
+            return new Response<EmployeeAllowanceDto>(
+                default!,
+                $"Error occurred while updating employee allowance: {ex.Message}",
+                true
+            );
         }
     }
 
@@ -117,4 +115,45 @@ public class EmployeeAllowanceService(
             return new Response<bool>(false, $"Error occurred while deleting the employee allowance: {ex.Message}", true);
         }
     }
+
+    public async Task<Response<IEnumerable<EmployeeAllowanceDto>>>GetByEmployeeAndMonthAsync(int employeeId, int month, int year)
+    {
+        try
+        {
+            IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances.GetByEmployeeAndMonthAsync(employeeId, month, year);
+
+            IEnumerable<EmployeeAllowanceDto> dtoList = _mapper.Map<IEnumerable<EmployeeAllowanceDto>>(employeeAllowances);
+
+            foreach (EmployeeAllowanceDto dto in dtoList)
+            {
+                dto.AllowanceName = employeeAllowances
+                    .First(ea => ea.Id == dto.Id)
+                    .Allowance?.Name ?? string.Empty;
+            }
+
+            return new Response<IEnumerable<EmployeeAllowanceDto>>(dtoList, string.Empty, false);
+        }
+        catch (Exception ex)
+        {
+            return new Response<IEnumerable<EmployeeAllowanceDto>>(null!,
+                $"Error occurred while retrieving employee allowances: {ex.Message}", true);
+        }
+    }
+
+    //public async Task<Response<decimal>>GetTotalAllowancesByEmployeeAndMonthAsync(int employeeId, int month, int year)
+    //{
+    //    try
+    //    {
+    //        decimal total = await _unitOfWork.EmployeeAllowances
+    //            .GetTotalAllowancesByEmployeeAndMonthAsync(employeeId, month, year);
+
+    //        return new Response<decimal>(total, string.Empty, false);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return new Response<decimal>(0, $"Error occurred while calculating total allowances: {ex.Message}", true);
+    //    }
+    //}
+
+
 }

@@ -1,11 +1,12 @@
-﻿namespace HRManagementSystem.Application.DTOs.Payroll.EmployeeAllowance;
+﻿using System.ComponentModel;
+
+namespace HRManagementSystem.Application.DTOs.Payroll.EmployeeAllowance;
 
 public class UpdateEmployeeAllowanceDto
 {
-    public int EmployeeId { get; set; }
-    public int AllowanceId { get; set; }
-    public decimal Amount { get; set; }
-    public int Month { get; set; }
-    public int Year { get; set; }
-
+    [DefaultValue(null)]
+    public decimal? Amount { get; set; }
+    public int? Month { get; set; }
+    public int? Year { get; set; }
 }
+

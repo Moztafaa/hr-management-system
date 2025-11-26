@@ -1,8 +1,14 @@
-﻿namespace HRManagementSystem.Application.DTOs.Payroll.Allowance;
+﻿using System.ComponentModel;
+
+namespace HRManagementSystem.Application.DTOs.Payroll.Allowance;
 
 public class UpdateAllowanceDto
 {
-    public string Name { get; set; } = default!;
-    public bool IsPercentage { get; set; }
-    public decimal Value { get; set; }
+    public string? Name { get; set; } = default!;
+
+    [DefaultValue(null)]
+    public bool? IsPercentage { get; set; }
+
+    [DefaultValue(null)]
+    public decimal? Value { get; set; }
 }

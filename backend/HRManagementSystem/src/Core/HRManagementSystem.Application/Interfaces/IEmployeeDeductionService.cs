@@ -9,4 +9,6 @@ public interface IEmployeeDeductionService
     Task<Response<EmployeeDeductionDto>> CreateAsync(CreateEmployeeDeductionDto request);
     Task<Response<EmployeeDeductionDto>> UpdateAsync(int id, UpdateEmployeeDeductionDto request);
     Task<Response<bool>> DeleteAsync(int id);
+    Task<Response<IEnumerable<EmployeeDeductionDto>>> GetByEmployeeAndMonthAsync(int employeeId, int month, int year);
+    //Task<Response<decimal>> GetTotalDeductionsByEmployeeAndMonthAsync(int employeeId, int month, int year);
 }

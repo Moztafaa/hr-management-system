@@ -8,7 +8,7 @@ public class EmployeeDeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) 
     {
         try
         {
-            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions.GetAllAsync();
+            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions.GetAllWithDetailsAsync();
             IEnumerable<EmployeeDeductionDto> dtoList = _mapper.Map<IEnumerable<EmployeeDeductionDto>>(employeeDeductions);
             return new Response<IEnumerable<EmployeeDeductionDto>>(dtoList, string.Empty, false);
         }
@@ -22,7 +22,7 @@ public class EmployeeDeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) 
     {
         try
         {
-            EmployeeDeduction? employeeDeduction = await _unitOfWork.EmployeeDeductions.GetByIdAsync(id);
+            EmployeeDeduction? employeeDeduction = await _unitOfWork.EmployeeDeductions.GetByIdWithDetailsAsync(id);
             if (employeeDeduction == null)
                 return new Response<EmployeeDeductionDto>(null!, "Employee deduction not found", true);
 
@@ -60,22 +60,15 @@ public class EmployeeDeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) 
             if (existingDeduction == null)
                 return new Response<EmployeeDeductionDto>(null!, "Employee deduction not found.", true);
 
-            Deduction? deduction = await _unitOfWork.Deductions.GetByIdAsync(request.DeductionId);
-            if (deduction == null)
-                return new Response<EmployeeDeductionDto>(null!, "Invalid deduction ID.", true);
+            if (request.Amount.HasValue)
+                existingDeduction.Amount = request.Amount.Value;
 
-            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions
-                .GetByEmployeeAndMonthAsync(request.EmployeeId, existingDeduction.Month, existingDeduction.Year);
+            if (request.Month.HasValue && request.Month.Value > 0)
+                existingDeduction.Month = request.Month.Value;
 
-            EmployeeDeduction? duplicate = employeeDeductions.FirstOrDefault(d => d.DeductionId == request.DeductionId && d.Id != id);
-            if (duplicate != null)
-            {
-                await _unitOfWork.EmployeeDeductions.DeleteAsync(duplicate.Id);
-            }
+            if (request.Year.HasValue && request.Year.Value > 0)
+                existingDeduction.Year = request.Year.Value;
 
-            existingDeduction.DeductionId = request.DeductionId;
-            existingDeduction.EmployeeId = request.EmployeeId;
-            existingDeduction.Amount = request.Amount;
             existingDeduction.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.EmployeeDeductions.UpdateAsync(existingDeduction);
@@ -86,7 +79,9 @@ public class EmployeeDeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) 
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeDeductionDto>(null!, $"Error occurred while updating the employee deduction: {ex.Message}", true);
+            return new Response<EmployeeDeductionDto>(null!,
+                $"Error occurred while updating the employee deduction: {ex.Message}",
+                true);
         }
     }
 
@@ -107,4 +102,45 @@ public class EmployeeDeductionService(IUnitOfWork _unitOfWork, IMapper _mapper) 
             return new Response<bool>(false, ex.Message, true);
         }
     }
+
+    public async Task<Response<IEnumerable<EmployeeDeductionDto>>> GetByEmployeeAndMonthAsync(int employeeId, int month, int year)
+    {
+        try
+        {
+            IEnumerable<EmployeeDeduction> employeeDeductions = await _unitOfWork.EmployeeDeductions
+                .GetByEmployeeAndMonthAsync(employeeId, month, year);
+
+            IEnumerable<EmployeeDeductionDto> dtoList = _mapper.Map<IEnumerable<EmployeeDeductionDto>>(employeeDeductions);
+
+            foreach (EmployeeDeductionDto dto in dtoList)
+            {
+                dto.DeductionName = employeeDeductions
+                    .First(ed => ed.Id == dto.Id)
+                    .Deduction?.Name ?? string.Empty;
+            }
+
+            return new Response<IEnumerable<EmployeeDeductionDto>>(dtoList, string.Empty, false);
+        }
+        catch (Exception ex)
+        {
+            return new Response<IEnumerable<EmployeeDeductionDto>>(null!,
+                $"Error occurred while retrieving employee deductions: {ex.Message}", true);
+        }
+    }
+
+    //public async Task<Response<decimal>> GetTotalDeductionsByEmployeeAndMonthAsync(int employeeId, int month, int year)
+    //{
+    //    try
+    //    {
+    //        decimal total = await _unitOfWork.EmployeeDeductions
+    //            .GetTotalDeductionsByEmployeeAndMonthAsync(employeeId, month, year);
+
+    //        return new Response<decimal>(total, string.Empty, false);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return new Response<decimal>(0, $"Error occurred while calculating total deductions: {ex.Message}", true);
+    //    }
+    //}
+
 }

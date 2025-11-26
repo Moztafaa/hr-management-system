@@ -21,7 +21,7 @@ public static class EmployeeAllowanceSeedData
                 Id = 2,
                 EmployeeId = 1,
                 AllowanceId = 2, // Transportation
-                Amount = 800.00m,
+                Amount = 8m,
                 Month = 1,
                 Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
@@ -53,7 +53,7 @@ public static class EmployeeAllowanceSeedData
                 Id = 5,
                 EmployeeId = 2,
                 AllowanceId = 2, // Transportation
-                Amount = 800.00m,
+                Amount = 8m,
                 Month = 1,
                 Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
@@ -85,7 +85,7 @@ public static class EmployeeAllowanceSeedData
                 Id = 8,
                 EmployeeId = 3,
                 AllowanceId = 2, // Transportation
-                Amount = 700.00m,
+                Amount = 7m,
                 Month = 1,
                 Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
@@ -107,7 +107,7 @@ public static class EmployeeAllowanceSeedData
                 Id = 10,
                 EmployeeId = 4,
                 AllowanceId = 2, // Transportation
-                Amount = 800.00m,
+                Amount = 8m,
                 Month = 1,
                 Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
@@ -139,7 +139,7 @@ public static class EmployeeAllowanceSeedData
                 Id = 13,
                 EmployeeId = 5,
                 AllowanceId = 2, // Transportation
-                Amount = 700.00m,
+                Amount = 7m,
                 Month = 1,
                 Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
@@ -161,7 +161,7 @@ public static class EmployeeAllowanceSeedData
                 Id = 15,
                 EmployeeId = 6,
                 AllowanceId = 2, // Transportation
-                Amount = 800.00m,
+                Amount = 8m,
                 Month = 1,
                 Year = 2024,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
@@ -181,7 +181,7 @@ public static class EmployeeAllowanceSeedData
                 Id = 17,
                 EmployeeId = 2,
                 AllowanceId = 8, // Bonus
-                Amount = 1700.00m,
+                Amount = 2000.00m,
                 Month = 5,
                 Year = 2025,
                 CreatedAt = new DateTime(2025, 5, 1, 0, 0, 0, DateTimeKind.Utc)

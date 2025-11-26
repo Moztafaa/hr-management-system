@@ -91,11 +91,11 @@ public class EmployeeTrainingService(IUnitOfWork unitOfWork, IMapper mapper) : I
         await _unitOfWork.EmployeeTrainings.UpdateAsync(enrollment, cancellationToken);
 
         Allowance? trainingBonusAllowance = await _unitOfWork.Allowances
-            .GetByIdAsync(8, cancellationToken);
+            .GetByNameAsync("Training Completion Bonus", cancellationToken);
 
         if (trainingBonusAllowance == null)
         {
-            return new Response<bool>(false, "Training bonus allowance (ID = 8) not found", true);
+            return new Response<bool>(false, "Training bonus allowance not found", true);
         }
 
         //  Add employee allowance for the SAME MONTH the training was completed

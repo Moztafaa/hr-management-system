@@ -52,11 +52,17 @@ public class TrainingCourseService(IUnitOfWork unitOfWork, IMapper mapper) : ITr
     {
         TrainingCourse? entity = await _unitOfWork.TrainingCourses.GetByIdAsync(id, cancellationToken);
         if (entity == null)
-        {
             return new Response<TrainingCourseDto>(null!, $"Training course with id {id} not found.", true);
-        }
 
-        _mapper.Map(dto, entity);
+        if (!string.IsNullOrWhiteSpace(dto.Title))
+            entity.Title = dto.Title;
+
+        if (dto.Description != null)
+            entity.Description = dto.Description;
+
+        if (dto.DurationHours.HasValue)
+            entity.DurationHours = dto.DurationHours.Value;
+
         await _unitOfWork.TrainingCourses.UpdateAsync(entity, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

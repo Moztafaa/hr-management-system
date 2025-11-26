@@ -67,15 +67,24 @@ public class AllowanceService(IUnitOfWork _unitOfWork, IMapper _mapper) : IAllow
             if (allowance == null)
                 return new Response<AllowanceDto>(default!, "Allowance not found.", true);
 
-            if (!string.Equals(allowance.Name, request.Name, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(request.Name))
             {
-                Allowance? existing = await _unitOfWork.Allowances.GetByNameAsync(request.Name);
-                if (existing != null && existing.Id != id)
-                    return new Response<AllowanceDto>(default!, "Another allowance with this name already exists.", true);
+                if (!string.Equals(allowance.Name, request.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    Allowance? existing = await _unitOfWork.Allowances.GetByNameAsync(request.Name);
+                    if (existing != null && existing.Id != id)
+                        return new Response<AllowanceDto>(default!, "Another allowance with this name already exists.", true);
+                }
+
+                allowance.Name = request.Name;
             }
 
-            allowance.Name = request.Name;
-            allowance.Value = request.Value;
+            if (request.IsPercentage.HasValue)
+                allowance.IsPercentage = request.IsPercentage.Value;
+
+            if (request.Value.HasValue)
+                allowance.Value = request.Value.Value;
+
             allowance.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Allowances.UpdateAsync(allowance);
