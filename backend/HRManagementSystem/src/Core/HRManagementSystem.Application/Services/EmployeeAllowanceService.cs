@@ -74,6 +74,13 @@ public class EmployeeAllowanceService(
                     return new Response<EmployeeAllowanceDto>(null!, "End date must be greater than start date.", true);
             }
 
+            if (request.Recurrence == RecurrenceType.Annual)
+            {
+                if (request.StartDate == null)
+                    return new Response<EmployeeAllowanceDto>(null!, "Start date is required for annual allowances.", true);
+
+                request.EndDate = null;
+            }
             if (request.Recurrence == RecurrenceType.Permanent)
             {
                 request.StartDate = null;
@@ -156,6 +163,14 @@ public class EmployeeAllowanceService(
                     case RecurrenceType.Permanent:
                         employeeAllowance.StartDate = null;
                         employeeAllowance.EndDate = null;
+                        break;
+
+                    case RecurrenceType.Annual:
+                        if (!request.StartDate.HasValue)
+                            return new Response<EmployeeAllowanceDto>(null!, "Start date is required for annual allowances.", true);
+
+                        employeeAllowance.StartDate = request.StartDate;
+                        employeeAllowance.EndDate = null; 
                         break;
                 }
             }

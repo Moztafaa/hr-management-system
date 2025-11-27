@@ -37,8 +37,40 @@ public class PayslipService : IPayslipService
 
             var (allowances, deductions) = await LoadActiveBenefitsAsync(employeeId, month, year, cancellationToken);
 
-            decimal totalAllowances = allowances.Sum(a => a.Amount ?? a.Allowance.Amount);
-            decimal totalDeductions = deductions.Sum(d => d.Amount ?? d.Deduction.Amount);
+            decimal totalAllowances = allowances.Sum(a =>
+            {
+                bool useEmployeeValue = a.Amount.HasValue && a.IsPercentage.HasValue;
+
+                decimal amount = useEmployeeValue
+                    ? a.Amount!.Value
+                    : a.Allowance.Amount;
+
+                bool isPercentage = useEmployeeValue
+                    ? a.IsPercentage!.Value
+                    : a.Allowance.IsPercentage;
+
+                return isPercentage
+                    ? (employee.BasicSalary * (amount / 100m))
+                    : amount;
+            });
+
+            decimal totalDeductions = deductions.Sum(d =>
+            {
+                bool useEmployeeValue = d.Amount.HasValue && d.IsPercentage.HasValue;
+
+                decimal amount = useEmployeeValue
+                    ? d.Amount!.Value
+                    : d.Deduction.Amount;
+
+                bool isPercentage = useEmployeeValue
+                    ? d.IsPercentage!.Value
+                    : d.Deduction.IsPercentage;
+
+                return isPercentage
+                    ? (employee.BasicSalary * (amount / 100m))
+                    : amount;
+            });
+
 
             decimal netSalary = employee.BasicSalary + totalAllowances - totalDeductions;
 

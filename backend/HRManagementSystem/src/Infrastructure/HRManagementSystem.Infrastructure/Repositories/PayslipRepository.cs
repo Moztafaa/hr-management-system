@@ -66,13 +66,17 @@ public class PayslipRepository : Repository<Payslip>, IPayslipRepository
         var date = new DateTime(year, month, 1);
         switch (ea.Recurrence)
         {
-            case RecurrenceType.Permanent:
-                return true;
             case RecurrenceType.OneTime:
                 return ea.StartDate.HasValue && ea.StartDate.Value.Month == month && ea.StartDate.Value.Year == year;
             case RecurrenceType.Period:
                 return ea.StartDate.HasValue && ea.EndDate.HasValue && date >= new DateTime(ea.StartDate.Value.Year, ea.StartDate.Value.Month, 1)
                                                          && date <= new DateTime(ea.EndDate.Value.Year, ea.EndDate.Value.Month, 1);
+            case RecurrenceType.Annual:
+                return ea.StartDate.HasValue &&
+                       ea.StartDate.Value.Month == month &&
+                       year >= ea.StartDate.Value.Year;
+            case RecurrenceType.Permanent:
+                return true;
             default:
                 return false;
         }
@@ -95,19 +99,35 @@ public class PayslipRepository : Repository<Payslip>, IPayslipRepository
     private bool IsDeductionActive(EmployeeDeduction ed, int month, int year)
     {
         var date = new DateTime(year, month, 1);
+
         switch (ed.Recurrence)
         {
+            case RecurrenceType.OneTime:
+                return ed.StartDate.HasValue &&
+                       ed.StartDate.Value.Month == month &&
+                       ed.StartDate.Value.Year == year;
+
+            case RecurrenceType.Period:
+                if (!ed.StartDate.HasValue || !ed.EndDate.HasValue)
+                    return false;
+
+                var start = new DateTime(ed.StartDate.Value.Year, ed.StartDate.Value.Month, 1);
+                var end = new DateTime(ed.EndDate.Value.Year, ed.EndDate.Value.Month, 1);
+
+                return date >= start && date <= end;
+
+            case RecurrenceType.Annual:
+                return ed.StartDate.HasValue &&
+                       ed.StartDate.Value.Month == month &&
+                       year >= ed.StartDate.Value.Year;
+
             case RecurrenceType.Permanent:
                 return true;
-            case RecurrenceType.OneTime:
-                return ed.StartDate.HasValue && ed.StartDate.Value.Month == month && ed.StartDate.Value.Year == year;
-            case RecurrenceType.Period:
-                return ed.StartDate.HasValue && ed.EndDate.HasValue &&
-                       date >= new DateTime(ed.StartDate.Value.Year, ed.StartDate.Value.Month, 1) &&
-                       date <= new DateTime(ed.EndDate.Value.Year, ed.EndDate.Value.Month, 1);
+
             default:
                 return false;
         }
     }
+
 
 }
