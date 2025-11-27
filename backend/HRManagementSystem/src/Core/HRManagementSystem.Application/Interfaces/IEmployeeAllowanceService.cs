@@ -3,8 +3,9 @@
 public interface IEmployeeAllowanceService
 {
     Task<Response<IEnumerable<EmployeeAllowanceDto>>> GetAllAsync();
-    Task<Response<EmployeeAllowanceDto>> GetByIdAsync(int id);
+    Task<Response<EmployeeAllowanceDto>> GetByCompositeKeyAsync(int employeeId, int allowanceId);
+    Task<Response<IEnumerable<EmployeeAllowanceWithDetailsDto>>> GetByEmployeeIdAsync(int employeeId);
     Task<Response<EmployeeAllowanceDto>> CreateAsync(CreateEmployeeAllowanceDto request);
-    Task<Response<EmployeeAllowanceDto>> UpdateAsync(int id, UpdateEmployeeAllowanceDto request);
-    Task<Response<bool>> DeleteAsync(int id);
+    Task<Response<EmployeeAllowanceDto>> UpdateAsync(int employeeId, int allowanceId, UpdateEmployeeAllowanceDto request);
+    Task<Response<bool>> DeleteAsync(int employeeId, int allowanceId);
 }

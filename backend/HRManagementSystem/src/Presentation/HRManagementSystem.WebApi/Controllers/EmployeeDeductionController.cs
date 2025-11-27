@@ -3,25 +3,25 @@ namespace HRManagementSystem.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 // [Authorize]
-//[Authorize(Roles = "Admin,HR")]
+// [Authorize(Roles = "Admin,HR")]
 public class EmployeeDeductionController(IEmployeeDeductionService _employeeDeductionService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        Response<IEnumerable<EmployeeDeductionDto>> response = await _employeeDeductionService.GetAllAsync();
+        var response = await _employeeDeductionService.GetAllAsync();
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    [HttpGet("{employeeId}/{deductionId}")]
+    public async Task<IActionResult> GetByCompositeKey(int employeeId, int deductionId)
     {
-        Response<EmployeeDeductionDto> response = await _employeeDeductionService.GetByIdAsync(id);
+        var response = await _employeeDeductionService.GetByCompositeKeyAsync(employeeId, deductionId);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return Ok(response);
     }
@@ -29,30 +29,41 @@ public class EmployeeDeductionController(IEmployeeDeductionService _employeeDedu
     [HttpPost]
     public async Task<IActionResult> Create(CreateEmployeeDeductionDto request)
     {
-        Response<EmployeeDeductionDto> response = await _employeeDeductionService.CreateAsync(request);
+        var response = await _employeeDeductionService.CreateAsync(request);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
-        return CreatedAtAction(nameof(GetById), new { id = response.Data.Id }, response);
+        return CreatedAtAction(nameof(GetByCompositeKey), new { employeeId = response.Data.EmployeeId, deductionId = response.Data.DeductionId }, response);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateEmployeeDeductionDto request)
+    [HttpPut("{employeeId}/{deductionId}")]
+    public async Task<IActionResult> Update(int employeeId, int deductionId, UpdateEmployeeDeductionDto request)
     {
-        Response<EmployeeDeductionDto> response = await _employeeDeductionService.UpdateAsync(id, request);
+        var response = await _employeeDeductionService.UpdateAsync(employeeId, deductionId, request);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{employeeId}/{deductionId}")]
+    public async Task<IActionResult> Delete(int employeeId, int deductionId)
     {
-        Response<bool> response = await _employeeDeductionService.DeleteAsync(id);
+        var response = await _employeeDeductionService.DeleteAsync(employeeId, deductionId);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return NoContent();
     }
+
+    [HttpGet("employee/{employeeId}")]
+    public async Task<IActionResult> GetByEmployee(int employeeId)
+    {
+        var response = await _employeeDeductionService.GetByEmployeeIdAsync(employeeId);
+        if (response.HasError)
+            return BadRequest(new { response.HasError, response.ErrorMessage });
+
+        return Ok(response);
+    }
+
 }

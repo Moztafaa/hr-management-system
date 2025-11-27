@@ -6,5 +6,10 @@ namespace HRManagementSystem.Application.Interfaces;
 public interface IEmployeeDeductionRepository : IRepository<EmployeeDeduction>
 {
     Task<IEnumerable<EmployeeDeduction>> GetByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default);
+
     Task<decimal> GetTotalDeductionsByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default);
+
+    Task<EmployeeDeduction?> GetByCompositeKeyAsync(int employeeId, int deductionId, CancellationToken cancellationToken = default);
+    Task DeleteAsync(int employeeId, int deductionId, CancellationToken cancellationToken = default);
+
 }

@@ -57,10 +57,44 @@ public class MappingHelper:Profile
         CreateMap<EmployeeAllowance, EmployeeAllowanceDto>().ReverseMap();
         CreateMap<EmployeeAllowance, CreateEmployeeAllowanceDto>().ReverseMap();
         CreateMap<EmployeeAllowance, UpdateEmployeeAllowanceDto>().ReverseMap();
+        CreateMap<EmployeeAllowance, EmployeeAllowanceWithDetailsDto>()
+            .ForMember(dest => dest.OverrideAmount,
+                opt => opt.MapFrom(src => src.Amount))
+            .ForMember(dest => dest.OverrideIsPercentage,
+                opt => opt.MapFrom(src => src.IsPercentage))
+            .ForMember(dest => dest.AllowanceName,
+                opt => opt.MapFrom(src => src.Allowance.Name))
+            .ForMember(dest => dest.AllowanceDefaultAmount,
+                opt => opt.MapFrom(src => src.Allowance.Amount))
+            .ForMember(dest => dest.AllowanceDefaultIsPercentage,
+                opt => opt.MapFrom(src => src.Allowance.IsPercentage))
+            .ForMember(dest => dest.EffectiveAmount,
+                opt => opt.MapFrom(src => src.Amount ?? src.Allowance.Amount))
+            .ForMember(dest => dest.EffectiveIsPercentage,
+                opt => opt.MapFrom(src => src.IsPercentage ?? src.Allowance.IsPercentage));
+
+
+
 
         CreateMap<EmployeeDeduction, EmployeeDeductionDto>().ReverseMap();
         CreateMap<EmployeeDeduction, CreateEmployeeDeductionDto>().ReverseMap();
         CreateMap<EmployeeDeduction, UpdateEmployeeDeductionDto>().ReverseMap();
+        CreateMap<EmployeeDeduction, EmployeeDeductionWithDetailsDto>()
+            .ForMember(dest => dest.OverrideAmount,
+                opt => opt.MapFrom(src => src.Amount))
+            .ForMember(dest => dest.OverrideIsPercentage,
+                opt => opt.MapFrom(src => src.IsPercentage))
+            .ForMember(dest => dest.DeductionName,
+                opt => opt.MapFrom(src => src.Deduction.Name))
+            .ForMember(dest => dest.DeductionDefaultAmount,
+                opt => opt.MapFrom(src => src.Deduction.Amount))
+            .ForMember(dest => dest.DeductionDefaultIsPercentage,
+                opt => opt.MapFrom(src => src.Deduction.IsPercentage))
+            .ForMember(dest => dest.EffectiveAmount,
+                opt => opt.MapFrom(src => src.Amount ?? src.Deduction.Amount))
+            .ForMember(dest => dest.EffectiveIsPercentage,
+                opt => opt.MapFrom(src => src.IsPercentage ?? src.Deduction.IsPercentage));
+
 
         //Leave Request
         CreateMap<LeaveRequest, LeaveRequestDto>().ReverseMap();

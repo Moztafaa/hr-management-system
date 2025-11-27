@@ -8,9 +8,9 @@ public class EmployeeAllowanceService(
     {
         try
         {
-            IEnumerable<EmployeeAllowance> employeeAllowances = await _unitOfWork.EmployeeAllowances.GetAllAsync();
-            IEnumerable<EmployeeAllowanceDto> employeeAllowanceDtos = _mapper.Map<IEnumerable<EmployeeAllowanceDto>>(employeeAllowances);
-            return new Response<IEnumerable<EmployeeAllowanceDto>>(employeeAllowanceDtos, string.Empty, false);
+            var employeeAllowances = await _unitOfWork.EmployeeAllowances.GetAllAsync();
+            var dtos = _mapper.Map<IEnumerable<EmployeeAllowanceDto>>(employeeAllowances);
+            return new Response<IEnumerable<EmployeeAllowanceDto>>(dtos, string.Empty, false);
         }
         catch (Exception ex)
         {
@@ -18,90 +18,205 @@ public class EmployeeAllowanceService(
         }
     }
 
-    public async Task<Response<EmployeeAllowanceDto>> GetByIdAsync(int id)
+    public async Task<Response<EmployeeAllowanceDto>> GetByCompositeKeyAsync(int employeeId, int allowanceId)
     {
         try
         {
-            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdAsync(id);
+            var employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByCompositeKeyAsync(employeeId, allowanceId);
             if (employeeAllowance == null)
-                return new Response<EmployeeAllowanceDto>(default!, "Employee allowance not found.", true);
+                return new Response<EmployeeAllowanceDto>(null!, "Employee allowance not found.", true);
 
-            EmployeeAllowanceDto dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
+            var dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
             return new Response<EmployeeAllowanceDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeAllowanceDto>(default!, $"Error occurred while retrieving the employee allowance: {ex.Message}", true);
+            return new Response<EmployeeAllowanceDto>(null!, $"Error occurred while retrieving the employee allowance: {ex.Message}", true);
         }
     }
+    public async Task<Response<IEnumerable<EmployeeAllowanceWithDetailsDto>>> GetByEmployeeIdAsync(int employeeId)
+    {
+        try
+        {
+            var allowances = await _unitOfWork.EmployeeAllowances.GetByEmployeeIdAsync(employeeId); //error here
+
+            var dtos = _mapper.Map<IEnumerable<EmployeeAllowanceWithDetailsDto>>(allowances);
+
+            return new Response<IEnumerable<EmployeeAllowanceWithDetailsDto>>(dtos, string.Empty, false);
+        }
+        catch (Exception ex)
+        {
+            return new Response<IEnumerable<EmployeeAllowanceWithDetailsDto>>(null!,
+                $"Error occurred while retrieving allowances: {ex.Message}",
+                true);
+        }
+    }
+
+
 
     public async Task<Response<EmployeeAllowanceDto>> CreateAsync(CreateEmployeeAllowanceDto request)
     {
         try
         {
-            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(request.AllowanceId);
+            if (request.Recurrence == RecurrenceType.OneTime)
+            {
+                if (request.StartDate == null)
+                    return new Response<EmployeeAllowanceDto>(null!, "Start date is required for one-time allowances.", true);
+
+                request.EndDate = null;
+            }
+            if (request.Recurrence == RecurrenceType.Period)
+            {
+                if (request.StartDate == null || request.EndDate == null)
+                    return new Response<EmployeeAllowanceDto>(null!, "Start and end dates are required for periodic allowances.", true);
+
+                if (request.EndDate <= request.StartDate)
+                    return new Response<EmployeeAllowanceDto>(null!, "End date must be greater than start date.", true);
+            }
+
+            if (request.Recurrence == RecurrenceType.Permanent)
+            {
+                request.StartDate = null;
+                request.EndDate = null;
+            }
+
+
+            var allowance = await _unitOfWork.Allowances.GetByIdAsync(request.AllowanceId);
             if (allowance == null)
-                return new Response<EmployeeAllowanceDto>(default!, "Invalid allowance ID.", true);
+                return new Response<EmployeeAllowanceDto>(null!, "Invalid allowance ID.", true);
 
-            IEnumerable<EmployeeAllowance> existingAllowances = await _unitOfWork.EmployeeAllowances.GetByEmployeeIdAsync(request.EmployeeId);
-            if (existingAllowances.Any(a => a.AllowanceId == request.AllowanceId))
-                return new Response<EmployeeAllowanceDto>(default!, "Employee already has this allowance assigned.", true);
+            var existing = await _unitOfWork.EmployeeAllowances
+                .GetByCompositeKeyAsync(request.EmployeeId, request.AllowanceId);
 
-            EmployeeAllowance employeeAllowance = _mapper.Map<EmployeeAllowance>(request);
+            if (existing != null)
+                return new Response<EmployeeAllowanceDto>(null!, "Employee already has this allowance assigned.", true);
+
+            var employeeAllowance = _mapper.Map<EmployeeAllowance>(request);
+
+            
+            employeeAllowance.Amount = request.Amount;
+            employeeAllowance.IsPercentage = request.IsPercentage;
+
             employeeAllowance.CreatedAt = DateTime.UtcNow;
 
             await _unitOfWork.EmployeeAllowances.AddAsync(employeeAllowance);
             await _unitOfWork.SaveChangesAsync();
-            EmployeeAllowanceDto dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
 
+            var dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
             return new Response<EmployeeAllowanceDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeAllowanceDto>(default!, $"Error occurred while creating the employee allowance: {ex.Message}", true);
+            return new Response<EmployeeAllowanceDto>(
+                null!,
+                $"Error occurred while creating the employee allowance: {ex.Message}",
+                true
+            );
         }
     }
 
-    public async Task<Response<EmployeeAllowanceDto>> UpdateAsync(int id, UpdateEmployeeAllowanceDto request)
+
+    public async Task<Response<EmployeeAllowanceDto>> UpdateAsync(
+        int employeeId,
+        int allowanceId,
+        UpdateEmployeeAllowanceDto request)
     {
         try
         {
-            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdAsync(id);
+            var employeeAllowance = await _unitOfWork.EmployeeAllowances
+                .GetByCompositeKeyAsync(employeeId, allowanceId);
+
             if (employeeAllowance == null)
-                return new Response<EmployeeAllowanceDto>(default!, "Employee allowance not found.", true);
+                return new Response<EmployeeAllowanceDto>(null!, "Employee allowance not found.", true);
 
+            
+            if (request.Recurrence.HasValue)
+            {
+                employeeAllowance.Recurrence = request.Recurrence.Value;
 
-            Allowance? allowance = await _unitOfWork.Allowances.GetByIdAsync(request.AllowanceId);
-            if (allowance == null)
-                return new Response<EmployeeAllowanceDto>(default!, "Invalid allowance ID.", true);
+                switch (request.Recurrence.Value)
+                {
+                    case RecurrenceType.OneTime:
+                        if (request.StartDate.HasValue)
+                            employeeAllowance.StartDate = request.StartDate;
+                        employeeAllowance.EndDate = null;
+                        break;
 
-            employeeAllowance.AllowanceId = request.AllowanceId;
-            employeeAllowance.EmployeeId = request.EmployeeId;
-            employeeAllowance.Amount = request.Amount;
+                    case RecurrenceType.Period:
+                        if (request.StartDate.HasValue && request.EndDate.HasValue)
+                        {
+                            if (request.EndDate <= request.StartDate)
+                                return new Response<EmployeeAllowanceDto>(null!, "End date must be greater than start date.", true);
+
+                            employeeAllowance.StartDate = request.StartDate;
+                            employeeAllowance.EndDate = request.EndDate;
+                        }
+                        break;
+
+                    case RecurrenceType.Permanent:
+                        employeeAllowance.StartDate = null;
+                        employeeAllowance.EndDate = null;
+                        break;
+                }
+            }
+            else
+            {
+                
+                if (request.StartDate.HasValue)
+                    employeeAllowance.StartDate = request.StartDate;
+                if (request.EndDate.HasValue)
+                    employeeAllowance.EndDate = request.EndDate;
+            }
+
+            
+            if (request.Amount.HasValue)
+                employeeAllowance.Amount = request.Amount.Value;
+            if (request.IsPercentage.HasValue)
+                employeeAllowance.IsPercentage = request.IsPercentage.Value;
+
+           
+            if (request.AllowanceId.HasValue && request.AllowanceId.Value != allowanceId)
+            {
+                var existing = await _unitOfWork.EmployeeAllowances
+                    .GetByCompositeKeyAsync(employeeId, request.AllowanceId.Value);
+
+                if (existing != null)
+                    return new Response<EmployeeAllowanceDto>(null!, "Employee already has this allowance assigned.", true);
+
+                employeeAllowance.AllowanceId = request.AllowanceId.Value;
+            }
+
             employeeAllowance.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.EmployeeAllowances.UpdateAsync(employeeAllowance);
             await _unitOfWork.SaveChangesAsync();
 
-            EmployeeAllowanceDto dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
+            var dto = _mapper.Map<EmployeeAllowanceDto>(employeeAllowance);
             return new Response<EmployeeAllowanceDto>(dto, string.Empty, false);
         }
         catch (Exception ex)
         {
-            return new Response<EmployeeAllowanceDto>(default!, $"Error occurred while updating the employee allowance: {ex.Message}", true);
+            return new Response<EmployeeAllowanceDto>(
+                null!,
+                $"Error occurred while updating the employee allowance: {ex.Message}",
+                true
+            );
         }
     }
 
-    public async Task<Response<bool>> DeleteAsync(int id)
+
+
+    public async Task<Response<bool>> DeleteAsync(int employeeId, int allowanceId)
     {
         try
         {
-            EmployeeAllowance? employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByIdAsync(id);
+            var employeeAllowance = await _unitOfWork.EmployeeAllowances.GetByCompositeKeyAsync(employeeId, allowanceId);
             if (employeeAllowance == null)
                 return new Response<bool>(false, "Employee allowance not found.", true);
 
-            await _unitOfWork.EmployeeAllowances.DeleteAsync(id);
+            await _unitOfWork.EmployeeAllowances.DeleteAsync(employeeAllowance.EmployeeId, employeeAllowance.AllowanceId);
             await _unitOfWork.SaveChangesAsync();
+
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

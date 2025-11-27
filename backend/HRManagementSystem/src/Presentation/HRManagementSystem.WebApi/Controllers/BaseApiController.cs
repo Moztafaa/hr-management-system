@@ -19,4 +19,12 @@ public abstract class BaseApiController : ControllerBase
 
         return Ok(response);
     }
+    protected int GetCurrentUserId()
+    {
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "id");
+        if (userIdClaim == null)
+            throw new UnauthorizedAccessException("Unauthorized: User not authenticated.");
+        return int.Parse(userIdClaim.Value);
+    }
+
 }

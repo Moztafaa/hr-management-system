@@ -1,3 +1,5 @@
+using HRManagementSystem.Infrastructure.Services;
+
 namespace HRManagementSystem.Application;
 
 public static class DependencyInjection
@@ -40,6 +42,9 @@ public static class DependencyInjection
         services.AddAutoMapper(x => x.AddProfile(new JobPostingProfile()));
         services.AddAutoMapper(x => x.AddProfile(new CandidateProfile()));
         services.AddAutoMapper(x => x.AddProfile(new JobApplicationProfile()));
+
+        services.AddScoped<IPdfGenerator, PdfGeneratorService>();
+        services.AddScoped<IExcelGenerator, ExcelGeneratorService>();
 
 
         return services;

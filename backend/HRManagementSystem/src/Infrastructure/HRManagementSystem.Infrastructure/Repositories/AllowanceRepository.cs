@@ -1,5 +1,4 @@
-﻿
-namespace HRManagementSystem.Infrastructure.Repositories;
+﻿namespace HRManagementSystem.Infrastructure.Repositories;
 
 public class AllowanceRepository(ApplicationDbContext _context) : Repository<Allowance>(_context), IAllowanceRepository
 {

@@ -63,7 +63,7 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
 
     public async Task<IDictionary<string, decimal>> GetAllowanceCostBreakdownAsync(int month, int year, CancellationToken cancellationToken = default)
     {
-        return await _context.Allowances
+        return (IDictionary<string, decimal>)await _context.Allowances
             .Select(a => new
             {
                 a.Name,
@@ -77,7 +77,7 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
 
     public async Task<IDictionary<string, decimal>> GetDeductionCostBreakdownAsync(int month, int year, CancellationToken cancellationToken = default)
     {
-        return await _context.Deductions
+        return (IDictionary<string, decimal>)await _context.Deductions
             .Select(d => new
             {
                 d.Name,

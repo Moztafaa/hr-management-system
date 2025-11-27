@@ -1,12 +1,11 @@
-﻿using HRManagementSystem.Application.DTOs.Payroll.EmployeeDeduction;
-
-namespace HRManagementSystem.Application.Interfaces;
+﻿namespace HRManagementSystem.Application.Interfaces;
 
 public interface IEmployeeDeductionService
 {
     Task<Response<IEnumerable<EmployeeDeductionDto>>> GetAllAsync();
-    Task<Response<EmployeeDeductionDto>> GetByIdAsync(int id);
+    Task<Response<EmployeeDeductionDto>> GetByCompositeKeyAsync(int employeeId, int deductionId);
+    Task<Response<IEnumerable<EmployeeDeductionWithDetailsDto>>> GetByEmployeeIdAsync(int employeeId);
     Task<Response<EmployeeDeductionDto>> CreateAsync(CreateEmployeeDeductionDto request);
-    Task<Response<EmployeeDeductionDto>> UpdateAsync(int id, UpdateEmployeeDeductionDto request);
-    Task<Response<bool>> DeleteAsync(int id);
+    Task<Response<EmployeeDeductionDto>> UpdateAsync(int employeeId, int deductionId, UpdateEmployeeDeductionDto request);
+    Task<Response<bool>> DeleteAsync(int employeeId, int deductionId);
 }

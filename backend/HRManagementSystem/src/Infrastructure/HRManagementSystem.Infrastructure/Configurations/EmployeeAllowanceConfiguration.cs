@@ -6,11 +6,20 @@
         {
             builder.ToTable("EmployeeAllowances");
 
-            builder.HasKey(ea => ea.Id);
+            builder.HasKey(ea => new { ea.EmployeeId, ea.AllowanceId });
 
             builder.Property(ea => ea.Amount)
                    .HasColumnType("decimal(18,2)")
+                   .IsRequired(false);
+
+            builder.Property(ea => ea.IsPercentage).IsRequired(false);
+            builder.Property(ea => ea.Recurrence)
+                   .HasConversion<string>()
                    .IsRequired();
+            builder.Property(ea => ea.StartDate).IsRequired(false);
+            builder.Property(ea => ea.EndDate).IsRequired(false);
+            builder.Property(ea => ea.CreatedAt).IsRequired();
+            builder.Property(ea => ea.UpdatedAt).IsRequired(false);
 
             builder.HasOne(ea => ea.Employee)
                    .WithMany(e => e.EmployeeAllowances)

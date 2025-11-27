@@ -1,30 +1,27 @@
-
-﻿
 namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 // [Authorize]
-//[Authorize(Roles = "Admin,HR")]
-
+// [Authorize(Roles = "Admin,HR")]
 public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllowanceService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        Response<IEnumerable<EmployeeAllowanceDto>> response = await _employeeAllowanceService.GetAllAsync();
+        var response = await _employeeAllowanceService.GetAllAsync();
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    [HttpGet("{employeeId}/{allowanceId}")]
+    public async Task<IActionResult> GetByCompositeKey(int employeeId, int allowanceId)
     {
-        Response<EmployeeAllowanceDto> response = await _employeeAllowanceService.GetByIdAsync(id);
+        var response = await _employeeAllowanceService.GetByCompositeKeyAsync(employeeId, allowanceId);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return Ok(response);
     }
@@ -32,30 +29,41 @@ public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllo
     [HttpPost]
     public async Task<IActionResult> Create(CreateEmployeeAllowanceDto request)
     {
-        Response<EmployeeAllowanceDto> response = await _employeeAllowanceService.CreateAsync(request);
+        var response = await _employeeAllowanceService.CreateAsync(request);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
-        return CreatedAtAction(nameof(GetById), new { id = response.Data.Id }, response);
+        return CreatedAtAction(nameof(GetByCompositeKey), new { employeeId = response.Data.EmployeeId, allowanceId = response.Data.AllowanceId }, response);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateEmployeeAllowanceDto request)
+    [HttpPut("{employeeId}/{allowanceId}")]
+    public async Task<IActionResult> Update(int employeeId, int allowanceId, UpdateEmployeeAllowanceDto request)
     {
-        Response<EmployeeAllowanceDto> response = await _employeeAllowanceService.UpdateAsync(id, request);
+        var response = await _employeeAllowanceService.UpdateAsync(employeeId, allowanceId, request);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{employeeId}/{allowanceId}")]
+    public async Task<IActionResult> Delete(int employeeId, int allowanceId)
     {
-        Response<bool> response = await _employeeAllowanceService.DeleteAsync(id);
+        var response = await _employeeAllowanceService.DeleteAsync(employeeId, allowanceId);
         if (response.HasError)
-            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+            return BadRequest(new { response.HasError, response.ErrorMessage });
 
         return NoContent();
     }
+
+    [HttpGet("employee/{employeeId}")]
+    public async Task<IActionResult> GetByEmployee(int employeeId)
+    {
+        var response = await _employeeAllowanceService.GetByEmployeeIdAsync(employeeId);
+        if (response.HasError)
+            return BadRequest(new { response.HasError, response.ErrorMessage });
+
+        return Ok(response);
+    }
+
 }

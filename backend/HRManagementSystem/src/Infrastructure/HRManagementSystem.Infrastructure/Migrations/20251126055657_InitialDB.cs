@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateWithAllSeedData : Migration
+    public partial class InitialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,6 +21,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsPercentage = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -78,6 +79,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsPercentage = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -372,17 +374,19 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "EmployeeAllowances",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     AllowanceId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsPercentage = table.Column<bool>(type: "bit", nullable: true),
+                    Recurrence = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeAllowances", x => x.Id);
+                    table.PrimaryKey("PK_EmployeeAllowances", x => new { x.EmployeeId, x.AllowanceId });
                     table.ForeignKey(
                         name: "FK_EmployeeAllowances_Allowances_AllowanceId",
                         column: x => x.AllowanceId,
@@ -401,17 +405,19 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "EmployeeDeductions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     DeductionId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsPercentage = table.Column<bool>(type: "bit", nullable: true),
+                    Recurrence = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeDeductions", x => x.Id);
+                    table.PrimaryKey("PK_EmployeeDeductions", x => new { x.EmployeeId, x.DeductionId });
                     table.ForeignKey(
                         name: "FK_EmployeeDeductions_Deductions_DeductionId",
                         column: x => x.DeductionId,
@@ -610,16 +616,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Allowances",
-                columns: new[] { "Id", "Amount", "CreatedAt", "Name", "UpdatedAt" },
+                columns: new[] { "Id", "Amount", "CreatedAt", "IsPercentage", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 2000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Housing Allowance", null },
-                    { 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Transportation Allowance", null },
-                    { 3, 500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Food Allowance", null },
-                    { 4, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Mobile Allowance", null },
-                    { 5, 200.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Internet Allowance", null },
-                    { 6, 3000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Performance Bonus", null },
-                    { 7, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Health Insurance", null }
+                    { 1, 2000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Housing Allowance", null },
+                    { 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Transportation Allowance", null },
+                    { 3, 500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Food Allowance", null },
+                    { 4, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Mobile Allowance", null },
+                    { 5, 200.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Internet Allowance", null },
+                    { 6, 3000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Performance Bonus", null },
+                    { 7, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Health Insurance", null }
                 });
 
             migrationBuilder.InsertData(
@@ -636,14 +642,14 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Deductions",
-                columns: new[] { "Id", "Amount", "CreatedAt", "Name", "UpdatedAt" },
+                columns: new[] { "Id", "Amount", "CreatedAt", "IsPercentage", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Social Insurance", null },
-                    { 2, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Income Tax", null },
-                    { 3, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Absence Deduction", null },
-                    { 4, 100.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Late Arrival Penalty", null },
-                    { 5, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Loan Installment", null }
+                    { 1, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Social Insurance", null },
+                    { 2, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Income Tax", null },
+                    { 3, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Absence Deduction", null },
+                    { 4, 100.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Late Arrival Penalty", null },
+                    { 5, 0.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Loan Installment", null }
                 });
 
             migrationBuilder.InsertData(
@@ -729,44 +735,44 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "EmployeeAllowances",
-                columns: new[] { "Id", "AllowanceId", "Amount", "CreatedAt", "EmployeeId", "UpdatedAt" },
+                columns: new[] { "AllowanceId", "EmployeeId", "Amount", "CreatedAt", "EndDate", "IsPercentage", "Recurrence", "StartDate", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 1, 2000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, null },
-                    { 2, 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, null },
-                    { 3, 4, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, null },
-                    { 4, 1, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, null },
-                    { 5, 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, null },
-                    { 6, 5, 200.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, null },
-                    { 7, 1, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, null },
-                    { 8, 2, 700.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, null },
-                    { 9, 1, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 4, null },
-                    { 10, 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 4, null },
-                    { 11, 4, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 4, null },
-                    { 12, 1, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 5, null },
-                    { 13, 2, 700.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 5, null },
-                    { 14, 1, 2000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 6, null },
-                    { 15, 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 6, null },
-                    { 16, 4, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 6, null }
+                    { 1, 1, 2000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 1, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 4, 1, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 2, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 5, 2, 200.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 3, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 3, 700.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 4, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 4, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 4, 4, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 5, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 5, 700.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 6, 2000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 6, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 4, 6, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "EmployeeDeductions",
-                columns: new[] { "Id", "Amount", "CreatedAt", "DeductionId", "EmployeeId", "UpdatedAt" },
+                columns: new[] { "DeductionId", "EmployeeId", "Amount", "CreatedAt", "EndDate", "IsPercentage", "Recurrence", "StartDate", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 2250.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, 1, null },
-                    { 2, 3750.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, 1, null },
-                    { 3, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, 2, null },
-                    { 4, 2500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, 2, null },
-                    { 5, 1350.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, 3, null },
-                    { 6, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, 3, null },
-                    { 7, 1980.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, 4, null },
-                    { 8, 2750.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, 4, null },
-                    { 9, 1440.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, 5, null },
-                    { 10, 1600.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, 5, null },
-                    { 11, 2160.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, 6, null },
-                    { 12, 3000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, 6, null }
+                    { 1, 1, 2250.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 1, 3750.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 2, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 2, 2500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 3, 1350.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 3, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 4, 1980.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 4, 2750.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 5, 1440.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 5, 1600.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 1, 6, 2160.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 2, 6, 3000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -848,19 +854,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 column: "AllowanceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeAllowances_EmployeeId",
-                table: "EmployeeAllowances",
-                column: "EmployeeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EmployeeDeductions_DeductionId",
                 table: "EmployeeDeductions",
                 column: "DeductionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EmployeeDeductions_EmployeeId",
-                table: "EmployeeDeductions",
-                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeLeaveBalances_EmployeeId",
