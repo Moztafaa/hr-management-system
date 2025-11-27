@@ -11,4 +11,7 @@ public class UpdateDeductionDto
 
     [DefaultValue(null)]
     public decimal? Value { get; set; }
+
+    [DefaultValue(null)]
+    public bool? IsFixed { get; set; }
 }

@@ -9,6 +9,7 @@ public static class DeductionSeedData
                 Name = "Social Insurance",
                 Value = 9m,               // 9%
                 IsPercentage = true,
+                IsFixed = true,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new Deduction
@@ -17,6 +18,7 @@ public static class DeductionSeedData
                 Name = "Income Tax",
                 Value = 15m,             // 15%
                 IsPercentage = true,
+                IsFixed = true,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new Deduction
@@ -25,6 +27,7 @@ public static class DeductionSeedData
                 Name = "Absence Deduction",
                 Value = 0.00m, // Calculated based on absent days
                 IsPercentage = true,
+                IsFixed = false,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new Deduction
@@ -33,6 +36,7 @@ public static class DeductionSeedData
                 Name = "Loan Installment",
                 Value = 1000m,           // fixed
                 IsPercentage = false,
+                IsFixed = false,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
             new Deduction
@@ -41,6 +45,7 @@ public static class DeductionSeedData
                 Name = "Late Arrival Penalty",
                 Value = 100m,
                 IsPercentage = false,
+                IsFixed = false,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );

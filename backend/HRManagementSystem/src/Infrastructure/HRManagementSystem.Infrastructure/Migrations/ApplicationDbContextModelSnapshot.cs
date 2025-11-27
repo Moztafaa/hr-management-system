@@ -325,6 +325,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsFixed")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsPercentage")
                         .HasColumnType("bit");
 
@@ -347,6 +350,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsFixed = true,
                             IsPercentage = true,
                             Name = "Social Insurance",
                             Value = 9m
@@ -355,6 +359,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 2,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsFixed = true,
                             IsPercentage = true,
                             Name = "Income Tax",
                             Value = 15m
@@ -363,6 +368,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 3,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsFixed = false,
                             IsPercentage = true,
                             Name = "Absence Deduction",
                             Value = 0.00m
@@ -371,6 +377,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 4,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsFixed = false,
                             IsPercentage = false,
                             Name = "Loan Installment",
                             Value = 1000m
@@ -379,6 +386,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         {
                             Id = 5,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsFixed = false,
                             IsPercentage = false,
                             Name = "Late Arrival Penalty",
                             Value = 100m
@@ -879,7 +887,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<int>("AllowanceId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal?>("Amount")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -1086,7 +1095,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal?>("Amount")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")

@@ -38,7 +38,7 @@ public class PayrollProfile : Profile
                            Id = ea.AllowanceId,
                            Name = ea.Allowance.Name,
                            IsPercentage = ea.Allowance.IsPercentage,
-                            Value = ea.Amount   // use Amount from EmployeeAllowance, maps to Value in DTO
+                           Value = ea.Amount.HasValue ? ea.Amount.Value : (ea.Allowance != null ? ea.Allowance.Value : 0m)
                        })))
             .ForMember(dest => dest.Deductions,
                 opt => opt.MapFrom(src =>
@@ -47,7 +47,8 @@ public class PayrollProfile : Profile
                            Id = ed.DeductionId,
                            Name = ed.Deduction.Name,
                            IsPercentage = ed.Deduction.IsPercentage,
-                           Value = ed.Amount   // use Amount from EmployeeDeduction, maps to Value in DTO
+                           IsFixed = ed.Deduction.IsFixed,
+                          Value = ed.Amount.HasValue ? ed.Amount.Value : (ed.Deduction != null ? ed.Deduction.Value : 0m)
                       })));
 
     }

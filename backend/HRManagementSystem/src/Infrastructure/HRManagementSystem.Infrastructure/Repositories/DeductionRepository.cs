@@ -9,11 +9,8 @@ public class DeductionRepository(ApplicationDbContext _context) : Repository<Ded
     public async Task<Deduction?> GetByNameAsync(string name, CancellationToken cancellationToken = default) => await _dbSet
             .FirstOrDefaultAsync(d => d.Name.ToLower() == name.ToLower(), cancellationToken);
 
-    public async Task<IEnumerable<Deduction>> GetFixedDeductionsAsync(CancellationToken cancellationToken = default)
-    {
-        string[] fixedDeductionNames = ["Social Insurance", "Income Tax"];
-        return await _dbSet
-            .Where(d => fixedDeductionNames.Contains(d.Name))
+    public async Task<IEnumerable<Deduction>> GetFixedDeductionsAsync(CancellationToken cancellationToken = default) => await _dbSet
+            .Where(d => d.IsFixed)
             .ToListAsync(cancellationToken);
-    }
+
 }

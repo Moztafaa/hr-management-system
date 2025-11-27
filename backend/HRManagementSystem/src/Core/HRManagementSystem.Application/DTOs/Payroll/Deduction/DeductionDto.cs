@@ -6,4 +6,5 @@ public class DeductionDto
     public string Name { get; set; } = default!;
     public bool IsPercentage { get; set; }
     public decimal Value { get; set; }
+    public bool IsFixed { get; set; }
 }
