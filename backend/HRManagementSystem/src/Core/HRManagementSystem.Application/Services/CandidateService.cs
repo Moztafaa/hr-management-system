@@ -7,7 +7,7 @@ using HRManagementSystem.Domain.Interfaces;
 
 namespace HRManagementSystem.Application.Services;
 
-public class CandidateService(IUnitOfWork unitOfWork, IMapper mapper) : ICandidateService
+public class CandidateService(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService, INotificationService notificationService) : ICandidateService
 {
     public async Task<Response<CandidateDto>> GetCandidateByIdAsync(int id, CancellationToken cancellationToken = default)
     {
@@ -112,6 +112,22 @@ public class CandidateService(IUnitOfWork unitOfWork, IMapper mapper) : ICandida
 
             await unitOfWork.Candidates.AddAsync(candidate, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send welcome email to candidate
+            try
+            {
+                if (!string.IsNullOrEmpty(candidate.Email))
+                {
+                    await emailService.SendWelcomeEmailAsync(
+                        candidate.Email,
+                        $"{candidate.FirstName} {candidate.LastName}",
+                        cancellationToken);
+                }
+            }
+            catch (Exception emailEx)
+            {
+                Console.WriteLine($"Failed to send welcome email to candidate: {emailEx.Message}");
+            }
 
             CandidateDto candidateDto = mapper.Map<CandidateDto>(candidate);
             return new Response<CandidateDto>(candidateDto, string.Empty, false);

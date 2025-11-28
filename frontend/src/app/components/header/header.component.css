@@ -1,0 +1,71 @@
+.navbar {
+  height: 4.75rem;
+  z-index: 1040;
+  padding: 0;
+  background-color: var(--header-bg) !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-shadow {
+  box-shadow: 0 0.5rem 1rem 0 var(--shadow-color);
+}
+
+.sidebar-toggle {
+  color: var(--text-color);
+  padding: 0;
+}
+
+.sidebar-toggle:hover {
+  color: var(--primary-color);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.user-profile .text-dark {
+  color: var(--text-color) !important;
+}
+
+.user-profile:hover .text-dark {
+  color: var(--primary-color) !important;
+}
+
+/* Icon hover effects */
+.bi-search:hover,
+.bi-envelope:hover,
+.bi-bell:hover,
+.eva-search-outline:hover,
+.eva-email-outline:hover,
+.eva-bell-outline:hover {
+  color: var(--primary-color) !important;
+}
+
+.text-muted {
+  color: var(--text-hint) !important;
+}
+
+.dropdown-menu {
+  background-color: var(--header-bg);
+  border: 1px solid var(--border-color);
+}
+
+.dropdown-item {
+  color: var(--text-color);
+}
+
+.dropdown-item:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-color);
+}
+
+.dropdown-divider {
+  border-top-color: var(--border-color);
+}

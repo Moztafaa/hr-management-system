@@ -327,6 +327,32 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Competency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Competencies");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Deduction", b =>
                 {
                     b.Property<int>("Id")
@@ -1038,6 +1064,41 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeCompetencyRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompetencyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PerformanceReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Rating")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetencyId");
+
+                    b.HasIndex("PerformanceReviewId");
+
+                    b.ToTable("EmployeeCompetencyRatings");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeDeduction", b =>
                 {
                     b.Property<int>("Id")
@@ -1204,6 +1265,83 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("LeaveTypeId");
 
                     b.ToTable("EmployeeLeaveBalances", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FromEmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PerformanceReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PerformanceReviewId");
+
+                    b.ToTable("Feedbacks");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Goal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PerformanceReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ProgressPercent")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PerformanceReviewId");
+
+                    b.ToTable("Goals");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.JobApplication", b =>
@@ -1480,6 +1618,77 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.KPI", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Target")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KPIs");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.KPIResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Actual")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KPIId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PerformanceReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("WeightedScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KPIId");
+
+                    b.HasIndex("PerformanceReviewId");
+
+                    b.ToTable("KPIResults");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveApproval", b =>
                 {
                     b.Property<int>("Id")
@@ -1686,6 +1895,72 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActionUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecipientUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("RelatedEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RelatedEntityType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientUserId", "IsRead");
+
+                    b.ToTable("Notifications", (string)null);
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Payslip", b =>
                 {
                     b.Property<int>("Id")
@@ -1861,6 +2136,77 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             TotalDeductions = 5160.00m,
                             Year = 2024
                         });
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.PerformanceReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("FinalRating")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ReviewCycleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ReviewCycleId");
+
+                    b.ToTable("PerformanceReviews");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.ReviewCycle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Frequency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("RatingScale")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReviewCycles");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Infrastructure.Identity.ApplicationRole", b =>
@@ -2111,6 +2457,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeCompetencyRating", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Competency", "Competency")
+                        .WithMany()
+                        .HasForeignKey("CompetencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.PerformanceReview", "Review")
+                        .WithMany("CompetencyRatings")
+                        .HasForeignKey("PerformanceReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competency");
+
+                    b.Navigation("Review");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeDeduction", b =>
                 {
                     b.HasOne("HRManagementSystem.Domain.Entities.Deduction", "Deduction")
@@ -2147,6 +2512,28 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("LeaveType");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Feedback", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.PerformanceReview", "Review")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("PerformanceReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Review");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.Goal", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.PerformanceReview", "Review")
+                        .WithMany("Goals")
+                        .HasForeignKey("PerformanceReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Review");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.JobApplication", b =>
@@ -2197,6 +2584,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Designation");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.KPIResult", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.KPI", "KPI")
+                        .WithMany()
+                        .HasForeignKey("KPIId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.PerformanceReview", "Review")
+                        .WithMany("KPIResults")
+                        .HasForeignKey("PerformanceReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KPI");
+
+                    b.Navigation("Review");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.LeaveApproval", b =>
@@ -2253,6 +2659,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.PerformanceReview", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.ReviewCycle", "ReviewCycle")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ReviewCycleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("ReviewCycle");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -2361,6 +2786,22 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("EmployeeLeaveBalances");
 
                     b.Navigation("LeaveRequests");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.PerformanceReview", b =>
+                {
+                    b.Navigation("CompetencyRatings");
+
+                    b.Navigation("Feedbacks");
+
+                    b.Navigation("Goals");
+
+                    b.Navigation("KPIResults");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.ReviewCycle", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }
