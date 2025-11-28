@@ -302,7 +302,7 @@ public class PayslipService : IPayslipService
         {
             Id = payslip.Id,
             EmployeeId = payslip.EmployeeId,
-            EmployeeName = payslip.Employee.FirstName+" "+payslip.Employee.LastName,
+            EmployeeName = payslip.Employee.FirstName + " " + payslip.Employee.LastName,
             BasicSalary = payslip.BasicSalary,
             TotalAllowances = payslip.TotalAllowances,
             TotalDeductions = payslip.TotalDeductions,

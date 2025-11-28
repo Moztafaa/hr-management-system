@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251128174330_InitialCreate")]
+    [Migration("20251128230748_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -39,6 +39,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsPercentage")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -56,6 +59,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 1,
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Housing Allowance"
                         },
                         new
@@ -63,6 +67,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Transportation Allowance"
                         },
                         new
@@ -70,6 +75,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 3,
                             Amount = 500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Food Allowance"
                         },
                         new
@@ -77,6 +83,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 4,
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Mobile Allowance"
                         },
                         new
@@ -84,6 +91,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 5,
                             Amount = 200.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Internet Allowance"
                         },
                         new
@@ -91,6 +99,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 6,
                             Amount = 3000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Performance Bonus"
                         },
                         new
@@ -98,7 +107,16 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Id = 7,
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Health Insurance"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Amount = 2000.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
+                            Name = "Training Completion Bonus"
                         });
                 });
 
@@ -370,6 +388,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsPercentage")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -385,36 +406,41 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Amount = 0.00m,
+                            Amount = 9.0m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = true,
                             Name = "Social Insurance"
                         },
                         new
                         {
                             Id = 2,
-                            Amount = 0.00m,
+                            Amount = 12.5m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = true,
                             Name = "Income Tax"
                         },
                         new
                         {
                             Id = 3,
-                            Amount = 0.00m,
+                            Amount = 500.0m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Absence Deduction"
                         },
                         new
                         {
                             Id = 4,
-                            Amount = 100.00m,
+                            Amount = 100.0m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Late Arrival Penalty"
                         },
                         new
                         {
                             Id = 5,
-                            Amount = 0.00m,
+                            Amount = 1000.0m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
                             Name = "Loan Installment"
                         });
                 });
@@ -907,163 +933,193 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeAllowance", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AllowanceId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsPercentage")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Recurrence")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("EmployeeId", "AllowanceId");
 
                     b.HasIndex("AllowanceId");
-
-                    b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeeAllowances", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            EmployeeId = 1,
                             AllowanceId = 1,
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 1
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 2,
+                            EmployeeId = 1,
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 1
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 3,
+                            EmployeeId = 1,
                             AllowanceId = 4,
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 1
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 4,
+                            EmployeeId = 2,
                             AllowanceId = 1,
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 2
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 5,
+                            EmployeeId = 2,
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 2
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 6,
+                            EmployeeId = 2,
                             AllowanceId = 5,
                             Amount = 200.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 2
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 7,
+                            EmployeeId = 3,
                             AllowanceId = 1,
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 3
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 8,
+                            EmployeeId = 3,
                             AllowanceId = 2,
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 3
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 9,
+                            EmployeeId = 4,
                             AllowanceId = 1,
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 4
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 10,
+                            EmployeeId = 4,
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 4
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 11,
+                            EmployeeId = 4,
                             AllowanceId = 4,
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 4
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 12,
+                            EmployeeId = 5,
                             AllowanceId = 1,
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 5
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 13,
+                            EmployeeId = 5,
                             AllowanceId = 2,
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 5
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 14,
+                            EmployeeId = 6,
                             AllowanceId = 1,
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 6
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 15,
+                            EmployeeId = 6,
                             AllowanceId = 2,
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 6
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         },
                         new
                         {
-                            Id = 16,
+                            EmployeeId = 6,
                             AllowanceId = 4,
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EmployeeId = 6
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
+                        },
+                        new
+                        {
+                            EmployeeId = 2,
+                            AllowanceId = 8,
+                            Amount = 2000.00m,
+                            CreatedAt = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = false,
+                            Recurrence = "OneTime"
                         });
                 });
 
@@ -1104,131 +1160,148 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeDeduction", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("DeductionId")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeductionId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<bool?>("IsPercentage")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Recurrence")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("EmployeeId", "DeductionId");
 
                     b.HasIndex("DeductionId");
-
-                    b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeeDeductions", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            EmployeeId = 1,
+                            DeductionId = 1,
                             Amount = 2250.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 1
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 2,
+                            EmployeeId = 1,
+                            DeductionId = 2,
                             Amount = 3750.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 1
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 3,
+                            EmployeeId = 2,
+                            DeductionId = 1,
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 2
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 4,
+                            EmployeeId = 2,
+                            DeductionId = 2,
                             Amount = 2500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 2
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 5,
+                            EmployeeId = 3,
+                            DeductionId = 1,
                             Amount = 1350.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 3
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 6,
+                            EmployeeId = 3,
+                            DeductionId = 2,
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 3
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 7,
+                            EmployeeId = 4,
+                            DeductionId = 1,
                             Amount = 1980.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 4
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 8,
+                            EmployeeId = 4,
+                            DeductionId = 2,
                             Amount = 2750.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 4
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 9,
+                            EmployeeId = 5,
+                            DeductionId = 1,
                             Amount = 1440.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 5
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 10,
+                            EmployeeId = 5,
+                            DeductionId = 2,
                             Amount = 1600.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 5
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 11,
+                            EmployeeId = 6,
+                            DeductionId = 1,
                             Amount = 2160.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 1,
-                            EmployeeId = 6
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 12,
+                            EmployeeId = 6,
+                            DeductionId = 2,
                             Amount = 3000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DeductionId = 2,
-                            EmployeeId = 6
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -1268,6 +1341,82 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.HasIndex("LeaveTypeId");
 
                     b.ToTable("EmployeeLeaveBalances", (string)null);
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeTraining", b =>
+                {
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrainingCourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CompletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EnrollmentDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RewardGiven")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Enrolled");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("EmployeeId", "TrainingCourseId");
+
+                    b.HasIndex("TrainingCourseId");
+
+                    b.ToTable("EmployeeTrainings", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            EmployeeId = 1,
+                            TrainingCourseId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnrollmentDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Id = 1,
+                            RewardGiven = false,
+                            Status = "Enrolled"
+                        },
+                        new
+                        {
+                            EmployeeId = 2,
+                            TrainingCourseId = 3,
+                            CompletionDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnrollmentDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Id = 2,
+                            RewardGiven = true,
+                            Status = "Completed"
+                        },
+                        new
+                        {
+                            EmployeeId = 3,
+                            TrainingCourseId = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnrollmentDate = new DateTime(2025, 3, 22, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Id = 3,
+                            RewardGiven = false,
+                            Status = "Cancelled"
+                        });
                 });
 
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Feedback", b =>
@@ -2212,6 +2361,103 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.ToTable("ReviewCycles");
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.TrainingCourse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int?>("DurationHours")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TrainingCourses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Improve interpersonal and workplace communication skills.",
+                            DurationHours = 8,
+                            Title = "Effective Communication"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Core leadership principles and team management skills.",
+                            DurationHours = 16,
+                            Title = "Leadership Essentials"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Basics of project planning, scope, scheduling, and risk.",
+                            DurationHours = 40,
+                            Title = "Project Management Fundamentals"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Workshop covering Agile principles and Scrum ceremonies.",
+                            DurationHours = 16,
+                            Title = "Agile & Scrum Workshop"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Prioritization and productivity techniques.",
+                            DurationHours = 4,
+                            Title = "Time Management"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Deep dive into C# features and best practices.",
+                            DurationHours = 40,
+                            Title = "Advanced C# Programming"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Secure coding, compliance, and data protection essentials.",
+                            DurationHours = 8,
+                            Title = "Data Protection & Security"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Best practices for customer interactions.",
+                            DurationHours = 8,
+                            Title = "Customer Service Excellence"
+                        });
+                });
+
             modelBuilder.Entity("HRManagementSystem.Infrastructure.Identity.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2517,6 +2763,25 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     b.Navigation("LeaveType");
                 });
 
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.EmployeeTraining", b =>
+                {
+                    b.HasOne("HRManagementSystem.Domain.Entities.Employee", "Employee")
+                        .WithMany("EmployeeTrainings")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HRManagementSystem.Domain.Entities.TrainingCourse", "TrainingCourse")
+                        .WithMany("EmployeeTrainings")
+                        .HasForeignKey("TrainingCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("TrainingCourse");
+                });
+
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.Feedback", b =>
                 {
                     b.HasOne("HRManagementSystem.Domain.Entities.PerformanceReview", "Review")
@@ -2765,6 +3030,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
                     b.Navigation("EmployeeDeductions");
 
+                    b.Navigation("EmployeeTrainings");
+
                     b.Navigation("LeaveApprovals");
 
                     b.Navigation("LeaveBalances");
@@ -2805,6 +3072,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
             modelBuilder.Entity("HRManagementSystem.Domain.Entities.ReviewCycle", b =>
                 {
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Domain.Entities.TrainingCourse", b =>
+                {
+                    b.Navigation("EmployeeTrainings");
                 });
 #pragma warning restore 612, 618
         }
