@@ -1,6 +1,8 @@
+using HRManagementSystem.Application.Helper;
+
 namespace HRManagementSystem.Application.Services;
 
-public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmployeeService
+public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _faceService, IMapper _mapper) : IEmployeeService
 {
     public async Task<Response<EmployeeDto>> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto, CancellationToken cancellationToken = default)
     {
@@ -67,6 +69,26 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmploy
             _mapper.Map(updateEmployeeDto, employee);
 
             await _unitOfWork.Repository<Employee>().UpdateAsync(employee, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return new Response<bool>(true, string.Empty, false);
+        }
+        catch (Exception ex)
+        {
+            return new Response<bool>(false, ex.Message, true);
+        }
+    }
+    public async Task<Response<bool>> UpdateEmployeeImageAsync(int employeeId, byte[] image, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            Employee? employee = await _unitOfWork.Repository<Employee>().GetByIdAsync(employeeId, cancellationToken);
+            if (employee is null)
+                return new Response<bool>(false, "Employee not found", true);
+
+            // Extract embedding for Face Recognition
+            double[] embedding= _faceService.ExtractEmbedding(image);
+            employee.FaceEmbedding = EmbeddingSerializer.DoubleArrayToBytes(embedding);
+            await _unitOfWork.Repository<Employee>().UpdateAsync(employee);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return new Response<bool>(true, string.Empty, false);
         }

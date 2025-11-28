@@ -1,0 +1,230 @@
+<div class="auth-overlay d-flex align-items-center justify-content-center" (click)="close()">
+  <div class="auth-card card border-0 shadow-lg" (click)="$event.stopPropagation()">
+    <div class="card-body p-5 position-relative">
+      <button
+        type="button"
+        class="btn-close position-absolute top-0 end-0 m-3"
+        aria-label="Close"
+        (click)="close()"
+      ></button>
+      <h2 class="text-center fw-bold mb-2 title">Register</h2>
+      <p class="text-center text-muted mb-4 subtitle">Create your account.</p>
+
+      <form (submit)="register(); $event.preventDefault()" class="register-form">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">First Name</label>
+            <input
+              [(ngModel)]="payload.firstName"
+              name="firstName"
+              class="form-control input-field"
+              placeholder="First Name"
+              required
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Last Name</label>
+            <input
+              [(ngModel)]="payload.lastName"
+              name="lastName"
+              class="form-control input-field"
+              placeholder="Last Name"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label label">Email</label>
+          <input
+            [(ngModel)]="payload.email"
+            name="email"
+            type="email"
+            class="form-control input-field"
+            placeholder="Email"
+            required
+          />
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Department ID</label>
+            <input
+              [(ngModel)]="payload.deptId"
+              name="deptId"
+              type="number"
+              class="form-control input-field"
+              placeholder="Department ID"
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Designation ID</label>
+            <input
+              [(ngModel)]="payload.designationId"
+              name="designationId"
+              type="number"
+              class="form-control input-field"
+              placeholder="Designation ID"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Password</label>
+            <input
+              [(ngModel)]="payload.password"
+              name="password"
+              type="password"
+              class="form-control input-field"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Confirm Password</label>
+            <input
+              [(ngModel)]="payload.confirmPassword"
+              name="confirmPassword"
+              type="password"
+              class="form-control input-field"
+              placeholder="Confirm Password"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Phone Number</label>
+            <input
+              [(ngModel)]="payload.phoneNumber"
+              name="phoneNumber"
+              class="form-control input-field"
+              placeholder="Phone Number"
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Contact Number</label>
+            <input
+              [(ngModel)]="payload.contactNumber"
+              name="contactNumber"
+              class="form-control input-field"
+              placeholder="Contact Number"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label label">Address</label>
+          <input
+            [(ngModel)]="payload.address"
+            name="address"
+            class="form-control input-field"
+            placeholder="Address"
+          />
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Gender</label>
+            <input
+              [(ngModel)]="payload.gender"
+              name="gender"
+              class="form-control input-field"
+              placeholder="Gender"
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Basic Salary</label>
+            <input
+              [(ngModel)]="payload.basicSalary"
+              name="basicSalary"
+              type="number"
+              class="form-control input-field"
+              placeholder="Basic Salary"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Date of Birth</label>
+            <input
+              [(ngModel)]="payload.dateOfBirth"
+              name="dateOfBirth"
+              type="date"
+              class="form-control input-field"
+              required
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">Hire Date</label>
+            <input
+              [(ngModel)]="payload.hireDate"
+              name="hireDate"
+              type="date"
+              class="form-control input-field"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">EFF Start</label>
+            <input
+              [(ngModel)]="payload.efF_Start"
+              name="efF_Start"
+              type="date"
+              class="form-control input-field"
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label label">EFF End</label>
+            <input
+              [(ngModel)]="payload.efF_End"
+              name="efF_End"
+              type="date"
+              class="form-control input-field"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label label">Roles</label>
+          <input
+            [(ngModel)]="stringRoles"
+            name="roles"
+            class="form-control input-field"
+            placeholder="Roles (comma separated)"
+          />
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" class="btn btn-primary btn-lg fw-bold register-btn">
+            REGISTER
+          </button>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
+          {{ errorMessage }}
+        </div>
+        <div *ngIf="successMessage" class="alert alert-success mt-3" role="alert">
+          {{ successMessage }}
+        </div>
+      </form>
+
+      <div class="text-center mt-4">
+        <span class="text-muted">Already have an account? </span>
+        <a
+          href="#"
+          (click)="openLogin(); $event.preventDefault()"
+          class="text-decoration-none fw-bold link"
+          >Log in</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

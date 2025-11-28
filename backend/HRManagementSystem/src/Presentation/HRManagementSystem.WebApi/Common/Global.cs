@@ -2,7 +2,6 @@
 global using HRManagementSystem.Application.Interfaces;
 global using Microsoft.AspNetCore.Mvc;
 global using HRManagementSystem.Application.DTOs;
-global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc.Filters;
 global using HRManagementSystem.Application;
 global using HRManagementSystem.Infrastructure;
@@ -17,3 +16,5 @@ global using HRManagementSystem.Application.DTOs.Payroll.EmployeeDeduction;
 global using HRManagementSystem.Application.DTOs.Leaves.LeaveRequestDtos;
 global using HRManagementSystem.Application.Interfaces.ILeaveServices;
 global using HRManagementSystem.Application.DTOs.Leaves.LeaveTypeDtos;
+global using HRManagementSystem.Application.DTOs.Attendance;
+global using HRManagementSystem.Application.DTOs.Employee;

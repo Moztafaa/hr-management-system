@@ -14,9 +14,8 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IDesignationService, DesignationService>();
+        services.AddScoped<IESSService, ESSService>();
 
-
-        
         services.AddScoped<IPayslipService, PayslipService>();
 
         services.AddScoped<IAllowanceService, AllowanceService>();
@@ -31,14 +30,15 @@ public static class DependencyInjection
         services.AddScoped<IJobPostingService, JobPostingService>();
         services.AddScoped<ICandidateService, CandidateService>();
         services.AddScoped<IJobApplicationService, JobApplicationService>();
+        services.AddScoped<IPerformanceService, PerformanceService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IAttendanceService, AttendanceService>();
         services.AddScoped<IReportingService, ReportingService>();
         services.AddScoped<IPdfGenerator, PdfGeneratorService>();
         services.AddScoped<IExcelGenerator, ExcelGeneratorService>();
 
         services.AddScoped<ITrainingCourseService, TrainingCourseService>();
         services.AddScoped<IEmployeeTrainingService, EmployeeTrainingService>();
-
-        // services.AddScoped<ILeaveService, LeaveService>();
 
         services.AddAutoMapper(x => x.AddProfile(new MappingHelper()));
         services.AddAutoMapper(x => x.AddProfile(new LeaveProfile()));
@@ -48,10 +48,10 @@ public static class DependencyInjection
         services.AddAutoMapper(x => x.AddProfile(new JobPostingProfile()));
         services.AddAutoMapper(x => x.AddProfile(new CandidateProfile()));
         services.AddAutoMapper(x => x.AddProfile(new JobApplicationProfile()));
-
-
+        services.AddAutoMapper(x => x.AddProfile(new PerformanceProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new NotificationProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new ESSProfile()));
         services.AddAutoMapper(x => x.AddProfile(new PayrollProfile()));
-
         services.AddAutoMapper(x => x.AddProfile(new TrainingProfile()));
 
         return services;

@@ -1,0 +1,101 @@
+.auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000; /* Higher than sidebar/header */
+  background-color: rgba(27, 27, 56, 0.85); /* Semi-transparent body-bg */
+  overflow-y: auto; /* Allow scrolling for long form */
+  padding: 2rem 0;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 700px; /* Wider for register form */
+  background-color: var(--card-bg); /* Cosmic card bg */
+  color: var(--text-basic);
+  border-radius: 0.5rem;
+  margin: auto;
+}
+
+.title {
+  color: var(--text-basic);
+}
+
+.subtitle {
+  color: var(--text-hint);
+}
+
+.label {
+  color: var(--text-hint);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-field {
+  background-color: var(--input-bg); /* Cosmic input bg */
+  border: 1px solid var(--border-basic);
+  color: var(--text-basic);
+  font-size: 0.95rem;
+}
+
+.input-field:focus {
+  background-color: var(--input-bg);
+  border-color: var(--color-primary);
+  box-shadow: none;
+  color: var(--text-basic);
+}
+
+.input-field::placeholder {
+  color: var(--text-hint);
+  opacity: 0.7;
+}
+
+/* Date input specific styling to match theme */
+input[type='date'] {
+  color-scheme: dark;
+}
+
+.register-btn {
+  background-color: var(--color-primary);
+  border: none;
+  padding: 0.8rem;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(161, 110, 255, 0.4);
+}
+
+.link {
+  color: var(--color-primary);
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline !important;
+}
+
+.btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Scrollbar styling for overlay */
+.auth-overlay::-webkit-scrollbar {
+  width: 8px;
+}
+.auth-overlay::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+.auth-overlay::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}

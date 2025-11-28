@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<div
+  class="main-content"
+  [class.sidebar-open]="isSidebarOpen()"
+  [class.sidebar-closed]="!isSidebarOpen()"
+>
+  <router-outlet></router-outlet>
+</div>

@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace HRManagementSystem.Infrastructure.Repositories;
 
 public class Repository<T> : IRepository<T> where T : class

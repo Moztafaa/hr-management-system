@@ -26,4 +26,5 @@ public class EmployeeRepository : Repository<Employee>, IEmployeeRepository
             .Include(e => e.Designation)
             .ToListAsync(cancellationToken);
     }
+
 }
