@@ -7,6 +7,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/Dotnet.gitignore
 
+# Face recognition models (large files)
+backend/HRManagementSystem/src/Presentation/HRManagementSystem.WebApi/models/
+backend/HRManagementSystem/src/Presentation/HRManagementSystem.WebApi/models.rar
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

@@ -1,0 +1,11 @@
+/* Main Layout specific styles if any */
+.main-content {
+  min-height: 100vh;
+  padding-top: 2rem;
+}
+
+.blurred {
+  filter: blur(5px);
+  pointer-events: none; /* Prevent interaction with background */
+  transition: filter 0.3s ease;
+}

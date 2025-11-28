@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace HRManagementSystem.Application.Interfaces;
 
 public interface IEmployeeService
@@ -8,5 +10,6 @@ public interface IEmployeeService
     Task<Response<EmployeeDto>> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto, CancellationToken cancellationToken = default);
     Task<Response<bool>> UpdateEmployeeAsync(int id, UpdateEmployeeDto updateEmployeeDto, CancellationToken cancellationToken = default);
     Task<Response<bool>> DeleteEmployeeAsync(int id, CancellationToken cancellationToken = default);
+    Task<Response<bool>> UpdateEmployeeImageAsync(int employeeId, byte[] image, CancellationToken cancellationToken = default);
 
 }

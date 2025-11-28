@@ -31,8 +31,8 @@ public class MappingHelper:Profile
         CreateMap<LeaveRequestDto, UpdateLeaveRequestDto>().ReverseMap();
         CreateMap<LeaveApproval, LeaveApprovalDto>().ReverseMap();
 
-
-
+        CreateMap<Attendance, AttendanceEmployeeDto>().ReverseMap();
+        
 
     }
 }

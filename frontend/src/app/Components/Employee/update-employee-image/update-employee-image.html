@@ -1,0 +1,24 @@
+<div class="container">
+  <label>Employee ID:</label>
+  <input type="number" [(ngModel)]="employeeId" class="form-control" />
+
+  <br />
+
+  <!-- فيديو الكاميرا -->
+  <video #video autoplay playsinline width="300" height="225" style="border:1px solid #ccc;"></video>
+
+  <br />
+
+  <!-- زر التقاط الصورة -->
+  <button (click)="captureImageAddUpload()">📸 Upload Image</button>
+
+  <!-- عرض الصورة الملتقطة -->
+  <div *ngIf="capturedImage" style="margin-top:10px;">
+    <h5>Captured Image Preview:</h5>
+    <img [src]="capturedImage" alt="Preview" width="112" height="112" style="border:1px solid #ccc;" />
+  </div>
+
+  <br />
+
+  <canvas #canvas style="display:none;"></canvas>
+</div>

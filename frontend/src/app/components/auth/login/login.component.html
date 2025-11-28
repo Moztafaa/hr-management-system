@@ -1,0 +1,62 @@
+<div class="auth-overlay d-flex align-items-center justify-content-center" (click)="close()">
+  <div class="auth-card card border-0 shadow-lg" (click)="$event.stopPropagation()">
+    <div class="card-body p-5 position-relative">
+      <button
+        type="button"
+        class="btn-close position-absolute top-0 end-0 m-3"
+        aria-label="Close"
+        (click)="close()"
+      ></button>
+      <h2 class="text-center fw-bold mb-2 title">Login</h2>
+      <p class="text-center text-muted mb-4 subtitle">Hello! Log in with your email.</p>
+
+      <form (submit)="login(); $event.preventDefault()">
+        <div class="mb-3">
+          <label for="email" class="form-label label">Email address</label>
+          <input
+            [(ngModel)]="email"
+            name="email"
+            type="email"
+            class="form-control form-control-lg input-field"
+            id="email"
+            placeholder="Email address"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label for="password" class="form-label label mb-0">Password</label>
+            <a href="#" class="text-decoration-none small link">Forgot Password?</a>
+          </div>
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            class="form-control form-control-lg input-field"
+            id="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg fw-bold login-btn">LOG IN</button>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
+          {{ errorMessage }}
+        </div>
+      </form>
+
+      <div class="text-center mt-4">
+        <span class="text-muted">Don't have an account? </span>
+        <a
+          href="#"
+          (click)="openRegister(); $event.preventDefault()"
+          class="text-decoration-none fw-bold link"
+          >Register</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

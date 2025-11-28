@@ -1,5 +1,6 @@
-﻿
 using HRManagementSystem.Application.DTOs.File;
+using HRManagementSystem.Application.DTOs.Notification;
+using HRManagementSystem.Domain.Enums.Notification;
 
 namespace HRManagementSystem.Application.Services;
 
@@ -9,15 +10,17 @@ public class PayslipService : IPayslipService
     private readonly IMapper _mapper;
     private readonly IPdfGenerator _pdfGenerator;
     private readonly IExcelGenerator _excelGenerator;
+    private readonly IEmailService _emailService;
+    private readonly INotificationService _notificationService;
 
-
-
-    public PayslipService(IUnitOfWork unitOfWork, IMapper mapper, IPdfGenerator pdfGenerator, IExcelGenerator excelGenerator)
+    public PayslipService(IUnitOfWork unitOfWork, IMapper mapper, IPdfGenerator pdfGenerator, IExcelGenerator excelGenerator, IEmailService emailService, INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _pdfGenerator = pdfGenerator;
         _excelGenerator = excelGenerator;
+        _emailService = emailService;
+        _notificationService = notificationService;
     }
 
     // ------------------------------------------------------------------------
@@ -88,6 +91,40 @@ public class PayslipService : IPayslipService
                 await _unitOfWork.Payslips.AddAsync(payslip, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send payslip notification email to employee
+            try
+            {
+                if (!string.IsNullOrEmpty(employee.Email))
+                {
+                    await _emailService.SendPayslipEmailAsync(
+                        employee.Email,
+                        $"{employee.FirstName} {employee.LastName}",
+                        $"{month}/{year}",
+                        netSalary,
+                        cancellationToken);
+                }
+
+                // Create notification for employee
+                if (!string.IsNullOrEmpty(employee.ApplicationUserId))
+                {
+                    await _notificationService.CreateNotificationAsync(new CreateNotificationDto
+                    {
+                        RecipientUserId = employee.ApplicationUserId,
+                        Title = "Payslip Generated",
+                        Message = $"Your payslip for {month}/{year} has been generated. Net Salary: ${netSalary:N2}",
+                        Type = NotificationType.Info,
+                        Category = NotificationCategory.Payroll,
+                        Priority = NotificationPriority.Normal,
+                        RelatedEntityId = payslip.Id,
+                        RelatedEntityType = "Payslip"
+                    }, cancellationToken);
+                }
+            }
+            catch (Exception emailEx)
+            {
+                Console.WriteLine($"Failed to send payslip email: {emailEx.Message}");
+            }
 
             return new Response<PayslipDto>(MapPayslip(payslip, allowances, deductions), "", false);
         }

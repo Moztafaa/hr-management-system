@@ -1,0 +1,42 @@
+<div class="sidebar border-end sidebar-shadow" [class.collapsed]="!isSidebarOpen()">
+  <div class="list-group list-group-flush mt-2">
+    <ng-container *ngFor="let item of menuItems">
+      <!-- Group Header -->
+      <div *ngIf="item.group" class="menu-header fw-bold mt-3 mb-2 px-3 small">
+        {{ item.title }}
+      </div>
+
+      <!-- Menu Item -->
+      <a
+        *ngIf="!item.group"
+        [routerLink]="item.link"
+        class="list-group-item list-group-item-action border-0 d-flex align-items-center justify-content-between"
+        [class.active]="item.link === '#' && !item.children"
+        routerLinkActive="active"
+        (click)="toggleItem(item)"
+      >
+        <div class="d-flex align-items-center">
+          <i class="eva eva-{{ item.icon }} me-3 fs-4"></i>
+          <span class="menu-title">{{ item.title }}</span>
+        </div>
+        <i
+          *ngIf="item.children"
+          class="eva eva-chevron-down-outline transition-icon"
+          [class.rotate-180]="isExpanded(item)"
+        ></i>
+      </a>
+
+      <!-- Dropdown Children -->
+      <div *ngIf="item.children && isExpanded(item)" class="submenu">
+        <a
+          *ngFor="let child of item.children"
+          [routerLink]="child.link"
+          routerLinkActive="active"
+          class="list-group-item list-group-item-action border-0 d-flex align-items-center ps-5 submenu-item"
+        >
+          <span class="menu-title">{{ child.title }}</span>
+        </a>
+      </div>
+    </ng-container>
+  </div>
+</div>

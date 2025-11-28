@@ -10,7 +10,7 @@ public static class LeaveTypeSeedData
                 Id = 1,
                 Name = "Annual Leave",
                 Description = "Annual paid leave after completing the first year of work",
-                MaxDays = 15,
+                MaxDays = 30,
                 CanCarryForward = true,
                 CarryForwardLimit = 5,
                 IsPaid = true,

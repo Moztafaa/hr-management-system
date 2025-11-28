@@ -1,0 +1,112 @@
+.sidebar {
+  position: fixed;
+  top: 4.75rem;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  width: 16rem;
+  padding-top: 0.5rem;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color) !important;
+}
+
+.sidebar-shadow {
+  box-shadow: 0.5rem 0 1rem 0 var(--shadow-color);
+}
+
+.sidebar.collapsed {
+  margin-left: -16rem;
+}
+
+@media (min-width: 992px) {
+  .sidebar.collapsed {
+    margin-left: 0;
+    width: 4.5rem;
+  }
+
+  .sidebar.collapsed .menu-title,
+  .sidebar.collapsed .menu-header,
+  .sidebar.collapsed .eva-chevron-down-outline {
+    display: none;
+  }
+
+  .sidebar.collapsed .list-group-item {
+    justify-content: center !important;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .sidebar.collapsed .list-group-item > div {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .sidebar.collapsed .eva {
+    margin-right: 0 !important;
+  }
+}
+
+.list-group-item {
+  padding: 0.875rem 1.5rem;
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.list-group-item:hover,
+.list-group-item:focus {
+  background-color: var(--hover-bg);
+  color: var(--text-color);
+  border-left-color: var(--primary-color);
+}
+
+.list-group-item.active {
+  background-color: transparent;
+  color: var(--primary-color);
+  border-left-color: var(--primary-color);
+}
+
+.list-group-item .eva {
+  font-size: 1.5rem;
+  color: var(--text-hint);
+  transition: color 0.3s ease;
+}
+
+.list-group-item:hover .eva,
+.list-group-item.active .eva {
+  color: var(--primary-color);
+}
+
+.menu-header {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: var(--text-hint);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.transition-icon {
+  transition: transform 0.3s ease;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.submenu-item {
+  font-size: 0.8rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: var(--text-hint);
+}
+
+.submenu-item:hover {
+  color: var(--text-color);
+  border-left-color: transparent; /* No border for submenu items */
+}

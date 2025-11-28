@@ -11,6 +11,7 @@ public class Employee : BaseEntity
     public DateTime? EFF_End { get; set; }
     public required string Email { get; set; }
     public string? ContactNumber { get; set; }
+    public byte[]? FaceEmbedding { get; set; } // Face data as embedding
     public string? Address { get; set; }
     public decimal BasicSalary { get; set; }
     public string? ApplicationUserId { get; set; }
