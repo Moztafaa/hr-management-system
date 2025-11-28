@@ -8,11 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251120162854_Store FaceEmbedding as byte insteadof float.cs
-    public partial class StoreFaceEmbeddingasbyteinsteadoffloat : Migration
-========
     public partial class InitialCreate : Migration
->>>>>>>> origin/main:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251128160112_InitialCreate.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,16 +71,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251120162854_Store FaceEmbedding as byte insteadof float.cs
                 name: "Attendances",
-========
-                name: "Competencies",
->>>>>>>> origin/main:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251128160112_InitialCreate.cs
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-<<<<<<<< HEAD:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251120162854_Store FaceEmbedding as byte insteadof float.cs
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CheckInTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -95,7 +86,14 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Attendances", x => x.Id);
-========
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Competencies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -104,7 +102,6 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Competencies", x => x.Id);
->>>>>>>> origin/main:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251128160112_InitialCreate.cs
                 });
 
             migrationBuilder.CreateTable(

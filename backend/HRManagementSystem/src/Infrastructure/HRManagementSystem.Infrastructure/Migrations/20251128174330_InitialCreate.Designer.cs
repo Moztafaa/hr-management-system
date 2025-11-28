@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251120162854_Store FaceEmbedding as byte insteadof float.Designer.cs
-    [Migration("20251120162854_Store FaceEmbedding as byte insteadof float")]
-    partial class StoreFaceEmbeddingasbyteinsteadoffloat
-========
-    [Migration("20251128160112_InitialCreate")]
+    [Migration("20251128174330_InitialCreate")]
     partial class InitialCreate
->>>>>>>> origin/main:backend/HRManagementSystem/src/Infrastructure/HRManagementSystem.Infrastructure/Migrations/20251128160112_InitialCreate.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
