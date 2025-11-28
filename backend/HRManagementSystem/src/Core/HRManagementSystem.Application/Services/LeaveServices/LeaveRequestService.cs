@@ -1,10 +1,15 @@
-﻿namespace HRManagementSystem.Application.Services.LeaveServices;
+﻿using HRManagementSystem.Application.DTOs.Notification;
+using HRManagementSystem.Domain.Enums.Notification;
+
+namespace HRManagementSystem.Application.Services.LeaveServices;
 
 public class LeaveRequestService(
     IUnitOfWork _unitOfWork,
     IEmployeeService _employeeService,
     IDepartmentService _departmentService,
-    IMapper _mapper) : ILeaveRequestService
+    IMapper _mapper,
+    IEmailService _emailService,
+    INotificationService _notificationService) : ILeaveRequestService
 {
     public async Task<Response<LeaveRequestDto>> CreateLeaveRequestAsync(CreateLeaveRequestDto createLeaveRequestDto,
         CancellationToken cancellationToken = default)
@@ -51,6 +56,43 @@ public class LeaveRequestService(
             };
             await _unitOfWork.LeaveApprovals.AddAsync(approval);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send email notification to manager
+            try
+            {
+                Response<EmployeeDto> manager = await _employeeService.GetEmployeeByIdAsync((int)leaveRequest.ReviewedById, cancellationToken);
+                if (!manager.HasError && !string.IsNullOrEmpty(manager.Data.Email))
+                {
+                    await _emailService.SendLeaveApprovalEmailAsync(
+                        manager.Data.Email,
+                        $"{emp.Data.FirstName} {emp.Data.LastName}",
+                        "Leave Request",
+                        "Pending",
+                        cancellationToken);
+                }
+
+                // Create notification for manager
+                if (!manager.HasError && !string.IsNullOrEmpty(manager.Data.ApplicationUserId))
+                {
+                    await _notificationService.CreateNotificationAsync(new CreateNotificationDto
+                    {
+                        RecipientUserId = manager.Data.ApplicationUserId,
+                        Title = "New Leave Request",
+                        Message = $"{emp.Data.FirstName} {emp.Data.LastName} has submitted a leave request from {start:yyyy-MM-dd} to {end:yyyy-MM-dd} ({totalDays} days).",
+                        Type = NotificationType.Info,
+                        Category = NotificationCategory.LeaveRequest,
+                        Priority = NotificationPriority.High,
+                        RelatedEntityId = leaveRequest.Id,
+                        RelatedEntityType = "LeaveRequest"
+                    }, cancellationToken);
+                }
+            }
+            catch (Exception emailEx)
+            {
+                // Log the error but don't fail the leave request creation
+                Console.WriteLine($"Failed to send leave request email: {emailEx.Message}");
+            }
+
             LeaveRequestDto result = _mapper.Map<LeaveRequestDto>(leaveRequest);
 
             return new Response<LeaveRequestDto>(result, null, false);

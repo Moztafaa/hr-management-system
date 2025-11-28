@@ -1,8 +1,13 @@
-﻿namespace HRManagementSystem.Application.Services;
+﻿using HRManagementSystem.Application.DTOs.Notification;
+using HRManagementSystem.Domain.Enums.Notification;
+
+namespace HRManagementSystem.Application.Services;
 
 public class PayslipService(
     IUnitOfWork _unitOfWork,
-    IMapper _mapper) : IPayslipService
+    IMapper _mapper,
+    IEmailService _emailService,
+    INotificationService _notificationService) : IPayslipService
 {
     public async Task<Response<PayslipDto>> GeneratePayslipAsync(int employeeId, int month, int year, CancellationToken cancellationToken)
     {
@@ -60,6 +65,40 @@ public class PayslipService(
 
             await _unitOfWork.Payslips.AddAsync(payslip, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send payslip notification email to employee
+            try
+            {
+                if (!string.IsNullOrEmpty(employee.Email))
+                {
+                    await _emailService.SendPayslipEmailAsync(
+                        employee.Email,
+                        $"{employee.FirstName} {employee.LastName}",
+                        $"{month}/{year}",
+                        netSalary,
+                        cancellationToken);
+                }
+
+                // Create notification for employee
+                if (!string.IsNullOrEmpty(employee.ApplicationUserId))
+                {
+                    await _notificationService.CreateNotificationAsync(new CreateNotificationDto
+                    {
+                        RecipientUserId = employee.ApplicationUserId,
+                        Title = "Payslip Generated",
+                        Message = $"Your payslip for {month}/{year} has been generated. Net Salary: ${netSalary:N2}",
+                        Type = NotificationType.Info,
+                        Category = NotificationCategory.Payroll,
+                        Priority = NotificationPriority.Normal,
+                        RelatedEntityId = payslip.Id,
+                        RelatedEntityType = "Payslip"
+                    }, cancellationToken);
+                }
+            }
+            catch (Exception emailEx)
+            {
+                Console.WriteLine($"Failed to send payslip email: {emailEx.Message}");
+            }
 
             // Map to DTO
             PayslipDto payslipDto = _mapper.Map<PayslipDto>(payslip);

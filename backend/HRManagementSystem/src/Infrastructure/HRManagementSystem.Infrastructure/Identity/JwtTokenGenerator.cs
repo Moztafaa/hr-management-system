@@ -1,4 +1,5 @@
 ﻿namespace HRManagementSystem.Infrastructure.Identity;
+
 public class JwtTokenGenerator
 {
     private readonly IConfiguration _configuration;
@@ -21,6 +22,12 @@ public class JwtTokenGenerator
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
+        // Add EmployeeId as custom claim if available
+        if (user.EmployeeId.HasValue)
+        {
+            claims.Add(new Claim("EmployeeId", user.EmployeeId.Value.ToString()));
+        }
+
         // Add roles as claims
         foreach (string role in roles)
         {
@@ -36,6 +43,6 @@ public class JwtTokenGenerator
 
         string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return (tokenString,token.ValidTo);
+        return (tokenString, token.ValidTo);
     }
 }

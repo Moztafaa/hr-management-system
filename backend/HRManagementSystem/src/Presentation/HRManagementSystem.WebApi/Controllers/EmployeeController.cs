@@ -13,6 +13,13 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
         return Ok(employees);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetEmployeeById(int id, CancellationToken cancellationToken)
+    {
+        Response<EmployeeDto> employee = await employeeService.GetEmployeeByIdAsync(id, cancellationToken);
+        return Ok(employee);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeDto createEmployeeDto, CancellationToken cancellationToken)
     {
@@ -20,5 +27,17 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
         return Ok(employee);
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateEmployee(int id, [FromBody] UpdateEmployeeDto updateEmployeeDto, CancellationToken cancellationToken)
+    {
+        Response<bool> result = await employeeService.UpdateEmployeeAsync(id, updateEmployeeDto, cancellationToken);
+        return Ok(result);
+    }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEmployee(int id, CancellationToken cancellationToken)
+    {
+        Response<bool> result = await employeeService.DeleteEmployeeAsync(id, cancellationToken);
+        return Ok(result);
+    }
 }

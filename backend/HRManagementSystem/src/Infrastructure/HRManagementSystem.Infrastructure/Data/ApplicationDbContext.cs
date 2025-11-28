@@ -87,6 +87,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<Candidate> Candidates { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
+<<<<<<< HEAD
 
     public DbSet<ReviewCycle> ReviewCycles { get; set; }
     public DbSet<PerformanceReview> PerformanceReviews { get; set; }
@@ -97,4 +98,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<EmployeeCompetencyRating> EmployeeCompetencyRatings { get; set; }
     public DbSet<Feedback> Feedbacks { get; set; }
 
+=======
+    public DbSet<Notification> Notifications { get; set; }
+>>>>>>> 5ad207f00dbd579fa68c0148fd30bcac87138aed
 }

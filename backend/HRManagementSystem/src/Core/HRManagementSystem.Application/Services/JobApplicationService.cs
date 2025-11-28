@@ -10,7 +10,9 @@ namespace HRManagementSystem.Application.Services;
 
 public class JobApplicationService(
     IUnitOfWork unitOfWork,
-    IMapper mapper) : IJobApplicationService
+    IMapper mapper,
+    IEmailService emailService,
+    INotificationService notificationService) : IJobApplicationService
 {
     public async Task<Response<JobApplicationDto>> GetJobApplicationByIdAsync(int id, CancellationToken cancellationToken = default)
     {
@@ -166,6 +168,30 @@ public class JobApplicationService(
             await unitOfWork.JobApplications.AddAsync(jobApplication, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
+            // Send email notification to candidate
+            try
+            {
+                Candidate? candidate = await unitOfWork.Candidates.GetByIdAsync(candidateId, cancellationToken);
+                JobPosting? jobPosting = await unitOfWork.JobPostings.GetByIdAsync(createJobApplicationDto.JobPostingId, cancellationToken);
+
+                if (candidate != null && jobPosting != null && !string.IsNullOrEmpty(candidate.Email))
+                {
+                    await emailService.SendJobApplicationStatusEmailAsync(
+                        candidate.Email,
+                        $"{candidate.FirstName} {candidate.LastName}",
+                        jobPosting.Title,
+                        "Applied",
+                        cancellationToken);
+                }
+
+                // Create notification (only if candidate has an associated user account)
+                // Note: Candidates might not have user accounts, so this is optional
+            }
+            catch (Exception emailEx)
+            {
+                Console.WriteLine($"Failed to send job application email: {emailEx.Message}");
+            }
+
             JobApplicationDto jobApplicationDto = mapper.Map<JobApplicationDto>(jobApplication);
             return new Response<JobApplicationDto>(jobApplicationDto, string.Empty, false);
         }
@@ -190,6 +216,28 @@ public class JobApplicationService(
 
             await unitOfWork.JobApplications.UpdateAsync(jobApplication, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send email notification to candidate about status change
+            try
+            {
+                Candidate? candidate = await unitOfWork.Candidates.GetByIdAsync(jobApplication.CandidateId, cancellationToken);
+                JobPosting? jobPosting = await unitOfWork.JobPostings.GetByIdAsync(jobApplication.JobPostingId, cancellationToken);
+
+                if (candidate != null && jobPosting != null && !string.IsNullOrEmpty(candidate.Email))
+                {
+                    await emailService.SendJobApplicationStatusEmailAsync(
+                        candidate.Email,
+                        $"{candidate.FirstName} {candidate.LastName}",
+                        jobPosting.Title,
+                        updateDto.Status.ToString(),
+                        cancellationToken);
+                }
+            }
+            catch (Exception emailEx)
+            {
+                Console.WriteLine($"Failed to send status update email: {emailEx.Message}");
+            }
+
             return new Response<bool>(true, string.Empty, false);
         }
         catch (Exception ex)

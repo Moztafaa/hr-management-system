@@ -21,6 +21,7 @@ public interface IUnitOfWork : IDisposable
     IEmployeeAllowanceRepository EmployeeAllowances { get; }
     IEmployeeDeductionRepository EmployeeDeductions { get; }
     IEmployeeRepository Employees { get; }
+    INotificationRepository Notifications { get; }
 
     IReviewCycleRepository ReviewCycles { get; }
     IPerformanceReviewRepository PerformanceReviews { get; }

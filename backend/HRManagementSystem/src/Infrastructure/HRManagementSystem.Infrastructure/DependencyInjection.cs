@@ -1,5 +1,8 @@
 using HRManagementSystem.Domain.Interfaces.LeaveRepository;
 using HRManagementSystem.Infrastructure.Repositories.ILeaveRepository;
+using HRManagementSystem.Infrastructure.Common;
+using HRManagementSystem.Application.Interfaces;
+using HRManagementSystem.Infrastructure.Services;
 
 namespace HRManagementSystem.Infrastructure;
 
@@ -47,6 +50,12 @@ public static class DependencyInjection
             };
         });
 
+        // Configure Email Settings
+        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+
+        // Register Email Service
+        services.AddScoped<IEmailService, EmailService>();
+
         services.AddScoped<JwtTokenGenerator>();
         // Register AccountService
         // Register repositories
@@ -69,6 +78,7 @@ public static class DependencyInjection
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
         services.AddScoped<ICandidateRepository, CandidateRepository>();
         services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+<<<<<<< HEAD
         services.AddScoped<IPerformanceReviewRepository, PerformanceReviewRepository>();
         services.AddScoped<IReviewCycleRepository, ReviewCycleRepository>();
         services.AddScoped<IGoalRepository, GoalRepository>();
@@ -77,6 +87,9 @@ public static class DependencyInjection
         services.AddScoped<ICompetencyRepository, CompetencyRepository>();
         services.AddScoped<IEmployeeCompetencyRatingRepository, EmployeeCompetencyRatingRepository>();
         services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+=======
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+>>>>>>> 5ad207f00dbd579fa68c0148fd30bcac87138aed
 
         // Register Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
