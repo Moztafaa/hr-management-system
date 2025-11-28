@@ -53,6 +53,14 @@ public static class AllowanceSeedData
                 Name = "Health Insurance",
                 Amount = 1500.00m,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Allowance
+            {
+                Id = 8,
+                Name = "Training Completion Bonus",
+                Amount = 2000.00m,
+                IsPercentage = false,
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
     }

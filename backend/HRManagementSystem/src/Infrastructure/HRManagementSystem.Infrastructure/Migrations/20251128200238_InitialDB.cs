@@ -145,6 +145,23 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TrainingCourses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    DurationHours = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrainingCourses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -376,7 +393,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 {
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     AllowanceId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     IsPercentage = table.Column<bool>(type: "bit", nullable: true),
                     Recurrence = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -407,7 +424,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 {
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     DeductionId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     IsPercentage = table.Column<bool>(type: "bit", nullable: true),
                     Recurrence = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -461,6 +478,37 @@ namespace HRManagementSystem.Infrastructure.Migrations
                         principalTable: "LeaveTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeeTrainings",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    TrainingCourseId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Enrolled"),
+                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    CompletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RewardGiven = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeTrainings", x => new { x.EmployeeId, x.TrainingCourseId });
+                    table.ForeignKey(
+                        name: "FK_EmployeeTrainings_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmployeeTrainings_TrainingCourses_TrainingCourseId",
+                        column: x => x.TrainingCourseId,
+                        principalTable: "TrainingCourses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -625,7 +673,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     { 4, 300.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Mobile Allowance", null },
                     { 5, 200.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Internet Allowance", null },
                     { 6, 3000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Performance Bonus", null },
-                    { 7, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Health Insurance", null }
+                    { 7, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Health Insurance", null },
+                    { 8, 2000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Training Completion Bonus", null }
                 });
 
             migrationBuilder.InsertData(
@@ -705,6 +754,21 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "TrainingCourses",
+                columns: new[] { "Id", "CreatedAt", "Description", "DurationHours", "Title", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Improve interpersonal and workplace communication skills.", 8, "Effective Communication", null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Core leadership principles and team management skills.", 16, "Leadership Essentials", null },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Basics of project planning, scope, scheduling, and risk.", 40, "Project Management Fundamentals", null },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Workshop covering Agile principles and Scrum ceremonies.", 16, "Agile & Scrum Workshop", null },
+                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Prioritization and productivity techniques.", 4, "Time Management", null },
+                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Deep dive into C# features and best practices.", 40, "Advanced C# Programming", null },
+                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Secure coding, compliance, and data protection essentials.", 8, "Data Protection & Security", null },
+                    { 8, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Best practices for customer interactions.", 8, "Customer Service Excellence", null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Employees",
                 columns: new[] { "Id", "Address", "ApplicationUserId", "BasicSalary", "ContactNumber", "CreatedAt", "DateOfBirth", "DepartmentId", "DesignationId", "EFF_End", "EFF_Start", "Email", "FirstName", "Gender", "HireDate", "LastName", "UpdatedAt" },
                 values: new object[,]
@@ -744,6 +808,7 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     { 1, 2, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
                     { 2, 2, 800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
                     { 5, 2, 200.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
+                    { 8, 2, 2000.00m, new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
                     { 1, 3, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
                     { 2, 3, 700.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
                     { 1, 4, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
@@ -774,6 +839,21 @@ namespace HRManagementSystem.Infrastructure.Migrations
                     { 1, 6, 2160.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null },
                     { 2, 6, 3000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "OneTime", null, null }
                 });
+
+            migrationBuilder.InsertData(
+                table: "EmployeeTrainings",
+                columns: new[] { "EmployeeId", "TrainingCourseId", "CompletionDate", "CreatedAt", "EnrollmentDate", "Id", "UpdatedAt" },
+                values: new object[] { 1, 1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Utc), 1, null });
+
+            migrationBuilder.InsertData(
+                table: "EmployeeTrainings",
+                columns: new[] { "EmployeeId", "TrainingCourseId", "CompletionDate", "CreatedAt", "EnrollmentDate", "Id", "RewardGiven", "Status", "UpdatedAt" },
+                values: new object[] { 2, 3, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, true, "Completed", null });
+
+            migrationBuilder.InsertData(
+                table: "EmployeeTrainings",
+                columns: new[] { "EmployeeId", "TrainingCourseId", "CompletionDate", "CreatedAt", "EnrollmentDate", "Id", "Status", "UpdatedAt" },
+                values: new object[] { 3, 5, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 22, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Cancelled", null });
 
             migrationBuilder.InsertData(
                 table: "JobApplications",
@@ -879,6 +959,11 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 column: "DesignationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeTrainings_TrainingCourseId",
+                table: "EmployeeTrainings",
+                column: "TrainingCourseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_AssignedRecruiterId",
                 table: "JobApplications",
                 column: "AssignedRecruiterId");
@@ -967,6 +1052,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 name: "EmployeeLeaveBalances");
 
             migrationBuilder.DropTable(
+                name: "EmployeeTrainings");
+
+            migrationBuilder.DropTable(
                 name: "JobApplications");
 
             migrationBuilder.DropTable(
@@ -986,6 +1074,9 @@ namespace HRManagementSystem.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Deductions");
+
+            migrationBuilder.DropTable(
+                name: "TrainingCourses");
 
             migrationBuilder.DropTable(
                 name: "Candidates");

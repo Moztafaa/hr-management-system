@@ -29,4 +29,5 @@ public class Employee : BaseEntity
     public ICollection<LeaveApproval> LeaveApprovals { get; set; }
     public ICollection<EmployeeLeaveBalance> LeaveBalances { get; set; }
 
+    public ICollection<EmployeeTraining>? EmployeeTrainings { get; set; }
 }

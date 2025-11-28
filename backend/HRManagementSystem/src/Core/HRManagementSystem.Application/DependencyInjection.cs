@@ -1,3 +1,4 @@
+using HRManagementSystem.Application.Interfaces;
 using HRManagementSystem.Infrastructure.Services;
 
 namespace HRManagementSystem.Application;
@@ -31,6 +32,11 @@ public static class DependencyInjection
         services.AddScoped<ICandidateService, CandidateService>();
         services.AddScoped<IJobApplicationService, JobApplicationService>();
         services.AddScoped<IReportingService, ReportingService>();
+        services.AddScoped<IPdfGenerator, PdfGeneratorService>();
+        services.AddScoped<IExcelGenerator, ExcelGeneratorService>();
+
+        services.AddScoped<ITrainingCourseService, TrainingCourseService>();
+        services.AddScoped<IEmployeeTrainingService, EmployeeTrainingService>();
 
         // services.AddScoped<ILeaveService, LeaveService>();
 
@@ -43,9 +49,10 @@ public static class DependencyInjection
         services.AddAutoMapper(x => x.AddProfile(new CandidateProfile()));
         services.AddAutoMapper(x => x.AddProfile(new JobApplicationProfile()));
 
-        services.AddScoped<IPdfGenerator, PdfGeneratorService>();
-        services.AddScoped<IExcelGenerator, ExcelGeneratorService>();
 
+        services.AddAutoMapper(x => x.AddProfile(new PayrollProfile()));
+
+        services.AddAutoMapper(x => x.AddProfile(new TrainingProfile()));
 
         return services;
     }

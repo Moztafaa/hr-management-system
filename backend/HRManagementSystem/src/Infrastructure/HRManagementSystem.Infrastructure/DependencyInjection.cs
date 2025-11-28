@@ -71,6 +71,8 @@ public static class DependencyInjection
         services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
         services.AddScoped<IReportingRepository, ReportingRepository>();
 
+        services.AddScoped<ITrainingCourseRepository, TrainingCourseRepository>();
+        services.AddScoped<IEmployeeTrainingRepository, EmployeeTrainingRepository>();
 
         // Register Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

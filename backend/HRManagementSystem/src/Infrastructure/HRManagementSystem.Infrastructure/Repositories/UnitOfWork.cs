@@ -26,7 +26,8 @@ public class UnitOfWork : IUnitOfWork
     private IEmployeeDeductionRepository? _employeeDeductions;
     private IEmployeeRepository? _employees;
     private IReportingRepository? _reporting;
-
+    private ITrainingCourseRepository? _trainingCourses;
+    private IEmployeeTrainingRepository? _employeeTrainings;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -65,6 +66,9 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeRepository Employees => _employees ??= new EmployeeRepository(_context);
 
     public IReportingRepository Reporting => _reporting ??= new ReportingRepository(_context);
+    public ITrainingCourseRepository TrainingCourses => _trainingCourses ??= new TrainingCourseRepository(_context);
+
+    public IEmployeeTrainingRepository EmployeeTrainings => _employeeTrainings ??= new EmployeeTrainingRepository(_context);
 
     public IRepository<T> Repository<T>() where T : class
     {

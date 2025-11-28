@@ -143,6 +143,13 @@ public static class EmployeeAllowanceSeedData
                 AllowanceId = 4, // Mobile
                 Amount = 300.00m,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new EmployeeAllowance
+            {
+                EmployeeId = 2,
+                AllowanceId = 8, // Bonus
+                Amount = 2000.00m,
+                CreatedAt = new DateTime(2025, 5, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
     }
