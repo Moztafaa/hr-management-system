@@ -7,6 +7,4 @@ public class Deduction: BaseEntity
      public bool IsPercentage { get; set; } = false; 
     public ICollection<EmployeeDeduction> EmployeeDeductions { get; set; } = new List<EmployeeDeduction>();
 
-    //public ICollection<Payslip> Payslips { get; set; } = new List<Payslip>();
-
 }
