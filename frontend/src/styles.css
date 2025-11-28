@@ -1,1 +1,96 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('assets/fonts/OpenSans-Bold.ttf') format('truetype');
+}
+
+:root {
+  /* Basic Palette (Dark Theme) */
+  --color-basic-100: #ffffff;
+  --color-basic-200: #f7f9fc;
+  --color-basic-300: #edf1f7;
+  --color-basic-400: #e4e9f2;
+  --color-basic-500: #c5cee0;
+  --color-basic-600: #8f9bb3;
+  --color-basic-700: #2e3a59;
+  --color-basic-800: #222b45;
+  --color-basic-900: #192038;
+  --color-basic-1000: #151a30;
+  --color-basic-1100: #101426;
+
+  /* Semantic Colors */
+  --color-primary: #3366ff;
+  --color-primary-hover: #598bff;
+  --color-primary-active: #274bdb;
+
+  --color-success: #00d68f;
+  --color-success-hover: #2ce69b;
+  --color-success-active: #00b887;
+
+  --color-info: #0095ff;
+  --color-info-hover: #42aaff;
+  --color-info-active: #006fd6;
+
+  --color-warning: #ffaa00;
+  --color-warning-hover: #ffc94d;
+  --color-warning-active: #db8b00;
+
+  --color-danger: #ff3d71;
+  --color-danger-hover: #ff708d;
+  --color-danger-active: #db2c66;
+
+  /* Functional Aliases */
+  --sidebar-bg: var(--color-basic-800);
+  --header-bg: var(--color-basic-800);
+  --body-bg: var(--color-basic-1000);
+  --card-bg: var(--color-basic-800);
+  --input-bg: var(--color-basic-1000);
+
+  --text-color: var(--color-basic-100);
+  --text-basic: var(--color-basic-100);
+  --text-hint: var(--color-basic-600);
+
+  --border-color: var(--color-basic-800);
+  --border-basic: var(--color-basic-1100);
+
+  --primary-color: var(--color-primary);
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: var(--body-bg);
+  color: var(--text-color);
+  font-family: 'Open Sans', sans-serif;
+}
+
+body {
+  padding-top: 4.75rem;
+}
+
+.main-content {
+  padding: 2rem;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+@media (min-width: 992px) {
+  .main-content.sidebar-open {
+    margin-left: 16rem;
+  }
+
+  .main-content.sidebar-closed {
+    margin-left: 4.5rem;
+  }
+}

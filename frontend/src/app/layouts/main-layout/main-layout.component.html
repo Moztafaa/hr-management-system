@@ -1,0 +1,17 @@
+<div [class.blurred]="isLoginOpen() || isRegisterOpen()">
+  <app-header></app-header>
+
+  <div
+    class="main-content"
+    [class.sidebar-open]="isSidebarOpen()"
+    [class.sidebar-closed]="!isSidebarOpen()"
+  >
+    <app-sidebar></app-sidebar>
+    <div class="container-fluid p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<app-login *ngIf="isLoginOpen()"></app-login>
+<app-register *ngIf="isRegisterOpen()"></app-register>

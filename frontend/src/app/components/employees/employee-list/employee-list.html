@@ -1,0 +1,70 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Employee Management</h2>
+    <button class="btn btn-primary"><i class="eva eva-plus-outline me-2"></i>Add Employee</button>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div *ngIf="isLoading" class="p-4 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger m-3" role="alert">
+        {{ error }}
+      </div>
+
+      <div *ngIf="!isLoading && !error" class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="ps-4">Name</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let employee of employees">
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle text-primary fw-bold me-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px"
+                  >
+                    {{ employee.firstName.charAt(0) }}{{ employee.lastName.charAt(0) }}
+                  </div>
+                  <div>
+                    <div class="fw-bold">{{ employee.firstName }} {{ employee.lastName }}</div>
+                    <div class="text-muted small">{{ employee.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>{{ employee.departmentName || '-' }}</td>
+              <td>{{ employee.designationName || '-' }}</td>
+              <td>{{ employee.email }}</td>
+              <td>
+                <span class="badge bg-success rounded-pill">Active</span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-light text-primary me-2">
+                  <i class="eva eva-edit-2-outline"></i>
+                </button>
+                <button class="btn btn-sm btn-light text-danger">
+                  <i class="eva eva-trash-2-outline"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="employees.length === 0">
+              <td colspan="6" class="text-center py-5 text-muted">No employees found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
