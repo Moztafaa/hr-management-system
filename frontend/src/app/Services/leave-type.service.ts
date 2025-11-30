@@ -9,7 +9,7 @@ import { LeaveType } from '../models/ess/leave-type';
 })
 export class LeaveTypeService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5093/api/LeaveType';
+  private apiUrl = 'https://localhost:7005/api/LeaveType';
 
   getAll(): Observable<ApiResponse<LeaveType[]>> {
     return this.http.get<ApiResponse<LeaveType[]>>(this.apiUrl);

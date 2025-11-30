@@ -17,7 +17,7 @@ import {
 })
 export class ESSService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5093/api/ESS';
+  private apiUrl = 'https://localhost:7005/api/ESS';
 
   // Profile endpoints
   getProfile(): Observable<ApiResponse<ESSProfile>> {

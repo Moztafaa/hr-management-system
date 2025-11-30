@@ -33,7 +33,7 @@ export class EssDashboardComponent implements OnInit {
     if (!this.authService.getToken()) {
       this.error = 'You must be logged in to view the dashboard';
       this.toastService.warning('Please login to access ESS features');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/pages/login']);
       return;
     }
     this.loadDashboard();
@@ -59,7 +59,7 @@ export class EssDashboardComponent implements OnInit {
           this.error = 'Session expired. Please login again.';
           this.toastService.error(this.error);
           this.authService.logout();
-          this.router.navigate(['/login']);
+          this.router.navigate(['/pages/login']);
         } else if (err.status === 0) {
           this.error = 'Cannot connect to server. Please check if the backend is running.';
           this.toastService.error(this.error);

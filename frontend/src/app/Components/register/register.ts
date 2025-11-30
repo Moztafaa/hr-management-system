@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-
 export class Register {
   payload: RegisterEmployee = {
     email: '',
@@ -33,14 +32,23 @@ export class Register {
   errorMessage = '';
   successMessage = '';
 
-  constructor(private authService: Auth, private router: Router) { }
+  constructor(private authService: Auth, private router: Router) {}
 
   register() {
     this.errorMessage = '';
     this.successMessage = '';
 
     // تحقق من required fields
-    const requiredFields = ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'dateOfBirth', 'hireDate', 'basicSalary'];
+    const requiredFields = [
+      'email',
+      'password',
+      'confirmPassword',
+      'firstName',
+      'lastName',
+      'dateOfBirth',
+      'hireDate',
+      'basicSalary',
+    ];
     for (const field of requiredFields) {
       const value = this.payload[field as keyof RegisterEmployee];
       if (value === null || value === undefined || value === '') {
@@ -59,8 +67,8 @@ export class Register {
     if (this.stringRoles) {
       this.payload.roles = this.stringRoles
         .split(',')
-        .map(r => r.trim())
-        .filter(r => r.length > 0);
+        .map((r) => r.trim())
+        .filter((r) => r.length > 0);
     }
 
     // إعداد payload للإرسال
@@ -68,7 +76,9 @@ export class Register {
       ...this.payload,
       dateOfBirth: new Date(this.payload.dateOfBirth!).toISOString(),
       hireDate: new Date(this.payload.hireDate!).toISOString(),
-      efF_Start: this.payload.efF_Start ? new Date(this.payload.efF_Start).toISOString() : undefined,
+      efF_Start: this.payload.efF_Start
+        ? new Date(this.payload.efF_Start).toISOString()
+        : undefined,
       efF_End: this.payload.efF_End ? new Date(this.payload.efF_End).toISOString() : undefined,
     };
 
@@ -77,19 +87,18 @@ export class Register {
       next: (res: any) => {
         if (res.hasError == false) {
           this.successMessage = 'Registration successful! You can now login.';
-          this.router.navigate(['/login']);
+          this.router.navigate(['/pages/login']);
         }
       },
-      error: err => {
-          if (err.status === 400) {
-            this.errorMessage = err.error.errorMessage;
-            alert(this.errorMessage);
-          } else {
-            this.errorMessage = 'Error connecting to server';
-            alert('Error connecting to server');
-          }
+      error: (err) => {
+        if (err.status === 400) {
+          this.errorMessage = err.error.errorMessage;
+          alert(this.errorMessage);
+        } else {
+          this.errorMessage = 'Error connecting to server';
+          alert('Error connecting to server');
         }
+      },
     });
   }
-
 }

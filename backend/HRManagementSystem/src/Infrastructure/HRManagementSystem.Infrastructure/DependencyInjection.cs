@@ -31,23 +31,23 @@ public static class DependencyInjection
         byte[] key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
 
         services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings["Issuer"],
-                ValidAudience = jwtSettings["Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(key)
-            };
-        });
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+            });
 
         // Configure Email Settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
@@ -63,9 +63,9 @@ public static class DependencyInjection
         services.AddScoped<IDesignationRepository, DesignationRepository>();
         // Use stub face recognition service (native Dlib not available on Linux)
         // To enable real face recognition, install native libraries and use FaceRecognitionService
-       // services.AddScoped<IFaceRecognitionService, StubFaceRecognitionService>();
+        services.AddScoped<IFaceRecognitionService, StubFaceRecognitionService>();
 
-        services.AddScoped<IFaceRecognitionService, FaceRecognitionService>(); // Uncomment to use real service
+        // services.AddScoped<IFaceRecognitionService, FaceRecognitionService>(); // Uncomment to use real service
 
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 

@@ -1,11 +1,12 @@
-using FaceRecognitionDotNet; // Disabled - requires native Dlib libraries for Linux
+// using FaceRecognitionDotNet; // Disabled - requires native Dlib libraries for Linux
 using HRManagementSystem.Application.Services;
 using HRManagementSystem.WebApi.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
+builder.Services.AddControllers().AddJsonOptions(options =>
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 // Configure Swagger with JWT support
@@ -24,29 +25,29 @@ builder.Services.AddSwaggerGen(c =>
     });
 
     c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
-                    {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                        {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                            {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] {}
-                    }
-                });
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
 });
 
 // TODO: Face recognition disabled - requires native Dlib libraries for Linux
 // To enable, install: sudo apt-get install libdlib-dev libopenblas-dev liblapack-dev
-var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
-Console.WriteLine($"Loading face models from: {modelPath}");
-builder.Services.AddSingleton(sp =>
-{
-    return FaceRecognition.Create(modelPath);
-});
+// var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
+// Console.WriteLine($"Loading face models from: {modelPath}");
+// builder.Services.AddSingleton(sp =>
+// {
+//     return FaceRecognition.Create(modelPath);
+// });
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 // Add Application and Infrastructure layers
@@ -55,9 +56,9 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 //link with angular
 builder.Services.AddCors(options => options.AddPolicy("AllowAngular",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()));
+    policy => policy.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()));
 
 WebApplication app = builder.Build();
 

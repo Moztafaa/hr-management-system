@@ -33,6 +33,7 @@ export class SidebarComponent {
         { title: 'My Profile', link: '/pages/ess/profile' },
         { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
         { title: 'My Payslips', link: '/pages/ess/payslips' },
+        { title: 'Update My Image', link: '/pages/updateEmployeeImage' },
       ],
     },
     {
