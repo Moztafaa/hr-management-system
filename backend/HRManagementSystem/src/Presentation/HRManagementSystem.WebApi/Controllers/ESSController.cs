@@ -57,10 +57,7 @@ public class ESSController(IESSService essService) : ControllerBase
         int employeeId = GetCurrentEmployeeId();
 
         // Ensure the employee can only submit leave requests for themselves
-        if (dto.EmployeeId != employeeId)
-        {
-            return BadRequest(new Response<int>(0, "You can only submit leave requests for yourself", true));
-        }
+        dto.EmployeeId = employeeId;
 
         Response<int> response = await essService.SubmitLeaveRequestAsync(employeeId, dto, cancellationToken);
         return Ok(response);

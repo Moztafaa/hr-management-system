@@ -163,6 +163,7 @@
 .table {
   color: var(--text-color);
   margin-bottom: 0;
+  background-color: transparent;
 }
 
 .table thead th {
@@ -180,6 +181,8 @@
   padding: 1rem;
   border-bottom: 1px solid var(--border-basic);
   vertical-align: middle;
+  background-color: transparent;
+  color: var(--text-color);
 }
 
 .table tbody tr:hover {
