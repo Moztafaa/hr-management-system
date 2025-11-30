@@ -51,6 +51,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
         builder.SeedTrainingCourses();
         builder.SeedEmployeeTraining();
+
+        // Seed Performance Management data
+        builder.SeedReviewCycles();
+        builder.SeedCompetencies();
+        builder.SeedKPIs();
+        builder.SeedPerformanceReviews();
+        builder.SeedGoals();
+        builder.SeedKPIResults();
+        builder.SeedEmployeeCompetencyRatings();
+        builder.SeedFeedbacks();
+
+        // Seed Attendance data
+        builder.SeedAttendance();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
