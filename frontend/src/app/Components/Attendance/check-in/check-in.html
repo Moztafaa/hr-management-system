@@ -1,24 +1,38 @@
-<div class="container">
-  <label>Employee ID:</label>
-  <input type="number" [(ngModel)]="employeeId" class="form-control" />
+<div class="update-image-container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Check In</h2>
+      <p class="subtitle">Capture your photo to check in</p>
+    </div>
 
-  <br />
+    <div class="card-body">
+      <!-- <div class="form-group">
+        <label for="employeeId">Employee ID</label>
+        <input type="number" id="employeeId" [(ngModel)]="employeeId" class="form-control"
+          placeholder="Enter Employee ID" />
+      </div> -->
 
-  <!-- فيديو الكاميرا -->
-  <video #video autoplay playsinline width="300" height="225" style="border:1px solid #ccc;"></video>
+      <div class="camera-section">
+        <div class="video-wrapper">
+          <video #video autoplay playsinline></video>
+          <div class="camera-overlay">
+            <span class="camera-icon">📷</span>
+          </div>
+        </div>
 
-  <br />
+        <button class="btn btn-primary capture-btn" (click)="captureImageAndUpload()">
+          <span class="icon">📸</span> Capture & Check In
+        </button>
+      </div>
 
-  <!-- زر التقاط الصورة -->
-  <button (click)="captureImageAndUpload()">📸 Capture Image</button>
+      <div class="preview-section" *ngIf="capturedImage">
+        <h3>Captured Preview</h3>
+        <div class="image-preview">
+          <img [src]="capturedImage" alt="Captured Preview" />
+        </div>
+      </div>
+    </div>
 
-  <!-- عرض الصورة الملتقطة -->
-  <div *ngIf="capturedImage" style="margin-top:10px;">
-    <h5>Captured Image Preview:</h5>
-    <img [src]="capturedImage" alt="Preview" width="112" height="112" style="border:1px solid #ccc;" />
+    <canvas #canvas style="display:none;"></canvas>
   </div>
-
-  <br />
-
-  <canvas #canvas style="display:none;"></canvas>
 </div>

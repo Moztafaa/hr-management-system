@@ -1,7 +1,6 @@
 using HRManagementSystem.Domain.Interfaces.LeaveRepository;
 using HRManagementSystem.Infrastructure.Repositories.ILeaveRepository;
 using HRManagementSystem.Infrastructure.Common;
-using HRManagementSystem.Application.Interfaces;
 using HRManagementSystem.Infrastructure.Services;
 
 namespace HRManagementSystem.Infrastructure;
@@ -64,9 +63,9 @@ public static class DependencyInjection
         services.AddScoped<IDesignationRepository, DesignationRepository>();
         // Use stub face recognition service (native Dlib not available on Linux)
         // To enable real face recognition, install native libraries and use FaceRecognitionService
-        services.AddScoped<IFaceRecognitionService, StubFaceRecognitionService>();
+       // services.AddScoped<IFaceRecognitionService, StubFaceRecognitionService>();
 
-        // services.AddScoped<IFaceRecognitionService, FaceRecognitionService>(); // Uncomment to use real service
+        services.AddScoped<IFaceRecognitionService, FaceRecognitionService>(); // Uncomment to use real service
 
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 

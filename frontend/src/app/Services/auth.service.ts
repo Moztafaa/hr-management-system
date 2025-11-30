@@ -6,11 +6,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5093/api/Account'; // Backend API URL
+  //private apiUrl = 'http://localhost:5093/api/Account'; // Backend API URL
+  private apiUrl = 'https://localhost:7005/api/Account'; // Backend API URL
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(data: any): Observable<any> {
+    console.log("LOGIN URL:", `${this.apiUrl}/login`);
+    console.log("LOGIN DATA:", data);
     return this.http.post(`${this.apiUrl}/login`, data);
   }
 
@@ -22,11 +25,16 @@ export class AuthService {
     localStorage.setItem('jwtToken', token);
   }
 
+  saveUserId(userId: number) {
+    localStorage.setItem('userId', userId.toString());
+  }
+
   getToken(): string | null {
     return localStorage.getItem('jwtToken');
   }
 
   logout() {
     localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userId');
   }
 }

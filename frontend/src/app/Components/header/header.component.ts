@@ -19,6 +19,12 @@ export class HeaderComponent {
   toggleSidebar() {
     this.layoutService.toggleSidebar();
   }
+  goTocheckOut() {
+    this.router.navigate(['/pages/checkOut']);
+  }
+  goToCheckIn() {
+    this.router.navigate(['/pages/checkIn']);
+  }
 
   logout() {
     this.authService.logout();

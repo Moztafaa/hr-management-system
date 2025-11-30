@@ -2,23 +2,23 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Attendance } from '../../../Services/attendance/attendance';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { Employee } from '../../../Services/employee/employee';
 
 @Component({
   selector: 'app-check-in',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './check-in.html',
   styleUrl: './check-in.css',
 })
-export class CheckIn  implements AfterViewInit{
+export class CheckIn implements AfterViewInit {
 
   employeeId!: number;
-capturedImage: string | null = null; // لتخزين الصورة قبل الرفع
+  capturedImage: string | null = null; // لتخزين الصورة قبل الرفع
   @ViewChild('video') video!: ElementRef<HTMLVideoElement>;
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
 
-  constructor(private attendanceService: Attendance) {}
- ngAfterViewInit() {
+  constructor(private attendanceService: Attendance, private employeeService: Employee) { }
+  ngAfterViewInit() {
     this.startCamera(); // تبدأ الكاميرا تلقائي
   }
   // Start the camera
@@ -26,7 +26,7 @@ capturedImage: string | null = null; // لتخزين الصورة قبل الر�
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         this.video.nativeElement.srcObject = stream;
-         this.video.nativeElement.play();
+        this.video.nativeElement.play();
       })
       .catch(err => console.error("Camera error:", err));
   }
@@ -43,7 +43,8 @@ capturedImage: string | null = null; // لتخزين الصورة قبل الر�
 
     this.capturedImage = canvas.toDataURL("image/jpeg"); // نعرض الصورة كـ preview
     console.log("Captured Image:", this.capturedImage);
-
+    this.employeeId = this.employeeService.getEmployeeId();
+    console.log("Employee ID:", this.employeeId);
     if (!this.employeeId) {
       alert("Please enter Employee ID");
       return;
@@ -60,23 +61,23 @@ capturedImage: string | null = null; // لتخزين الصورة قبل الر�
 
       this.attendanceService.checkIn(this.employeeId, file)
         .subscribe({
-        next: res => {
-          
-          if (res.id==-1) {
-            console.log(res.errorMassage);
-            alert("❌ "+res.errorMassage);
+          next: res => {
+
+            if (res.id == -1) {
+              console.log(res.errorMassage);
+              alert("❌ " + res.errorMassage);
+            }
+            else {
+              alert('✔️ checkIn Successfully');
+            }
+            this.capturedImage = null;
+          },
+          error: err => {
+            console.error(err);
+            alert("❌ Failed to checkIn");
           }
-          else{
-            alert('✔️ checkIn Successfully');
-          }
-          this.capturedImage = null; 
-        },
-        error: err => {
-          console.error(err);
-          alert("❌ Failed to checkIn");
-        }
-      });
+        });
     }, 'image/jpeg', 0.9);
-      
+
   }
 }

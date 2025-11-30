@@ -39,7 +39,8 @@ export class UpdateEmployeeImage implements AfterViewInit {
 
     const ctx = canvas.getContext('2d')!;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
+    this.employeeId = this.employeeService.getEmployeeId();
+    console.log("Employee ID:", this.employeeId);
     this.capturedImage = canvas.toDataURL("image/jpeg"); // نعرض الصورة كـ preview
     console.log("Captured Image:", this.capturedImage);
     if (!this.employeeId) {

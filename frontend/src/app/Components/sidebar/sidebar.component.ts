@@ -83,6 +83,17 @@ export class SidebarComponent {
     },
     { title: 'Notifications', icon: 'bell-outline', link: '/pages/notifications' },
     {
+      title: 'Employee Self-Service',
+      icon: 'person-outline',
+      children: [
+        { title: 'My Profile', link: '/pages/ess/profile' },
+        { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
+        { title: 'My Payslips', link: '/pages/ess/payslips' },
+        { title: 'My Dashboard', link: '/pages/ess/dashboard' },
+        { title: 'Update My Image', link: '/pages/updateEmployeeImage' },
+      ],
+    },
+    {
       title: 'Settings',
       icon: 'settings-2-outline',
       children: [{ title: 'Change Password', link: '/pages/account/change-password' }],

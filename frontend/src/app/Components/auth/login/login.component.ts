@@ -28,6 +28,7 @@ export class LoginComponent {
         next: (res) => {
           if (res.hasError == false) {
             this.authService.saveToken(res.data.token);
+            this.authService.saveUserId(res.data.employeeId);
             this.errorMessage = '';
             alert('Login successful! Token saved.');
             this.layoutService.closeLogin(); // Close overlay on success
@@ -35,6 +36,7 @@ export class LoginComponent {
           }
         },
         error: (err) => {
+          console.error("FULL ERROR: ", err);
           if (err.status === 401) {
             console.log(err.error.errorMessage);
             this.errorMessage = err.error.errorMessage;

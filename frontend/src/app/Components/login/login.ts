@@ -21,8 +21,9 @@ export class Login {
     this.authService.login({ email: this.email, password: this.password, rememberMe: true })
       .subscribe({
         next: res => {
-          if (res.hasError==false) {
+          if (res.hasError == false) {
             this.authService.saveToken(res.data.token);
+            this.authService.saveUserId(res.data.employeeId);
             this.errorMessage = '';
             alert('Login successful! Token saved.');
           }

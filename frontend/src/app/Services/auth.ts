@@ -11,6 +11,8 @@ export class Auth {
   constructor(private http: HttpClient) { }
 
   login(data: any): Observable<any> {
+    console.log("LOGIN URL:", `${this.apiUrl}/login`);
+    console.log("LOGIN DATA:", data);
     return this.http.post(`${this.apiUrl}/login`, data);
   }
 
@@ -20,6 +22,10 @@ export class Auth {
 
   saveToken(token: string) {
     localStorage.setItem('jwtToken', token);
+  }
+
+  saveUserId(userId: number) {
+    localStorage.setItem('userId', userId.toString());
   }
 
   getToken(): string | null {
