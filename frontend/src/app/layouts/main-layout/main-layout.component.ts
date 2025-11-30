@@ -4,6 +4,7 @@ import { SidebarComponent } from '../../Components/sidebar/sidebar.component';
 import { LayoutService } from '../../Services/layout.service';
 import { LoginComponent } from '../../Components/auth/login/login.component';
 import { RegisterComponent } from '../../Components/auth/register/register.component';
+import { ToastComponent } from '../../Components/toast/toast.component';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
@@ -17,6 +18,7 @@ import { RouterOutlet } from '@angular/router';
     SidebarComponent,
     LoginComponent,
     RegisterComponent,
+    ToastComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css'],

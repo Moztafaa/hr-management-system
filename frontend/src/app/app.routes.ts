@@ -39,6 +39,48 @@ export const routes: Routes = [
       { path: 'checkIn', component: CheckIn, title: 'CheckIn' },
       { path: 'checkOut', component: CheckOut, title: 'CheckOut' },
       { path: 'updateEmployeeImage', component: UpdateEmployeeImage, title: 'UpdateEmployeeImage' },
+
+      // ESS (Employee Self-Service) Routes
+      {
+        path: 'ess',
+        canActivate: [authGuard],
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import('./Components/ess/ess-dashboard/ess-dashboard.component').then(
+                (m) => m.EssDashboardComponent
+              ),
+            title: 'ESS Dashboard',
+          },
+          {
+            path: 'profile',
+            loadComponent: () =>
+              import('./Components/ess/ess-profile/ess-profile.component').then(
+                (m) => m.EssProfileComponent
+              ),
+            title: 'My Profile',
+          },
+          {
+            path: 'leave-requests',
+            loadComponent: () =>
+              import('./Components/ess/ess-leave-requests/ess-leave-requests.component').then(
+                (m) => m.EssLeaveRequestsComponent
+              ),
+            title: 'My Leave Requests',
+          },
+          {
+            path: 'payslips',
+            loadComponent: () =>
+              import('./Components/ess/ess-payslips/ess-payslips.component').then(
+                (m) => m.EssPayslipsComponent
+              ),
+            title: 'My Payslips',
+          },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ],
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

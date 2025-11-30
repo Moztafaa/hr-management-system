@@ -1,0 +1,251 @@
+<div class="ess-dashboard">
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <span>{{ error }}</span>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadDashboard()">
+      <i class="eva eva-refresh-outline me-1"></i> Retry
+    </button>
+  </div>
+  }
+
+  <!-- Dashboard Content -->
+  @if (dashboard && !isLoading) {
+  <!-- Welcome Section -->
+  <div class="welcome-section mb-4">
+    <h2 class="mb-1">Welcome back, {{ dashboard.profile?.firstName }}!</h2>
+    <p class="text-muted mb-0">Here's your self-service dashboard overview</p>
+  </div>
+
+  <!-- Quick Stats Row -->
+  <div class="row g-4 mb-4">
+    <!-- Profile Card -->
+    <div class="col-lg-4 col-md-6">
+      <div class="stat-card card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="stat-icon bg-primary-soft">
+              <i class="eva eva-person-outline"></i>
+            </div>
+            <div class="ms-3">
+              <h6 class="stat-label mb-0">My Profile</h6>
+              <p class="stat-value mb-0">{{ dashboard.profile?.fullName }}</p>
+            </div>
+          </div>
+          <div class="profile-details">
+            <div class="detail-row">
+              <span class="detail-label">Department</span>
+              <span class="detail-value">{{ dashboard.profile?.departmentName || 'N/A' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Designation</span>
+              <span class="detail-value">{{ dashboard.profile?.designationName || 'N/A' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Hire Date</span>
+              <span class="detail-value">{{
+                dashboard.profile?.hireDate ? formatDate(dashboard.profile!.hireDate!) : 'N/A'
+              }}</span>
+            </div>
+          </div>
+          <a routerLink="/pages/ess/profile" class="btn btn-sm btn-outline-primary mt-3 w-100">
+            <i class="eva eva-edit-outline me-1"></i> View & Edit Profile
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leave Requests Stats -->
+    <div class="col-lg-4 col-md-6">
+      <div class="stat-card card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="stat-icon bg-warning-soft">
+              <i class="eva eva-calendar-outline"></i>
+            </div>
+            <div class="ms-3">
+              <h6 class="stat-label mb-0">Leave Requests</h6>
+              <p class="stat-value mb-0">Status Overview</p>
+            </div>
+          </div>
+          <div class="leave-stats">
+            <div class="leave-stat-item">
+              <div class="leave-stat-number pending">{{ dashboard.pendingLeaveRequestsCount }}</div>
+              <div class="leave-stat-label">Pending</div>
+            </div>
+            <div class="leave-stat-item">
+              <div class="leave-stat-number approved">
+                {{ dashboard.approvedLeaveRequestsCount }}
+              </div>
+              <div class="leave-stat-label">Approved</div>
+            </div>
+          </div>
+          <a
+            routerLink="/pages/ess/leave-requests"
+            class="btn btn-sm btn-outline-warning mt-3 w-100"
+          >
+            <i class="eva eva-plus-outline me-1"></i> Manage Leave Requests
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Payslip -->
+    <div class="col-lg-4 col-md-6">
+      <div class="stat-card card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="stat-icon bg-success-soft">
+              <i class="eva eva-credit-card-outline"></i>
+            </div>
+            <div class="ms-3">
+              <h6 class="stat-label mb-0">Latest Payslip</h6>
+              @if (dashboard.recentPayslips && dashboard.recentPayslips.length > 0) {
+              <p class="stat-value mb-0">
+                {{ getMonthName(dashboard.recentPayslips[0].month) }}
+                {{ dashboard.recentPayslips[0].year }}
+              </p>
+              } @else {
+              <p class="stat-value mb-0">No payslips yet</p>
+              }
+            </div>
+          </div>
+          @if (dashboard.recentPayslips && dashboard.recentPayslips.length > 0) {
+          <div class="payslip-summary">
+            <div class="payslip-amount">
+              <span class="amount-label">Net Salary</span>
+              <span class="amount-value">{{
+                formatCurrency(dashboard.recentPayslips[0].netSalary)
+              }}</span>
+            </div>
+            <div class="payslip-breakdown">
+              <div class="breakdown-item">
+                <span>Basic: {{ formatCurrency(dashboard.recentPayslips[0].basicSalary) }}</span>
+              </div>
+              <div class="breakdown-item text-success">
+                <span
+                  >+ Allowances:
+                  {{ formatCurrency(dashboard.recentPayslips[0].totalAllowances) }}</span
+                >
+              </div>
+              <div class="breakdown-item text-danger">
+                <span
+                  >- Deductions:
+                  {{ formatCurrency(dashboard.recentPayslips[0].totalDeductions) }}</span
+                >
+              </div>
+            </div>
+          </div>
+          }
+          <a routerLink="/pages/ess/payslips" class="btn btn-sm btn-outline-success mt-3 w-100">
+            <i class="eva eva-file-text-outline me-1"></i> View All Payslips
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leave Balances Section -->
+  @if (dashboard.leaveBalances && dashboard.leaveBalances.length > 0) {
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0"><i class="eva eva-calendar-outline me-2"></i>Leave Balances</h5>
+      <span class="badge bg-primary">{{ currentYear }}</span>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        @for (balance of dashboard.leaveBalances; track balance.id) {
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="leave-balance-card">
+            <div class="balance-header">
+              <span class="balance-type">{{
+                balance.leaveTypeName || 'Leave Type ' + balance.leaveTypeId
+              }}</span>
+            </div>
+            <div class="balance-progress">
+              <div class="progress" style="height: 8px">
+                <div
+                  class="progress-bar"
+                  [class.bg-success]="balance.remainingDays > balance.totalAllocated * 0.5"
+                  [class.bg-warning]="
+                    balance.remainingDays <= balance.totalAllocated * 0.5 &&
+                    balance.remainingDays > balance.totalAllocated * 0.2
+                  "
+                  [class.bg-danger]="balance.remainingDays <= balance.totalAllocated * 0.2"
+                  [style.width.%]="(balance.remainingDays / balance.totalAllocated) * 100"
+                  role="progressbar"
+                ></div>
+              </div>
+            </div>
+            <div class="balance-details">
+              <div class="balance-stat">
+                <span class="balance-number">{{ balance.remainingDays }}</span>
+                <span class="balance-label">Remaining</span>
+              </div>
+              <div class="balance-stat">
+                <span class="balance-number">{{ balance.usedDays }}</span>
+                <span class="balance-label">Used</span>
+              </div>
+              <div class="balance-stat">
+                <span class="balance-number">{{ balance.totalAllocated }}</span>
+                <span class="balance-label">Total</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Quick Actions -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0"><i class="eva eva-flash-outline me-2"></i>Quick Actions</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-lg-3 col-md-6">
+          <a
+            routerLink="/pages/ess/leave-requests"
+            [queryParams]="{ action: 'new' }"
+            class="quick-action-btn"
+          >
+            <i class="eva eva-plus-circle-outline"></i>
+            <span>Request Leave</span>
+          </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <a routerLink="/pages/ess/profile" class="quick-action-btn">
+            <i class="eva eva-person-outline"></i>
+            <span>Update Profile</span>
+          </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <a routerLink="/pages/ess/payslips" class="quick-action-btn">
+            <i class="eva eva-download-outline"></i>
+            <span>Download Payslip</span>
+          </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <a routerLink="/pages/ess/leave-requests" class="quick-action-btn">
+            <i class="eva eva-eye-outline"></i>
+            <span>View Leave History</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

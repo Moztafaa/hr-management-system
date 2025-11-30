@@ -1,0 +1,280 @@
+<div class="ess-leave-requests">
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <span>{{ error }}</span>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadData()">
+      <i class="eva eva-refresh-outline me-1"></i> Retry
+    </button>
+  </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isLoading) {
+  <div class="page-header d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h2 class="page-title"><i class="eva eva-calendar-outline me-2"></i>My Leave Requests</h2>
+      <p class="page-subtitle">View your leave history and submit new requests</p>
+    </div>
+    <button class="btn btn-primary" (click)="openModal()">
+      <i class="eva eva-plus-outline me-1"></i> Request Leave
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4 col-sm-6">
+      <div class="stat-card pending">
+        <div class="stat-icon">
+          <i class="eva eva-clock-outline"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ pendingCount }}</span>
+          <span class="stat-label">Pending</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+      <div class="stat-card approved">
+        <div class="stat-icon">
+          <i class="eva eva-checkmark-circle-2-outline"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ approvedCount }}</span>
+          <span class="stat-label">Approved</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+      <div class="stat-card rejected">
+        <div class="stat-icon">
+          <i class="eva eva-close-circle-outline"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ rejectedCount }}</span>
+          <span class="stat-label">Rejected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leave Balances -->
+  @if (leaveBalances.length > 0) {
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="card-title mb-0"><i class="eva eva-layers-outline me-2"></i>Leave Balances</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        @for (balance of leaveBalances; track balance.id) {
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="balance-card">
+            <div class="balance-type">{{ getLeaveTypeName(balance.leaveTypeId) }}</div>
+            <div class="balance-bar">
+              <div class="progress" style="height: 6px">
+                <div
+                  class="progress-bar"
+                  [class.bg-success]="balance.remainingDays > balance.totalAllocated * 0.5"
+                  [class.bg-warning]="
+                    balance.remainingDays <= balance.totalAllocated * 0.5 &&
+                    balance.remainingDays > balance.totalAllocated * 0.2
+                  "
+                  [class.bg-danger]="balance.remainingDays <= balance.totalAllocated * 0.2"
+                  [style.width.%]="(balance.remainingDays / balance.totalAllocated) * 100"
+                ></div>
+              </div>
+            </div>
+            <div class="balance-stats">
+              <span class="remaining">{{ balance.remainingDays }} remaining</span>
+              <span class="total">of {{ balance.totalAllocated }} days</span>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Leave Requests Table -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0"><i class="eva eva-list-outline me-2"></i>Request History</h5>
+    </div>
+    <div class="card-body p-0">
+      @if (leaveRequests.length === 0) {
+      <div class="empty-state">
+        <i class="eva eva-calendar-outline"></i>
+        <h5>No Leave Requests</h5>
+        <p>You haven't submitted any leave requests yet.</p>
+        <button class="btn btn-primary" (click)="openModal()">
+          <i class="eva eva-plus-outline me-1"></i> Request Leave
+        </button>
+      </div>
+      } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Leave Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Days</th>
+              <th>Status</th>
+              <th>Submitted</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (request of leaveRequests; track request.id) {
+            <tr>
+              <td>
+                <span class="leave-type-badge">
+                  {{ request.leaveTypeName || getLeaveTypeName(request.leaveTypeId) }}
+                </span>
+              </td>
+              <td>{{ formatDate(request.startDate) }}</td>
+              <td>{{ formatDate(request.endDate) }}</td>
+              <td>
+                <span class="days-badge">{{ request.totalDays }} day(s)</span>
+              </td>
+              <td>
+                <span class="status-badge" [class]="getStatusClass(request.status)">
+                  {{ LeaveStatusLabels[request.status] }}
+                </span>
+              </td>
+              <td class="text-muted">
+                {{ request.createdAt ? formatDate(request.createdAt) : '-' }}
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- Request Leave Modal -->
+  @if (showModal) {
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+  <div class="modal-container">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="eva eva-plus-circle-outline me-2"></i>Request Leave</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <form [formGroup]="leaveForm" (ngSubmit)="submitLeaveRequest()">
+          <div class="modal-body">
+            <!-- Leave Type -->
+            <div class="form-group mb-4">
+              <label for="leaveType" class="form-label">Leave Type *</label>
+              <select
+                id="leaveType"
+                class="form-select"
+                formControlName="leaveTypeId"
+                [class.is-invalid]="getFieldError('leaveTypeId')"
+              >
+                <option value="">Select leave type</option>
+                @for (type of leaveTypes; track type.id) {
+                <option [value]="type.id">
+                  {{ type.name }}
+                  @if (getBalance(type.id)) { ({{ getBalance(type.id)?.remainingDays }} days
+                  remaining) }
+                </option>
+                }
+              </select>
+              @if (getFieldError('leaveTypeId')) {
+              <div class="invalid-feedback">{{ getFieldError('leaveTypeId') }}</div>
+              }
+            </div>
+
+            <!-- Date Range -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label for="startDate" class="form-label">Start Date *</label>
+                <input
+                  type="date"
+                  id="startDate"
+                  class="form-control"
+                  formControlName="startDate"
+                  [class.is-invalid]="getFieldError('startDate')"
+                />
+                @if (getFieldError('startDate')) {
+                <div class="invalid-feedback">{{ getFieldError('startDate') }}</div>
+                }
+              </div>
+              <div class="col-md-6">
+                <label for="endDate" class="form-label">End Date *</label>
+                <input
+                  type="date"
+                  id="endDate"
+                  class="form-control"
+                  formControlName="endDate"
+                  [class.is-invalid]="getFieldError('endDate')"
+                />
+                @if (getFieldError('endDate')) {
+                <div class="invalid-feedback">{{ getFieldError('endDate') }}</div>
+                }
+              </div>
+            </div>
+
+            <!-- Days Summary -->
+            @if (calculateDays() > 0) {
+            <div class="days-summary mb-4">
+              <i class="eva eva-calendar-outline me-2"></i>
+              <span
+                >Total: <strong>{{ calculateDays() }} day(s)</strong></span
+              >
+            </div>
+            }
+
+            <!-- Reason -->
+            <div class="form-group">
+              <label for="reason" class="form-label">Reason (Optional)</label>
+              <textarea
+                id="reason"
+                class="form-control"
+                formControlName="reason"
+                rows="3"
+                placeholder="Enter reason for leave request"
+              ></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="closeModal()"
+              [disabled]="isSubmitting"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting || leaveForm.invalid"
+            >
+              @if (isSubmitting) {
+              <span class="spinner-border spinner-border-sm me-1"></span>
+              Submitting... } @else {
+              <i class="eva eva-paper-plane-outline me-1"></i> Submit Request }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  }
+</div>

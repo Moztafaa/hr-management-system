@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener } from '@angular/core';
 import { LayoutService } from '../../Services/layout.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 export interface MenuItem {
   title: string;
@@ -10,7 +10,6 @@ export interface MenuItem {
   group?: boolean;
   children?: MenuItem[];
 }
-
 
 @Component({
   selector: 'app-sidebar',
@@ -21,10 +20,21 @@ export interface MenuItem {
 })
 export class SidebarComponent {
   private layoutService = inject(LayoutService);
+  private router = inject(Router);
   isSidebarOpen = this.layoutService.isSidebarOpen;
 
   menuItems: MenuItem[] = [
     { title: 'Dashboard', icon: 'home-outline', link: '/pages/dashboard' },
+    {
+      title: 'Employee Self-Service',
+      icon: 'person-outline',
+      children: [
+        { title: 'My Dashboard', link: '/pages/ess/dashboard' },
+        { title: 'My Profile', link: '/pages/ess/profile' },
+        { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
+        { title: 'My Payslips', link: '/pages/ess/payslips' },
+      ],
+    },
     {
       title: 'Employee Management',
       icon: 'people-outline',
@@ -73,16 +83,6 @@ export class SidebarComponent {
     },
     { title: 'Notifications', icon: 'bell-outline', link: '/pages/notifications' },
     {
-      title: 'Employee Self-Service',
-      icon: 'person-outline',
-      children: [
-        { title: 'My Profile', link: '/pages/ess/profile' },
-        { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
-        { title: 'My Payslips', link: '/pages/ess/payslips' },
-        { title: 'My Dashboard', link: '/pages/ess/dashboard' },
-      ],
-    },
-    {
       title: 'Settings',
       icon: 'settings-2-outline',
       children: [{ title: 'Change Password', link: '/pages/account/change-password' }],
@@ -90,8 +90,32 @@ export class SidebarComponent {
   ];
 
   expandedItems = new Set<string>();
+  private isMobile = false;
 
-  toggleItem(item: any) {
+  constructor() {
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobile = window.innerWidth < 992;
+  }
+
+  onMenuItemClick(item: MenuItem, event: Event) {
+    if (item.children) {
+      event.preventDefault();
+      this.toggleItem(item);
+    } else {
+      // Close sidebar on mobile when navigating
+      this.closeSidebarOnMobile();
+    }
+  }
+
+  toggleItem(item: MenuItem) {
     if (item.children) {
       // If sidebar is closed, open it first
       if (!this.isSidebarOpen()) {
@@ -106,7 +130,23 @@ export class SidebarComponent {
     }
   }
 
-  isExpanded(item: any): boolean {
+  isExpanded(item: MenuItem): boolean {
     return this.expandedItems.has(item.title);
+  }
+
+  closeSidebarOnMobile() {
+    if (this.isMobile && this.isSidebarOpen()) {
+      this.layoutService.isSidebarOpen.set(false);
+    }
+  }
+
+  isActiveRoute(link?: string): boolean {
+    if (!link) return false;
+    return this.router.url === link;
+  }
+
+  hasActiveChild(item: MenuItem): boolean {
+    if (!item.children) return false;
+    return item.children.some((child) => child.link && this.router.url.startsWith(child.link));
   }
 }

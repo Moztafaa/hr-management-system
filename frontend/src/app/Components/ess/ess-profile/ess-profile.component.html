@@ -1,0 +1,215 @@
+<div class="ess-profile">
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <span>{{ error }}</span>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadProfile()">
+      <i class="eva eva-refresh-outline me-1"></i> Retry
+    </button>
+  </div>
+  }
+
+  <!-- Profile Content -->
+  @if (profile && !isLoading) {
+  <div class="page-header mb-4">
+    <h2 class="page-title"><i class="eva eva-person-outline me-2"></i>My Profile</h2>
+    <p class="page-subtitle">View and manage your personal information</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Read-Only Information -->
+    <div class="col-lg-5">
+      <div class="card profile-card h-100">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="eva eva-info-outline me-2"></i>Personal Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="profile-avatar-section text-center mb-4">
+            <div class="profile-avatar">
+              <span class="avatar-initials"
+                >{{ profile.firstName.charAt(0) }}{{ profile.lastName.charAt(0) }}</span
+              >
+            </div>
+            <h4 class="profile-name mt-3 mb-1">{{ profile.fullName }}</h4>
+            <p class="profile-role text-muted">{{ profile.designationName || 'Employee' }}</p>
+          </div>
+
+          <div class="info-list">
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="eva eva-briefcase-outline"></i>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Department</span>
+                <span class="info-value">{{ profile.departmentName || 'Not assigned' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="eva eva-award-outline"></i>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Designation</span>
+                <span class="info-value">{{ profile.designationName || 'Not assigned' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="eva eva-calendar-outline"></i>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ formatDate(profile.dateOfBirth) }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="eva eva-people-outline"></i>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Gender</span>
+                <span class="info-value">{{ profile.gender || 'Not specified' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="eva eva-clock-outline"></i>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Hire Date</span>
+                <span class="info-value">{{ formatDate(profile.hireDate) }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="eva eva-hash-outline"></i>
+              </div>
+              <div class="info-content">
+                <span class="info-label">Employee ID</span>
+                <span class="info-value">#{{ profile.id }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Editable Information -->
+    <div class="col-lg-7">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">
+            <i class="eva eva-edit-outline me-2"></i>Contact Information
+          </h5>
+          @if (!isEditing) {
+          <button class="btn btn-sm btn-primary" (click)="toggleEdit()">
+            <i class="eva eva-edit-2-outline me-1"></i> Edit
+          </button>
+          }
+        </div>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+            <!-- Email Field -->
+            <div class="form-group mb-4">
+              <label for="email" class="form-label">
+                <i class="eva eva-email-outline me-1"></i>Email Address
+              </label>
+              @if (isEditing) {
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                formControlName="email"
+                [class.is-invalid]="getFieldError('email')"
+                placeholder="Enter your email"
+              />
+              @if (getFieldError('email')) {
+              <div class="invalid-feedback">{{ getFieldError('email') }}</div>
+              } } @else {
+              <div class="form-value">{{ profile.email }}</div>
+              }
+            </div>
+
+            <!-- Contact Number Field -->
+            <div class="form-group mb-4">
+              <label for="contactNumber" class="form-label">
+                <i class="eva eva-phone-outline me-1"></i>Contact Number
+              </label>
+              @if (isEditing) {
+              <input
+                type="tel"
+                id="contactNumber"
+                class="form-control"
+                formControlName="contactNumber"
+                placeholder="Enter your phone number"
+              />
+              } @else {
+              <div class="form-value">{{ profile.contactNumber || 'Not provided' }}</div>
+              }
+            </div>
+
+            <!-- Address Field -->
+            <div class="form-group mb-4">
+              <label for="address" class="form-label">
+                <i class="eva eva-pin-outline me-1"></i>Address
+              </label>
+              @if (isEditing) {
+              <textarea
+                id="address"
+                class="form-control"
+                formControlName="address"
+                rows="3"
+                placeholder="Enter your address"
+              ></textarea>
+              } @else {
+              <div class="form-value">{{ profile.address || 'Not provided' }}</div>
+              }
+            </div>
+
+            <!-- Action Buttons -->
+            @if (isEditing) {
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="isSaving || profileForm.invalid"
+              >
+                @if (isSaving) {
+                <span class="spinner-border spinner-border-sm me-1"></span>
+                Saving... } @else {
+                <i class="eva eva-save-outline me-1"></i> Save Changes }
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="toggleEdit()"
+                [disabled]="isSaving"
+              >
+                <i class="eva eva-close-outline me-1"></i> Cancel
+              </button>
+            </div>
+            }
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

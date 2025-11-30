@@ -1,3 +1,6 @@
+<!-- Mobile overlay backdrop -->
+<div class="sidebar-overlay" [class.show]="isSidebarOpen()" (click)="closeSidebarOnMobile()"></div>
+
 <div class="sidebar border-end sidebar-shadow" [class.collapsed]="!isSidebarOpen()">
   <div class="list-group list-group-flush mt-2">
     <ng-container *ngFor="let item of menuItems">
@@ -9,11 +12,13 @@
       <!-- Menu Item -->
       <a
         *ngIf="!item.group"
-        [routerLink]="item.link"
+        [routerLink]="item.children ? null : item.link"
         class="list-group-item list-group-item-action border-0 d-flex align-items-center justify-content-between"
-        [class.active]="item.link === '#' && !item.children"
+        [class.active]="!item.children && isActiveRoute(item.link)"
+        [class.has-active-child]="item.children && hasActiveChild(item)"
         routerLinkActive="active"
-        (click)="toggleItem(item)"
+        [routerLinkActiveOptions]="{ exact: item.link === '/pages/dashboard' }"
+        (click)="onMenuItemClick(item, $event)"
       >
         <div class="d-flex align-items-center">
           <i class="eva eva-{{ item.icon }} me-3 fs-4"></i>
@@ -26,13 +31,19 @@
         ></i>
       </a>
 
-      <!-- Dropdown Children -->
-      <div *ngIf="item.children && isExpanded(item)" class="submenu">
+      <!-- Dropdown Children with animation -->
+      <div
+        *ngIf="item.children"
+        class="submenu"
+        [class.expanded]="isExpanded(item)"
+        [style.maxHeight]="isExpanded(item) ? item.children.length * 48 + 16 + 'px' : '0'"
+      >
         <a
           *ngFor="let child of item.children"
           [routerLink]="child.link"
           routerLinkActive="active"
           class="list-group-item list-group-item-action border-0 d-flex align-items-center ps-5 submenu-item"
+          (click)="closeSidebarOnMobile()"
         >
           <span class="menu-title">{{ child.title }}</span>
         </a>

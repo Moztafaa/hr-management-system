@@ -1,0 +1,291 @@
+<div class="ess-payslips">
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <span>{{ error }}</span>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadPayslips()">
+      <i class="eva eva-refresh-outline me-1"></i> Retry
+    </button>
+  </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isLoading) {
+  <div class="page-header d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h2 class="page-title"><i class="eva eva-credit-card-outline me-2"></i>My Payslips</h2>
+      <p class="page-subtitle">View and download your salary statements</p>
+    </div>
+    <div class="year-filter">
+      <label for="yearSelect" class="form-label mb-1">Filter by Year</label>
+      <select
+        id="yearSelect"
+        class="form-select"
+        [(ngModel)]="selectedYear"
+        (change)="onYearChange()"
+      >
+        @for (year of availableYears; track year) {
+        <option [value]="year">{{ year }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  @if (filteredPayslips.length > 0) {
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="summary-card earnings">
+        <div class="summary-icon">
+          <i class="eva eva-trending-up-outline"></i>
+        </div>
+        <div class="summary-content">
+          <span class="summary-label">Total Net Earnings</span>
+          <span class="summary-value">{{ formatCurrency(totalNetSalary) }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="summary-card allowances">
+        <div class="summary-icon">
+          <i class="eva eva-plus-circle-outline"></i>
+        </div>
+        <div class="summary-content">
+          <span class="summary-label">Total Allowances</span>
+          <span class="summary-value">{{ formatCurrency(totalAllowances) }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="summary-card deductions">
+        <div class="summary-icon">
+          <i class="eva eva-minus-circle-outline"></i>
+        </div>
+        <div class="summary-content">
+          <span class="summary-label">Total Deductions</span>
+          <span class="summary-value">{{ formatCurrency(totalDeductions) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Payslips Grid -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <i class="eva eva-file-text-outline me-2"></i>Payslips for {{ selectedYear }}
+      </h5>
+    </div>
+    <div class="card-body">
+      @if (filteredPayslips.length === 0) {
+      <div class="empty-state">
+        <i class="eva eva-file-text-outline"></i>
+        <h5>No Payslips Found</h5>
+        <p>No payslips available for {{ selectedYear }}.</p>
+      </div>
+      } @else {
+      <div class="row g-3">
+        @for (payslip of filteredPayslips; track payslip.id) {
+        <div class="col-lg-4 col-md-6">
+          <div class="payslip-card" (click)="viewDetails(payslip)">
+            <div class="payslip-header">
+              <div class="payslip-month">
+                <span class="month-name">{{ getMonthName(payslip.month) }}</span>
+                <span class="month-year">{{ payslip.year }}</span>
+              </div>
+              <div class="payslip-badge">
+                <i class="eva eva-checkmark-circle-2-outline"></i>
+              </div>
+            </div>
+            <div class="payslip-body">
+              <div class="net-salary">
+                <span class="salary-label">Net Salary</span>
+                <span class="salary-amount">{{ formatCurrency(payslip.netSalary) }}</span>
+              </div>
+              <div class="salary-breakdown">
+                <div class="breakdown-row">
+                  <span class="breakdown-label">Basic</span>
+                  <span class="breakdown-value">{{ formatCurrency(payslip.basicSalary) }}</span>
+                </div>
+                <div class="breakdown-row text-success">
+                  <span class="breakdown-label">+ Allowances</span>
+                  <span class="breakdown-value">{{ formatCurrency(payslip.totalAllowances) }}</span>
+                </div>
+                <div class="breakdown-row text-danger">
+                  <span class="breakdown-label">- Deductions</span>
+                  <span class="breakdown-value">{{ formatCurrency(payslip.totalDeductions) }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="payslip-footer">
+              <span class="generated-date">
+                <i class="eva eva-calendar-outline me-1"></i>
+                {{ formatDate(payslip.generatedAt) }}
+              </span>
+              <button
+                class="btn btn-sm btn-outline-primary"
+                (click)="$event.stopPropagation(); downloadPdf(payslip.id)"
+              >
+                <i class="eva eva-download-outline"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- Payslip Details Modal -->
+  @if (showDetails && selectedPayslip) {
+  <div class="modal-backdrop" (click)="closeDetails()"></div>
+  <div class="modal-container">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="eva eva-file-text-outline me-2"></i>
+            Payslip - {{ getMonthName(selectedPayslip.month) }} {{ selectedPayslip.year }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeDetails()"></button>
+        </div>
+        <div class="modal-body">
+          @if (isLoadingDetails) {
+          <div class="d-flex justify-content-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          } @else {
+          <!-- Employee Info -->
+          <div class="payslip-section mb-4">
+            <div class="section-header">
+              <i class="eva eva-person-outline me-2"></i>Employee Information
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="info-row">
+                  <span class="info-label">Employee Name</span>
+                  <span class="info-value">{{ selectedPayslip.employeeName }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-row">
+                  <span class="info-label">Employee ID</span>
+                  <span class="info-value">#{{ selectedPayslip.employeeId }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-row">
+                  <span class="info-label">Pay Period</span>
+                  <span class="info-value"
+                    >{{ getMonthName(selectedPayslip.month) }} {{ selectedPayslip.year }}</span
+                  >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-row">
+                  <span class="info-label">Generated On</span>
+                  <span class="info-value">{{ formatDate(selectedPayslip.generatedAt) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Earnings & Deductions -->
+          <div class="row g-4 mb-4">
+            <!-- Earnings -->
+            <div class="col-md-6">
+              <div class="payslip-section earnings-section">
+                <div class="section-header">
+                  <i class="eva eva-plus-circle-outline me-2"></i>Earnings
+                </div>
+                <div class="section-body">
+                  <div class="item-row">
+                    <span class="item-label">Basic Salary</span>
+                    <span class="item-value">{{
+                      formatCurrency(selectedPayslip.basicSalary)
+                    }}</span>
+                  </div>
+                  @if (selectedPayslip.allowances && selectedPayslip.allowances.length > 0) { @for
+                  (allowance of selectedPayslip.allowances; track allowance.id) {
+                  <div class="item-row">
+                    <span class="item-label">{{ allowance.name }}</span>
+                    <span class="item-value">{{ formatCurrency(allowance.amount) }}</span>
+                  </div>
+                  } }
+                  <div class="item-row total">
+                    <span class="item-label">Total Earnings</span>
+                    <span class="item-value">{{
+                      formatCurrency(selectedPayslip.basicSalary + selectedPayslip.totalAllowances)
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deductions -->
+            <div class="col-md-6">
+              <div class="payslip-section deductions-section">
+                <div class="section-header">
+                  <i class="eva eva-minus-circle-outline me-2"></i>Deductions
+                </div>
+                <div class="section-body">
+                  @if (selectedPayslip.deductions && selectedPayslip.deductions.length > 0) { @for
+                  (deduction of selectedPayslip.deductions; track deduction.id) {
+                  <div class="item-row">
+                    <span class="item-label">{{ deduction.name }}</span>
+                    <span class="item-value text-danger"
+                      >-{{ formatCurrency(deduction.amount) }}</span
+                    >
+                  </div>
+                  } } @else {
+                  <div class="item-row">
+                    <span class="item-label text-muted">No deductions</span>
+                    <span class="item-value">{{ formatCurrency(0) }}</span>
+                  </div>
+                  }
+                  <div class="item-row total">
+                    <span class="item-label">Total Deductions</span>
+                    <span class="item-value text-danger"
+                      >-{{ formatCurrency(selectedPayslip.totalDeductions) }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Net Salary -->
+          <div class="net-salary-section">
+            <div class="net-salary-content">
+              <span class="net-label">Net Salary</span>
+              <span class="net-amount">{{ formatCurrency(selectedPayslip.netSalary) }}</span>
+            </div>
+          </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" (click)="closeDetails()">Close</button>
+          <button class="btn btn-primary" (click)="downloadPdf(selectedPayslip.id)">
+            <i class="eva eva-download-outline me-1"></i> Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

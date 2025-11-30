@@ -1,0 +1,18 @@
+<div class="toast-container">
+  @for (toast of toastService.toasts(); track toast.id) {
+  <div class="toast-item" [class]="'toast-' + toast.type" role="alert">
+    <div class="toast-content">
+      <i class="eva eva-{{ getIcon(toast.type) }} toast-icon"></i>
+      <span class="toast-message">{{ toast.message }}</span>
+    </div>
+    <button
+      type="button"
+      class="toast-close"
+      aria-label="Close"
+      (click)="toastService.remove(toast.id)"
+    >
+      <i class="eva eva-close-outline"></i>
+    </button>
+  </div>
+  }
+</div>
