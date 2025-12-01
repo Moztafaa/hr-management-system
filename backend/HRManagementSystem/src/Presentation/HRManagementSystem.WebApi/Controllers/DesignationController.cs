@@ -1,4 +1,5 @@
 ﻿namespace HRManagementSystem.WebApi.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class DesignationController(IDesignationService _designationService) : ControllerBase
@@ -44,7 +45,7 @@ public class DesignationController(IDesignationService _designationService) : Co
         {
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
         }
-        return NoContent();
+        return Ok(response);
     }
 
     [HttpDelete("{id}")]
@@ -55,7 +56,7 @@ public class DesignationController(IDesignationService _designationService) : Co
         {
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
         }
-        return NoContent();
+        return Ok(response);
     }
 
     [HttpGet("{id}/employees")]

@@ -8,11 +8,14 @@ public class DepartmentProfile : Profile
 {
     public DepartmentProfile()
     {
-        CreateMap<Department, DepartmentDto>().ReverseMap();
+        CreateMap<Department, DepartmentDto>()
+            .ForMember(dest => dest.EmployeeCount, opt => opt.MapFrom(src => src.Employees != null ? src.Employees.Count : 0))
+            .ReverseMap();
         CreateMap<CreateDepartmentDto, Department>();
         CreateMap<UpdateDepartmentDto, Department>();
         CreateMap<Department, DepartmentDetailDto>();
-        CreateMap<Department, DepartmentWithEmployeesDto>();
+        CreateMap<Department, DepartmentWithEmployeesDto>()
+            .ForMember(dest => dest.EmployeeCount, opt => opt.MapFrom(src => src.Employees != null ? src.Employees.Count : 0));
         CreateMap<Employee, EmployeeSummaryDto>();
     }
 }

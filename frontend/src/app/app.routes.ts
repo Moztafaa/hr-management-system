@@ -114,6 +114,26 @@ export const routes: Routes = [
         ],
       },
 
+      // Organization Routes (Departments & Designations)
+      {
+        path: 'departments',
+        loadComponent: () =>
+          import(
+            './Components/organization/departments/department-list/department-list.component'
+          ).then((m) => m.DepartmentListComponent),
+        canActivate: [authGuard],
+        title: 'Departments',
+      },
+      {
+        path: 'designations',
+        loadComponent: () =>
+          import(
+            './Components/organization/designations/designation-list/designation-list.component'
+          ).then((m) => m.DesignationListComponent),
+        canActivate: [authGuard],
+        title: 'Designations',
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

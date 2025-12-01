@@ -54,7 +54,7 @@ Task<Response<DepartmentWithEmployeesDto>> GetDepartmentWithEmployeesAsync(int i
         {
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
         }
-        return NoContent();
+        return Ok(response);
     }
 
     [HttpDelete("{id}")]
@@ -65,7 +65,7 @@ Task<Response<DepartmentWithEmployeesDto>> GetDepartmentWithEmployeesAsync(int i
         {
             return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
         }
-        return NoContent();
+        return Ok(response);
     }
 
     [HttpGet("{id}/employees")]

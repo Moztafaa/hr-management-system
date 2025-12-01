@@ -26,17 +26,6 @@ export class SidebarComponent {
   menuItems: MenuItem[] = [
     { title: 'Dashboard', icon: 'home-outline', link: '/pages/dashboard' },
     {
-      title: 'Employee Self-Service',
-      icon: 'person-outline',
-      children: [
-        { title: 'My Dashboard', link: '/pages/ess/dashboard' },
-        { title: 'My Profile', link: '/pages/ess/profile' },
-        { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
-        { title: 'My Payslips', link: '/pages/ess/payslips' },
-        { title: 'Update My Image', link: '/pages/updateEmployeeImage' },
-      ],
-    },
-    {
       title: 'Employee Management',
       icon: 'people-outline',
       children: [

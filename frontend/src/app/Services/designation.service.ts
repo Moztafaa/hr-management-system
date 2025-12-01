@@ -2,7 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
-import { Designation, CreateDesignationDto, UpdateDesignationDto } from '../models/designation';
+import {
+  Designation,
+  CreateDesignationDto,
+  UpdateDesignationDto,
+  DesignationWithEmployees,
+} from '../models/designation';
 
 @Injectable({
   providedIn: 'root',
@@ -19,15 +24,19 @@ export class DesignationService {
     return this.http.get<ApiResponse<Designation>>(`${this.apiUrl}/${id}`);
   }
 
+  getWithEmployees(id: number): Observable<ApiResponse<DesignationWithEmployees>> {
+    return this.http.get<ApiResponse<DesignationWithEmployees>>(`${this.apiUrl}/${id}/employees`);
+  }
+
   create(designation: CreateDesignationDto): Observable<ApiResponse<Designation>> {
     return this.http.post<ApiResponse<Designation>>(this.apiUrl, designation);
   }
 
-  update(id: number, designation: UpdateDesignationDto): Observable<ApiResponse<void>> {
-    return this.http.put<ApiResponse<void>>(`${this.apiUrl}/${id}`, designation);
+  update(id: number, designation: UpdateDesignationDto): Observable<ApiResponse<boolean>> {
+    return this.http.put<ApiResponse<boolean>>(`${this.apiUrl}/${id}`, designation);
   }
 
-  delete(id: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
+  delete(id: number): Observable<ApiResponse<boolean>> {
+    return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/${id}`);
   }
 }

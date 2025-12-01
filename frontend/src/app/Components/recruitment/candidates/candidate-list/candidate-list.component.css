@@ -59,11 +59,48 @@
 }
 
 .input-group-text {
-  border-color: #dee2e6;
+  border-color: var(--border-basic) !important;
+  background-color: var(--input-bg) !important;
+  color: var(--text-hint) !important;
 }
 
 .input-group-text:has(+ .form-control:focus) {
-  border-color: #86b7fe;
+  border-color: var(--primary-color) !important;
+}
+
+/* Form controls dark theme */
+.form-control,
+.form-select {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-basic) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.15) !important;
+}
+
+/* Form check/switch dark theme */
+.form-check-input {
+  background-color: var(--input-bg) !important;
+  border-color: var(--border-basic) !important;
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.form-check-label {
+  color: var(--text-color) !important;
+}
+
+.form-label {
+  color: var(--text-hint) !important;
 }
 
 /* Fix for modal-dialog-scrollable with form */
