@@ -32,6 +32,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.ApplyConfiguration(new PayslipConfiguration());
         builder.ApplyConfiguration(new EmployeeTrainingConfiguration());
         builder.ApplyConfiguration(new TrainingCourseConfiguration());
+        builder.ApplyConfiguration(new TrainingRequestConfiguration());
 
         // Seed initial data
         builder.SeedDepartments();
@@ -106,6 +107,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<TrainingCourse> TrainingCourses { get; set; }
     public DbSet<EmployeeTraining> EmployeeTrainings { get; set; }
+    public DbSet<TrainingRequest> TrainingRequests { get; set; }
 
     public DbSet<Attendance> Attendances { get; set; }
 

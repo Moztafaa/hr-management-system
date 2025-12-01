@@ -86,6 +86,7 @@ public static class DependencyInjection
 
         services.AddScoped<ITrainingCourseRepository, TrainingCourseRepository>();
         services.AddScoped<IEmployeeTrainingRepository, EmployeeTrainingRepository>();
+        services.AddScoped<ITrainingRequestRepository, TrainingRequestRepository>();
 
         services.AddScoped<IPerformanceReviewRepository, PerformanceReviewRepository>();
         services.AddScoped<IReviewCycleRepository, ReviewCycleRepository>();

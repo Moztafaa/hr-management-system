@@ -21,5 +21,18 @@ public class TrainingProfile : Profile
                        opt => opt.MapFrom(src => src.Status.ToString()));
 
         CreateMap<EmployeeEnrollDto, EmployeeTraining>();
+
+        // TrainingRequest mappings
+        CreateMap<TrainingRequest, TrainingRequestDto>()
+            .ForMember(dest => dest.EmployeeName,
+                       opt => opt.MapFrom(src => src.Employee!.FirstName + " " + src.Employee.LastName))
+            .ForMember(dest => dest.CourseTitle,
+                       opt => opt.MapFrom(src => src.TrainingCourse!.Title))
+            .ForMember(dest => dest.ManagerName,
+                       opt => opt.MapFrom(src => src.Reviewer != null
+                                                ? src.Reviewer.FirstName + " " + src.Reviewer.LastName
+                                                : null));
+
+        CreateMap<TrainingRequestCreateDto, TrainingRequest>().ReverseMap();
     }
 }

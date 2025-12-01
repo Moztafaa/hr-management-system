@@ -39,6 +39,7 @@ public static class DependencyInjection
 
         services.AddScoped<ITrainingCourseService, TrainingCourseService>();
         services.AddScoped<IEmployeeTrainingService, EmployeeTrainingService>();
+        services.AddScoped<ITrainingRequestService, TrainingRequestService>();
 
         services.AddAutoMapper(x => x.AddProfile(new MappingHelper()));
         services.AddAutoMapper(x => x.AddProfile(new LeaveProfile()));

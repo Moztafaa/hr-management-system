@@ -28,6 +28,7 @@ public class UnitOfWork : IUnitOfWork
     private IReportingRepository? _reporting;
     private ITrainingCourseRepository? _trainingCourses;
     private IEmployeeTrainingRepository? _employeeTrainings;
+    private ITrainingRequestRepository? _trainingRequests;
     private IAttendanceRepository? _attendances;
     private INotificationRepository? _notifications;
 
@@ -78,8 +79,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IReportingRepository Reporting => _reporting ??= new ReportingRepository(_context);
     public ITrainingCourseRepository TrainingCourses => _trainingCourses ??= new TrainingCourseRepository(_context);
-
     public IEmployeeTrainingRepository EmployeeTrainings => _employeeTrainings ??= new EmployeeTrainingRepository(_context);
+    public ITrainingRequestRepository TrainingRequests => _trainingRequests ??= new TrainingRequestRepository(_context);
 
     public IAttendanceRepository Attendances => _attendances ??= new AttendanceRepository(_context);
 
