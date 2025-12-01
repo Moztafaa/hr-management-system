@@ -1,0 +1,645 @@
+<div class="container-fluid p-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Candidates</h2>
+      <p class="text-muted mb-0">Manage your candidate database</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="eva eva-person-add-outline me-2"></i>Add Candidate
+    </button>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="eva eva-search-outline text-muted"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control border-start-0"
+              placeholder="Search by name, email, or skills..."
+              [value]="searchTerm"
+              (input)="onSearchInput($event)"
+            />
+          </div>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+          <span class="text-muted">Total: {{ filteredCandidates.length }} candidates</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Candidates Table -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      @if (isLoading) {
+      <div class="p-5 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      } @if (error) {
+      <div class="alert alert-danger m-3" role="alert">
+        <i class="eva eva-alert-circle-outline me-2"></i>{{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadCandidates()">
+          <i class="eva eva-refresh-outline me-1"></i>Retry
+        </button>
+      </div>
+      } @if (!isLoading && !error) {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Candidate</th>
+              <th>Experience</th>
+              <th>Current Position</th>
+              <th>Skills</th>
+              <th>Expected Salary</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (candidate of filteredCandidates; track candidate.id) {
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle text-primary fw-bold me-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px"
+                  >
+                    {{ getInitials(candidate.firstName, candidate.lastName) }}
+                  </div>
+                  <div>
+                    <div class="fw-semibold">
+                      {{ candidate.fullName || candidate.firstName + ' ' + candidate.lastName }}
+                    </div>
+                    <div class="text-muted small">{{ candidate.email }}</div>
+                    @if (candidate.phone) {
+                    <div class="text-muted small">{{ candidate.phone }}</div>
+                    }
+                  </div>
+                </div>
+              </td>
+              <td>
+                @if (candidate.yearsOfExperience !== undefined && candidate.yearsOfExperience !==
+                null) {
+                {{ candidate.yearsOfExperience }} years } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td>
+                @if (candidate.currentJobTitle || candidate.currentCompany) {
+                <div>{{ candidate.currentJobTitle || '-' }}</div>
+                <small class="text-muted">{{ candidate.currentCompany || '' }}</small>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td>
+                @if (candidate.skills) {
+                <span
+                  class="text-truncate d-block"
+                  style="max-width: 200px"
+                  [title]="candidate.skills"
+                >
+                  {{ candidate.skills }}
+                </span>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td>
+                @if (candidate.expectedSalary) {
+                {{ candidate.expectedSalary | currency }}
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td class="text-end pe-4">
+                <button
+                  class="btn btn-sm btn-light text-info me-1"
+                  (click)="viewDetails(candidate)"
+                  title="View Details"
+                >
+                  <i class="eva eva-eye-outline"></i>
+                </button>
+                <a
+                  [routerLink]="['/pages/recruitment/applications']"
+                  [queryParams]="{ candidateId: candidate.id }"
+                  class="btn btn-sm btn-light text-secondary me-1"
+                  title="View Applications"
+                >
+                  <i class="eva eva-file-text-outline"></i>
+                </a>
+                <button
+                  class="btn btn-sm btn-light text-primary me-1"
+                  (click)="openEditModal(candidate)"
+                  title="Edit"
+                >
+                  <i class="eva eva-edit-2-outline"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-light text-danger"
+                  (click)="confirmDelete(candidate)"
+                  title="Delete"
+                >
+                  <i class="eva eva-trash-2-outline"></i>
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="text-center py-5 text-muted">
+                <i class="eva eva-people-outline fs-1 d-block mb-2"></i>
+                No candidates found
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Create/Edit Modal -->
+@if (showModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-person-outline me-2"></i>
+          {{ isEditing ? 'Edit Candidate' : 'Add Candidate' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <form [formGroup]="candidateForm" (ngSubmit)="submitForm()">
+        <div class="modal-body">
+          <!-- Personal Information -->
+          <h6 class="text-primary mb-3">
+            <i class="eva eva-person-outline me-2"></i>Personal Information
+          </h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label">First Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="firstName"
+                [class.is-invalid]="
+                  candidateForm.get('firstName')?.invalid && candidateForm.get('firstName')?.touched
+                "
+              />
+              @if (candidateForm.get('firstName')?.invalid &&
+              candidateForm.get('firstName')?.touched) {
+              <div class="invalid-feedback">First name is required (2-100 characters)</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Last Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="lastName"
+                [class.is-invalid]="
+                  candidateForm.get('lastName')?.invalid && candidateForm.get('lastName')?.touched
+                "
+              />
+              @if (candidateForm.get('lastName')?.invalid && candidateForm.get('lastName')?.touched)
+              {
+              <div class="invalid-feedback">Last name is required (2-100 characters)</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Email <span class="text-danger">*</span></label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                [class.is-invalid]="
+                  candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched
+                "
+              />
+              @if (candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched) {
+              <div class="invalid-feedback">Valid email is required</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control" formControlName="phone" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-control" formControlName="dateOfBirth" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Gender</label>
+              <select class="form-select" formControlName="gender">
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Professional Information -->
+          <h6 class="text-primary mb-3">
+            <i class="eva eva-briefcase-outline me-2"></i>Professional Information
+          </h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-3">
+              <label class="form-label">Years of Experience</label>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="yearsOfExperience"
+                min="0"
+                max="50"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Current Job Title</label>
+              <input type="text" class="form-control" formControlName="currentJobTitle" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Current Company</label>
+              <input type="text" class="form-control" formControlName="currentCompany" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Notice Period (days)</label>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="noticePeriodDays"
+                min="0"
+                max="365"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Current Salary</label>
+              <input type="number" class="form-control" formControlName="currentSalary" min="0" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Expected Salary</label>
+              <input type="number" class="form-control" formControlName="expectedSalary" min="0" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Available From</label>
+              <input type="date" class="form-control" formControlName="availableFrom" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Skills</label>
+              <textarea
+                class="form-control"
+                formControlName="skills"
+                rows="2"
+                placeholder="e.g., JavaScript, React, Node.js, SQL"
+              ></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Education</label>
+              <textarea class="form-control" formControlName="education" rows="2"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Certifications</label>
+              <textarea class="form-control" formControlName="certifications" rows="2"></textarea>
+            </div>
+          </div>
+
+          <!-- Links -->
+          <h6 class="text-primary mb-3"><i class="eva eva-link-outline me-2"></i>Links</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Resume URL</label>
+              <input
+                type="url"
+                class="form-control"
+                formControlName="resumeUrl"
+                placeholder="https://..."
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">LinkedIn URL</label>
+              <input
+                type="url"
+                class="form-control"
+                formControlName="linkedInUrl"
+                placeholder="https://linkedin.com/in/..."
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Portfolio URL</label>
+              <input
+                type="url"
+                class="form-control"
+                formControlName="portfolioUrl"
+                placeholder="https://..."
+              />
+            </div>
+          </div>
+
+          <!-- Location -->
+          <h6 class="text-primary mb-3"><i class="eva eva-pin-outline me-2"></i>Location</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-control" formControlName="address" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">City</label>
+              <input type="text" class="form-control" formControlName="city" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Country</label>
+              <input type="text" class="form-control" formControlName="country" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Postal Code</label>
+              <input type="text" class="form-control" formControlName="postalCode" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Preferred Work Location</label>
+              <input type="text" class="form-control" formControlName="preferredWorkLocation" />
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="willingToRelocate"
+                  id="willingToRelocate"
+                />
+                <label class="form-check-label" for="willingToRelocate">Willing to Relocate</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <h6 class="text-primary mb-3"><i class="eva eva-file-text-outline me-2"></i>Notes</h6>
+          <div class="row g-3">
+            <div class="col-12">
+              <textarea
+                class="form-control"
+                formControlName="notes"
+                rows="3"
+                placeholder="Additional notes about the candidate..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+            @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ isEditing ? 'Update' : 'Add Candidate' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+}
+
+<!-- View Details Modal -->
+@if (showDetailModal && selectedCandidate) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="eva eva-person-outline me-2"></i>Candidate Details</h5>
+        <button type="button" class="btn-close" (click)="closeDetailModal()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Profile Header -->
+        <div class="text-center mb-4">
+          <div
+            class="avatar-initial rounded-circle text-primary fw-bold mx-auto mb-3 d-flex align-items-center justify-content-center"
+            style="width: 80px; height: 80px; font-size: 1.5rem"
+          >
+            {{ getInitials(selectedCandidate.firstName, selectedCandidate.lastName) }}
+          </div>
+          <h4 class="mb-1">
+            {{
+              selectedCandidate.fullName ||
+                selectedCandidate.firstName + ' ' + selectedCandidate.lastName
+            }}
+          </h4>
+          @if (selectedCandidate.currentJobTitle) {
+          <p class="text-muted mb-0">
+            {{ selectedCandidate.currentJobTitle }} @if (selectedCandidate.currentCompany) { at
+            {{ selectedCandidate.currentCompany }}
+            }
+          </p>
+          }
+        </div>
+
+        <div class="row g-4">
+          <!-- Contact Info -->
+          <div class="col-md-6">
+            <h6 class="text-primary mb-3">Contact Information</h6>
+            <table class="table table-sm">
+              <tr>
+                <td class="text-muted">Email</td>
+                <td>{{ selectedCandidate.email }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted">Phone</td>
+                <td>{{ selectedCandidate.phone || '-' }}</td>
+              </tr>
+              <tr>
+                <td class="text-muted">Location</td>
+                <td>
+                  {{ selectedCandidate.city ? selectedCandidate.city + ', ' : ''
+                  }}{{ selectedCandidate.country || '-' }}
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Professional Info -->
+          <div class="col-md-6">
+            <h6 class="text-primary mb-3">Professional Details</h6>
+            <table class="table table-sm">
+              <tr>
+                <td class="text-muted">Experience</td>
+                <td>
+                  {{
+                    selectedCandidate.yearsOfExperience !== undefined
+                      ? selectedCandidate.yearsOfExperience + ' years'
+                      : '-'
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-muted">Current Salary</td>
+                <td>
+                  {{
+                    selectedCandidate.currentSalary
+                      ? (selectedCandidate.currentSalary | currency)
+                      : '-'
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-muted">Expected Salary</td>
+                <td>
+                  {{
+                    selectedCandidate.expectedSalary
+                      ? (selectedCandidate.expectedSalary | currency)
+                      : '-'
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-muted">Notice Period</td>
+                <td>
+                  {{
+                    selectedCandidate.noticePeriodDays
+                      ? selectedCandidate.noticePeriodDays + ' days'
+                      : '-'
+                  }}
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Skills -->
+          @if (selectedCandidate.skills) {
+          <div class="col-12">
+            <h6 class="text-primary mb-3">Skills</h6>
+            <p>{{ selectedCandidate.skills }}</p>
+          </div>
+          }
+
+          <!-- Education & Certifications -->
+          @if (selectedCandidate.education || selectedCandidate.certifications) {
+          <div class="col-md-6">
+            @if (selectedCandidate.education) {
+            <h6 class="text-primary mb-3">Education</h6>
+            <p>{{ selectedCandidate.education }}</p>
+            }
+          </div>
+          <div class="col-md-6">
+            @if (selectedCandidate.certifications) {
+            <h6 class="text-primary mb-3">Certifications</h6>
+            <p>{{ selectedCandidate.certifications }}</p>
+            }
+          </div>
+          }
+
+          <!-- Links -->
+          <div class="col-12">
+            <h6 class="text-primary mb-3">Links</h6>
+            <div class="d-flex gap-3 flex-wrap">
+              @if (selectedCandidate.resumeUrl) {
+              <a
+                [href]="selectedCandidate.resumeUrl"
+                target="_blank"
+                class="btn btn-outline-primary btn-sm"
+              >
+                <i class="eva eva-file-text-outline me-1"></i>Resume
+              </a>
+              } @if (selectedCandidate.linkedInUrl) {
+              <a
+                [href]="selectedCandidate.linkedInUrl"
+                target="_blank"
+                class="btn btn-outline-primary btn-sm"
+              >
+                <i class="eva eva-linkedin-outline me-1"></i>LinkedIn
+              </a>
+              } @if (selectedCandidate.portfolioUrl) {
+              <a
+                [href]="selectedCandidate.portfolioUrl"
+                target="_blank"
+                class="btn btn-outline-primary btn-sm"
+              >
+                <i class="eva eva-globe-outline me-1"></i>Portfolio
+              </a>
+              } @if (!selectedCandidate.resumeUrl && !selectedCandidate.linkedInUrl &&
+              !selectedCandidate.portfolioUrl) {
+              <span class="text-muted">No links available</span>
+              }
+            </div>
+          </div>
+
+          <!-- Notes -->
+          @if (selectedCandidate.notes) {
+          <div class="col-12">
+            <h6 class="text-primary mb-3">Notes</h6>
+            <p class="mb-0">{{ selectedCandidate.notes }}</p>
+          </div>
+          }
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeDetailModal()">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="closeDetailModal(); openEditModal(selectedCandidate)"
+        >
+          <i class="eva eva-edit-2-outline me-1"></i>Edit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">
+          <i class="eva eva-alert-triangle-outline me-2"></i>Confirm Delete
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-0">
+          Are you sure you want to delete the candidate
+          <strong>"{{ deletingCandidate?.firstName }} {{ deletingCandidate?.lastName }}"</strong>?
+        </p>
+        <p class="text-muted small mt-2 mb-0">
+          This will also remove all associated applications. This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeDeleteModal()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="deleteCandidate()"
+          [disabled]="isDeleting"
+        >
+          @if (isDeleting) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          } Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

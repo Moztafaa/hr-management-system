@@ -81,6 +81,39 @@ export const routes: Routes = [
         ],
       },
 
+      // Recruitment Routes
+      {
+        path: 'recruitment',
+        canActivate: [authGuard],
+        children: [
+          {
+            path: 'jobs',
+            loadComponent: () =>
+              import(
+                './Components/recruitment/job-postings/job-posting-list/job-posting-list.component'
+              ).then((m) => m.JobPostingListComponent),
+            title: 'Job Postings',
+          },
+          {
+            path: 'candidates',
+            loadComponent: () =>
+              import(
+                './Components/recruitment/candidates/candidate-list/candidate-list.component'
+              ).then((m) => m.CandidateListComponent),
+            title: 'Candidates',
+          },
+          {
+            path: 'applications',
+            loadComponent: () =>
+              import(
+                './Components/recruitment/applications/application-list/application-list.component'
+              ).then((m) => m.ApplicationListComponent),
+            title: 'Job Applications',
+          },
+          { path: '', redirectTo: 'jobs', pathMatch: 'full' },
+        ],
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

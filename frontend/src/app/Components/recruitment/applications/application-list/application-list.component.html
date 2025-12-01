@@ -1,0 +1,618 @@
+<div class="container-fluid p-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Job Applications</h2>
+      <p class="text-muted mb-0">Track and manage candidate applications</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="eva eva-plus-outline me-2"></i>New Application
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Filter by Job</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filterJobId"
+            (change)="onFilterChange()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option [ngValue]="null">All Jobs</option>
+            @for (job of jobPostings; track job.id) {
+            <option [ngValue]="job.id">{{ job.title }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Filter by Candidate</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filterCandidateId"
+            (change)="onFilterChange()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option [ngValue]="null">All Candidates</option>
+            @for (candidate of candidates; track candidate.id) {
+            <option [ngValue]="candidate.id">
+              {{ candidate.firstName }} {{ candidate.lastName }}
+            </option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Filter by Status</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filterStatus"
+            (change)="onFilterChange()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All Statuses</option>
+            @for (status of statusOptions; track status) {
+            <option [value]="status">{{ getStatusLabel(status) }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-outline-secondary" (click)="clearFilters()">
+            <i class="eva eva-close-outline me-1"></i>Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applications Table -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      @if (isLoading) {
+      <div class="p-5 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      } @if (error) {
+      <div class="alert alert-danger m-3" role="alert">
+        <i class="eva eva-alert-circle-outline me-2"></i>{{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadApplications()">
+          <i class="eva eva-refresh-outline me-1"></i>Retry
+        </button>
+      </div>
+      } @if (!isLoading && !error) {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Candidate</th>
+              <th>Job Position</th>
+              <th>Applied Date</th>
+              <th>Source</th>
+              <th>Status</th>
+              <th>Stage</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (app of applications; track app.id) {
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle text-primary fw-bold me-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px"
+                  >
+                    {{
+                      getInitials(
+                        getCandidateName(app.candidateId).split(' ')[0],
+                        getCandidateName(app.candidateId).split(' ')[1] || ''
+                      )
+                    }}
+                  </div>
+                  <div>
+                    <div class="fw-semibold">{{ getCandidateName(app.candidateId) }}</div>
+                    <small class="text-muted">{{ getCandidateEmail(app.candidateId) }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fw-medium">{{ getJobTitle(app.jobPostingId) }}</div>
+              </td>
+              <td>{{ formatDate(app.applicationDate) }}</td>
+              <td>
+                <span class="badge badge-light-outline">{{ app.source }}</span>
+              </td>
+              <td>
+                <span class="badge rounded-pill {{ getStatusColor(app.status) }}">
+                  {{ getStatusLabel(app.status) }}
+                </span>
+              </td>
+              <td>
+                @if (app.currentStage) {
+                <span class="text-muted">{{ app.currentStage }}</span>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td class="text-end pe-4">
+                <button
+                  class="btn btn-sm btn-light text-primary me-1"
+                  (click)="openStatusModal(app)"
+                  title="View & Update"
+                >
+                  <i class="eva eva-edit-2-outline"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-light text-danger"
+                  (click)="confirmDelete(app)"
+                  title="Delete"
+                >
+                  <i class="eva eva-trash-2-outline"></i>
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="7" class="text-center py-5 text-muted">
+                <i class="eva eva-file-text-outline fs-1 d-block mb-2"></i>
+                No applications found
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Application Stats Summary -->
+  @if (!isLoading && !error && applications.length > 0) {
+  <div class="row mt-4 g-3">
+    @for (status of statusOptions; track status) {
+    <div class="col-6 col-md-3 col-lg">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-3">
+          <div class="h4 mb-1">{{ (applications | filter : 'status' : status).length || 0 }}</div>
+          <small class="text-muted">{{ getStatusLabel(status) }}</small>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
+
+<!-- Create Application Modal -->
+@if (showCreateModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-file-add-outline me-2"></i>New Job Application
+        </h5>
+        <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+      </div>
+      <form [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
+        <div class="modal-body">
+          <!-- Job Selection -->
+          <div class="mb-4">
+            <label class="form-label">Job Position <span class="text-danger">*</span></label>
+            <select
+              class="form-select"
+              formControlName="jobPostingId"
+              [class.is-invalid]="
+                applicationForm.get('jobPostingId')?.invalid &&
+                applicationForm.get('jobPostingId')?.touched
+              "
+            >
+              <option value="">Select Job Position</option>
+              @for (job of jobPostings; track job.id) {
+              <option [value]="job.id">{{ job.title }} - {{ job.departmentName }}</option>
+              }
+            </select>
+            @if (applicationForm.get('jobPostingId')?.invalid &&
+            applicationForm.get('jobPostingId')?.touched) {
+            <div class="invalid-feedback">Job position is required</div>
+            }
+          </div>
+
+          <!-- Candidate Selection Toggle -->
+          <div class="mb-4">
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="existingCandidate"
+                  [checked]="useExistingCandidate"
+                  (change)="toggleCandidateMode()"
+                />
+                <label class="form-check-label" for="existingCandidate">Existing Candidate</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="newCandidate"
+                  [checked]="!useExistingCandidate"
+                  (change)="toggleCandidateMode()"
+                />
+                <label class="form-check-label" for="newCandidate">New Candidate</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Existing Candidate Selection -->
+          @if (useExistingCandidate) {
+          <div class="mb-4">
+            <label class="form-label">Select Candidate <span class="text-danger">*</span></label>
+            <select
+              class="form-select"
+              formControlName="candidateId"
+              [class.is-invalid]="
+                applicationForm.get('candidateId')?.invalid &&
+                applicationForm.get('candidateId')?.touched
+              "
+            >
+              <option value="">Select Candidate</option>
+              @for (candidate of candidates; track candidate.id) {
+              <option [value]="candidate.id">
+                {{ candidate.firstName }} {{ candidate.lastName }} ({{ candidate.email }})
+              </option>
+              }
+            </select>
+            @if (applicationForm.get('candidateId')?.invalid &&
+            applicationForm.get('candidateId')?.touched) {
+            <div class="invalid-feedback">Candidate is required</div>
+            }
+          </div>
+          }
+
+          <!-- New Candidate Fields -->
+          @if (!useExistingCandidate) {
+          <div class="row g-3 mb-4 p-3 bg-light rounded">
+            <div class="col-12">
+              <h6 class="text-primary mb-3">New Candidate Information</h6>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">First Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="firstName"
+                [class.is-invalid]="
+                  applicationForm.get('firstName')?.invalid &&
+                  applicationForm.get('firstName')?.touched
+                "
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Last Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="lastName"
+                [class.is-invalid]="
+                  applicationForm.get('lastName')?.invalid &&
+                  applicationForm.get('lastName')?.touched
+                "
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Email <span class="text-danger">*</span></label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                [class.is-invalid]="
+                  applicationForm.get('email')?.invalid && applicationForm.get('email')?.touched
+                "
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control" formControlName="phone" />
+            </div>
+          </div>
+          }
+
+          <!-- Application Details -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Source <span class="text-danger">*</span></label>
+              <select
+                class="form-select"
+                formControlName="source"
+                [class.is-invalid]="
+                  applicationForm.get('source')?.invalid && applicationForm.get('source')?.touched
+                "
+              >
+                @for (source of applicationSources; track source) {
+                <option [value]="source">{{ source }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Expected Salary</label>
+              <input type="number" class="form-control" formControlName="expectedSalary" min="0" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Cover Letter</label>
+              <textarea
+                class="form-control"
+                formControlName="coverLetter"
+                rows="4"
+                placeholder="Cover letter content..."
+              ></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Notes</label>
+              <textarea
+                class="form-control"
+                formControlName="notes"
+                rows="2"
+                placeholder="Internal notes about this application..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeCreateModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+            @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            } Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+}
+
+<!-- View & Update Status Modal -->
+@if (showStatusModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-file-text-outline me-2"></i>Application Details
+        </h5>
+        <button type="button" class="btn-close" (click)="closeStatusModal()"></button>
+      </div>
+      @if (isLoadingDetail) {
+      <div class="modal-body text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      } @else if (selectedApplication) {
+      <div class="modal-body">
+        <!-- Application Summary -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <h6 class="text-primary mb-3">Candidate</h6>
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle text-primary fw-bold me-3 d-flex align-items-center justify-content-center"
+                    style="width: 50px; height: 50px"
+                  >
+                    {{
+                      getInitials(
+                        selectedApplication.candidate.firstName,
+                        selectedApplication.candidate.lastName
+                      )
+                    }}
+                  </div>
+                  <div>
+                    <div class="fw-semibold">
+                      {{ selectedApplication.candidate.firstName }}
+                      {{ selectedApplication.candidate.lastName }}
+                    </div>
+                    <small class="text-muted">{{ selectedApplication.candidate.email }}</small>
+                    @if (selectedApplication.candidate.phone) {
+                    <small class="text-muted d-block">{{
+                      selectedApplication.candidate.phone
+                    }}</small>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <h6 class="text-primary mb-3">Job Position</h6>
+                <div class="fw-semibold">{{ selectedApplication.jobPosting.title }}</div>
+                <small class="text-muted">{{
+                  selectedApplication.jobPosting.departmentName
+                }}</small>
+                <div class="mt-2">
+                  <small class="text-muted"
+                    >Applied: {{ formatDate(selectedApplication.applicationDate) }}</small
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Info -->
+        <div class="row mb-4 g-3">
+          <div class="col-md-4">
+            <label class="form-label text-muted small">Source</label>
+            <div>{{ selectedApplication.source }}</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label text-muted small">Expected Salary</label>
+            <div>
+              {{
+                selectedApplication.expectedSalary
+                  ? (selectedApplication.expectedSalary | currency)
+                  : '-'
+              }}
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label text-muted small">Current Status</label>
+            <div>
+              <span class="badge rounded-pill {{ getStatusColor(selectedApplication.status) }}">
+                {{ getStatusLabel(selectedApplication.status) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        @if (selectedApplication.coverLetter) {
+        <div class="mb-4">
+          <label class="form-label text-muted small">Cover Letter</label>
+          <div class="p-3 bg-light rounded">{{ selectedApplication.coverLetter }}</div>
+        </div>
+        }
+
+        <hr class="my-4" />
+
+        <!-- Status Update Form -->
+        <h6 class="text-primary mb-3">Update Application Status</h6>
+        <form [formGroup]="statusForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Status <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="status">
+                @for (status of statusOptions; track status) {
+                <option [value]="status">{{ getStatusLabel(status) }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Current Stage</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="currentStage"
+                placeholder="e.g., Technical Interview"
+              />
+            </div>
+
+            <!-- Interview Fields -->
+            <div class="col-12">
+              <h6 class="text-muted mt-3 mb-2">Interview Details</h6>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Interview Date</label>
+              <input type="date" class="form-control" formControlName="interviewDate" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Rating (1-10)</label>
+              <input
+                type="number"
+                class="form-control"
+                formControlName="interviewRating"
+                min="1"
+                max="10"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Offered Salary</label>
+              <input type="number" class="form-control" formControlName="offeredSalary" min="0" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Interview Feedback</label>
+              <textarea
+                class="form-control"
+                formControlName="interviewFeedback"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <!-- Rejection Reason -->
+            @if (statusForm.get('status')?.value === 'Rejected') {
+            <div class="col-12">
+              <label class="form-label">Rejection Reason</label>
+              <textarea
+                class="form-control"
+                formControlName="rejectionReason"
+                rows="2"
+                placeholder="Reason for rejection..."
+              ></textarea>
+            </div>
+            }
+
+            <!-- Notes -->
+            <div class="col-12">
+              <label class="form-label">Notes</label>
+              <textarea class="form-control" formControlName="notes" rows="2"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeStatusModal()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="updateStatus()"
+          [disabled]="isSubmitting"
+        >
+          @if (isSubmitting) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          } Update Status
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">
+          <i class="eva eva-alert-triangle-outline me-2"></i>Confirm Delete
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-0">Are you sure you want to delete this application?</p>
+        <p class="text-muted small mt-2 mb-0">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeDeleteModal()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="deleteApplication()"
+          [disabled]="isDeleting"
+        >
+          @if (isDeleting) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          } Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

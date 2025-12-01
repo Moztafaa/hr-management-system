@@ -1,0 +1,315 @@
+<div class="container-fluid p-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Job Postings</h2>
+      <p class="text-muted mb-0">Manage your open positions and job listings</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="eva eva-plus-outline me-2"></i>Create Job Posting
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="activeFilter"
+            [checked]="showActiveOnly"
+            (change)="toggleActiveFilter()"
+          />
+          <label class="form-check-label" for="activeFilter">Show Active Only</label>
+        </div>
+        <span class="text-muted">|</span>
+        <span class="text-muted">Total: {{ jobPostings.length }} job postings</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Job Postings Table -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      @if (isLoading) {
+      <div class="p-5 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      } @if (error) {
+      <div class="alert alert-danger m-3" role="alert">
+        <i class="eva eva-alert-circle-outline me-2"></i>{{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadJobPostings()">
+          <i class="eva eva-refresh-outline me-1"></i>Retry
+        </button>
+      </div>
+      } @if (!isLoading && !error) {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Title</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th>Posted Date</th>
+              <th>Closing Date</th>
+              <th>Status</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (job of jobPostings; track job.id) {
+            <tr>
+              <td class="ps-4">
+                <div class="fw-semibold">{{ job.title }}</div>
+                @if (job.description) {
+                <small class="text-muted text-truncate d-block" style="max-width: 300px">
+                  {{ job.description }}
+                </small>
+                }
+              </td>
+              <td>{{ job.departmentName || '-' }}</td>
+              <td>{{ job.designationName || '-' }}</td>
+              <td>{{ formatDate(job.postedDate) }}</td>
+              <td>
+                @if (job.closingDate) {
+                <span [class.text-danger]="isExpired(job.closingDate)">
+                  {{ formatDate(job.closingDate) }}
+                  @if (isExpired(job.closingDate)) {
+                  <small class="d-block text-danger">Expired</small>
+                  }
+                </span>
+                } @else {
+                <span class="text-muted">No deadline</span>
+                }
+              </td>
+              <td>
+                @if (job.isActive) {
+                <span class="badge bg-success rounded-pill">Active</span>
+                } @else {
+                <span class="badge bg-secondary rounded-pill">Inactive</span>
+                }
+              </td>
+              <td class="text-end pe-4">
+                <a
+                  [routerLink]="['/pages/recruitment/applications']"
+                  [queryParams]="{ jobId: job.id }"
+                  class="btn btn-sm btn-light text-info me-1"
+                  title="View Applications"
+                >
+                  <i class="eva eva-file-text-outline"></i>
+                </a>
+                <button
+                  class="btn btn-sm btn-light text-primary me-1"
+                  (click)="openEditModal(job)"
+                  title="Edit"
+                >
+                  <i class="eva eva-edit-2-outline"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-light text-danger"
+                  (click)="confirmDelete(job)"
+                  title="Delete"
+                >
+                  <i class="eva eva-trash-2-outline"></i>
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="7" class="text-center py-5 text-muted">
+                <i class="eva eva-briefcase-outline fs-1 d-block mb-2"></i>
+                No job postings found
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Create/Edit Modal -->
+@if (showModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-briefcase-outline me-2"></i>
+          {{ isEditing ? 'Edit Job Posting' : 'Create Job Posting' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <form [formGroup]="jobForm" (ngSubmit)="submitForm()">
+        <div class="modal-body">
+          <div class="row g-3">
+            <!-- Title -->
+            <div class="col-12">
+              <label class="form-label">Job Title <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="title"
+                placeholder="e.g., Senior Software Engineer"
+                [class.is-invalid]="jobForm.get('title')?.invalid && jobForm.get('title')?.touched"
+              />
+              @if (jobForm.get('title')?.invalid && jobForm.get('title')?.touched) {
+              <div class="invalid-feedback">Title is required (3-200 characters)</div>
+              }
+            </div>
+
+            <!-- Department & Designation -->
+            <div class="col-md-6">
+              <label class="form-label">Department <span class="text-danger">*</span></label>
+              <select
+                class="form-select"
+                formControlName="departmentId"
+                [class.is-invalid]="
+                  jobForm.get('departmentId')?.invalid && jobForm.get('departmentId')?.touched
+                "
+              >
+                <option value="">Select Department</option>
+                @for (dept of departments; track dept.id) {
+                <option [value]="dept.id">{{ dept.name }}</option>
+                }
+              </select>
+              @if (jobForm.get('departmentId')?.invalid && jobForm.get('departmentId')?.touched) {
+              <div class="invalid-feedback">Department is required</div>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Designation <span class="text-danger">*</span></label>
+              <select
+                class="form-select"
+                formControlName="designationId"
+                [class.is-invalid]="
+                  jobForm.get('designationId')?.invalid && jobForm.get('designationId')?.touched
+                "
+              >
+                <option value="">Select Designation</option>
+                @for (desig of designations; track desig.id) {
+                <option [value]="desig.id">{{ desig.title }}</option>
+                }
+              </select>
+              @if (jobForm.get('designationId')?.invalid && jobForm.get('designationId')?.touched) {
+              <div class="invalid-feedback">Designation is required</div>
+              }
+            </div>
+
+            <!-- Dates -->
+            <div class="col-md-6">
+              <label class="form-label">Posted Date <span class="text-danger">*</span></label>
+              <input
+                type="date"
+                class="form-control"
+                formControlName="postedDate"
+                [class.is-invalid]="
+                  jobForm.get('postedDate')?.invalid && jobForm.get('postedDate')?.touched
+                "
+              />
+              @if (jobForm.get('postedDate')?.invalid && jobForm.get('postedDate')?.touched) {
+              <div class="invalid-feedback">Posted date is required</div>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Closing Date</label>
+              <input type="date" class="form-control" formControlName="closingDate" />
+            </div>
+
+            <!-- Description -->
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                formControlName="description"
+                rows="4"
+                placeholder="Job description, responsibilities, etc."
+              ></textarea>
+            </div>
+
+            <!-- Requirements -->
+            <div class="col-12">
+              <label class="form-label">Requirements</label>
+              <textarea
+                class="form-control"
+                formControlName="requirements"
+                rows="4"
+                placeholder="Required skills, qualifications, experience, etc."
+              ></textarea>
+            </div>
+
+            <!-- Active Status -->
+            <div class="col-12">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="isActive"
+                  id="isActive"
+                />
+                <label class="form-check-label" for="isActive"
+                  >Active (visible to applicants)</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+            @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ isEditing ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">
+          <i class="eva eva-alert-triangle-outline me-2"></i>Confirm Delete
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-0">
+          Are you sure you want to delete the job posting
+          <strong>"{{ deletingJob?.title }}"</strong>?
+        </p>
+        <p class="text-muted small mt-2 mb-0">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeDeleteModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="deleteJob()" [disabled]="isDeleting">
+          @if (isDeleting) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          } Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
