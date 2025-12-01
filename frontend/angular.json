@@ -3,9 +3,34 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "HRManagementSystem": {
+    "ready-to-use-component": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:component": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -24,7 +49,13 @@
                 "input": "public"
               }
             ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/eva-icons/eva.min.js"
+            ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/eva-icons/style/eva-icons.css",
               "src/styles.css"
             ]
           },
@@ -56,10 +87,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "HRManagementSystem:build:production"
+              "buildTarget": "ready-to-use-component:build:production"
             },
             "development": {
-              "buildTarget": "HRManagementSystem:build:development"
+              "buildTarget": "ready-to-use-component:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -82,6 +113,7 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ]
           }

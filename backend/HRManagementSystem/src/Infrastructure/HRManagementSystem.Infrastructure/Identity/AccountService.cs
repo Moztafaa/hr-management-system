@@ -1,4 +1,6 @@
 using HRManagementSystem.Application.Common;
+using HRManagementSystem.Application.DTOs.Notification;
+using HRManagementSystem.Domain.Enums.Notification;
 
 namespace HRManagementSystem.Infrastructure.Identity;
 
@@ -9,7 +11,9 @@ public class AccountService(
     RoleManager<ApplicationRole> _roleManager,
     IUnitOfWork _unitOfWork,
     JwtTokenGenerator _jwtGenerator,
-    IMapper _mapper
+    IMapper _mapper,
+    IEmailService _emailService,
+    INotificationService _notificationService
     ) : IAccountService
 {
 
@@ -73,7 +77,39 @@ public class AccountService(
             // Commit the transaction
             await _unitOfWork.CommitTransactionAsync();
 
-            // 6. Get user roles for response
+            // 6. Send welcome email and notification
+            try
+            {
+                await _emailService.SendWelcomeEmailAsync(
+                    user.Email!,
+                    $"{employee.FirstName} {employee.LastName}",
+                    CancellationToken.None);
+            }
+            catch (Exception emailEx)
+            {
+                // Log the error but don't fail the registration
+                Console.WriteLine($"Failed to send welcome email: {emailEx.Message}");
+            }
+
+            // Create welcome notification
+            try
+            {
+                await _notificationService.CreateNotificationAsync(new CreateNotificationDto
+                {
+                    RecipientUserId = user.Id.ToString(),
+                    Title = "Welcome to HR Management System",
+                    Message = $"Welcome {employee.FirstName} {employee.LastName}! Your account has been successfully created.",
+                    Type = NotificationType.Success,
+                    Category = NotificationCategory.EmployeeRegistration,
+                    Priority = NotificationPriority.Normal
+                }, CancellationToken.None);
+            }
+            catch (Exception notifEx)
+            {
+                Console.WriteLine($"Failed to create welcome notification: {notifEx.Message}");
+            }
+
+            // 7. Get user roles for response
             IList<string> roles = await _userManager.GetRolesAsync(user);
 
             var response = new RegisterEmployeeResponseDto
@@ -315,6 +351,29 @@ public class AccountService(
         user.UserName = userDto.UserName;
         user.PhoneNumber = userDto.PhoneNumber;
         user.EmployeeId = userDto.EmployeeId;
+
+        IdentityResult result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return new Response<bool>(false, string.Join(", ", result.Errors.Select(e => e.Description)), true);
+        }
+
+        return new Response<bool>(true, string.Empty, false);
+    }
+
+    public async Task<Response<bool>> UpdateUserEmailAsync(Guid userId, string newEmail)
+    {
+        ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            return new Response<bool>(false, "User not found.", true);
+        }
+
+        user.Email = newEmail;
+        user.UserName = newEmail; // Email is typically used as username
+        user.NormalizedEmail = newEmail.ToUpperInvariant();
+        user.NormalizedUserName = newEmail.ToUpperInvariant();
 
         IdentityResult result = await _userManager.UpdateAsync(user);
 

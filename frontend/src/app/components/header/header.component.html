@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top header-shadow">
+  <div class="container-fluid px-4">
+    <div class="d-flex align-items-center">
+      <button
+        class="btn btn-link me-4 text-decoration-none sidebar-toggle d-flex align-items-center justify-content-center"
+        (click)="toggleSidebar()"
+      >
+        <i class="eva eva-menu-2-outline fs-2"></i>
+      </button>
+      <a class="navbar-brand fw-bold fs-3" href="#">HRM <span class="text-primary">System</span></a>
+    </div>
+
+    <div class="d-flex align-items-center gap-4">
+      <!-- Search -->
+      <div class="d-none d-md-block">
+        <i class="eva eva-search-outline fs-4 text-muted cursor-pointer"></i>
+      </div>
+
+      <!-- Email -->
+      <div class="position-relative cursor-pointer">
+        <i class="eva eva-email-outline fs-4 text-muted"></i>
+        <span
+          class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+        >
+          <span class="visually-hidden">New alerts</span>
+        </span>
+      </div>
+
+      <!-- Notifications -->
+      <div class="position-relative cursor-pointer">
+        <i class="eva eva-bell-outline fs-4 text-muted"></i>
+        <span
+          class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+        >
+          <span class="visually-hidden">New alerts</span>
+        </span>
+      </div>
+
+      <!-- User Profile -->
+      <div class="dropdown ms-3">
+        <a
+          class="d-flex align-items-center text-decoration-none dropdown-toggle user-profile"
+          href="#"
+          role="button"
+          id="userDropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <div
+            class="user-avatar rounded-circle bg-light d-flex align-items-center justify-content-center me-2"
+          >
+            <i class="eva eva-person fs-4 text-secondary"></i>
+          </div>
+          <span class="d-none d-md-inline fw-semibold text-dark">Nick Jones</span>
+        </a>
+        <ul
+          class="dropdown-menu dropdown-menu-end border-0 shadow-sm"
+          aria-labelledby="userDropdown"
+        >
+          <li>
+            <a class="dropdown-item" href="#"><i class="eva eva-person-outline me-2"></i>Profile</a>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <a class="dropdown-item" href="#" (click)="logout(); $event.preventDefault()"
+              ><i class="eva eva-log-out-outline me-2"></i>Log out</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

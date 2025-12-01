@@ -10,6 +10,7 @@ public interface IUnitOfWork : IDisposable
     IDesignationRepository Designations { get; }
     ICandidateRepository Candidates { get; }
     IJobPostingRepository JobPostings { get; }
+    IAttendanceRepository Attendances { get; }
     IJobApplicationRepository JobApplications { get; }
     ILeaveRequestRepository LeaveRequests { get; }
     ILeaveApprovalRepository LeaveApprovals { get; }
@@ -21,6 +22,17 @@ public interface IUnitOfWork : IDisposable
     IEmployeeAllowanceRepository EmployeeAllowances { get; }
     IEmployeeDeductionRepository EmployeeDeductions { get; }
     IEmployeeRepository Employees { get; }
+    INotificationRepository Notifications { get; }
+
+    IReviewCycleRepository ReviewCycles { get; }
+    IPerformanceReviewRepository PerformanceReviews { get; }
+    IGoalRepository Goals { get; }
+    IKpiRepository KPIs { get; }
+    IKpiResultRepository KPIResults { get; }
+    ICompetencyRepository Competencies { get; }
+    IEmployeeCompetencyRatingRepository EmployeeCompetencyRatings { get; }
+    IFeedbackRepository Feedbacks { get; }
+
 
     IReportingRepository Reporting { get; }
     ITrainingCourseRepository TrainingCourses { get; }
