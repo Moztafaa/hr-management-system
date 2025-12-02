@@ -1,0 +1,146 @@
+<section class="career-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">Careers</span>
+      <h2 class="section-title">Join Our Team</h2>
+      <p class="section-subtitle">
+        Explore exciting opportunities and take the next step in your career journey with us.
+      </p>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="career-filters">
+      <div class="search-wrapper">
+        <i class="eva eva-search-outline"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search job titles, keywords..."
+          [(ngModel)]="searchTerm"
+          (input)="filterJobs()"
+        />
+        @if (searchTerm) {
+        <button class="clear-search" (click)="searchTerm = ''; filterJobs()">
+          <i class="eva eva-close-outline"></i>
+        </button>
+        }
+      </div>
+      <div class="filter-wrapper">
+        <select class="filter-select" [(ngModel)]="selectedDepartment" (change)="filterJobs()">
+          <option value="">All Departments</option>
+          @for (dept of departments(); track dept) {
+          <option [value]="dept">{{ dept }}</option>
+          }
+        </select>
+        <i class="eva eva-chevron-down-outline select-icon"></i>
+      </div>
+      @if (searchTerm || selectedDepartment) {
+      <button class="btn btn-outline-secondary btn-clear" (click)="clearFilters()">
+        <i class="eva eva-close-circle-outline"></i>
+        Clear Filters
+      </button>
+      }
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading open positions...</p>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+    <div class="error-state">
+      <i class="eva eva-alert-circle-outline"></i>
+      <p>{{ error() }}</p>
+      <button class="btn btn-primary" (click)="loadJobs()">
+        <i class="eva eva-refresh-outline"></i>
+        Try Again
+      </button>
+    </div>
+    }
+
+    <!-- Job Listings -->
+    @if (!isLoading() && !error()) { @if (filteredJobs().length > 0) {
+    <div class="jobs-grid">
+      @for (job of filteredJobs(); track job.id) {
+      <article class="job-card">
+        <div class="job-header">
+          <div class="job-info">
+            <h3 class="job-title">{{ job.title }}</h3>
+            <div class="job-meta">
+              @if (job.departmentName) {
+              <span class="meta-item">
+                <i class="eva eva-briefcase-outline"></i>
+                {{ job.departmentName }}
+              </span>
+              } @if (job.designationName) {
+              <span class="meta-item">
+                <i class="eva eva-person-outline"></i>
+                {{ job.designationName }}
+              </span>
+              }
+            </div>
+          </div>
+          @if (isClosingSoon(job.closingDate)) {
+          <span class="closing-badge">
+            <i class="eva eva-clock-outline"></i>
+            Closing Soon
+          </span>
+          }
+        </div>
+
+        @if (job.description) {
+        <p class="job-description">{{ job.description }}</p>
+        } @if (job.requirements) {
+        <div class="job-requirements">
+          <h4>Requirements</h4>
+          <p>{{ job.requirements }}</p>
+        </div>
+        }
+
+        <div class="job-footer">
+          <div class="job-dates">
+            <span class="date-item">
+              <i class="eva eva-calendar-outline"></i>
+              Posted: {{ formatDate(job.postedDate) }}
+            </span>
+            @if (job.closingDate) {
+            <span class="date-item">
+              <i class="eva eva-flag-outline"></i>
+              Closes: {{ formatDate(job.closingDate) }}
+            </span>
+            }
+          </div>
+          <button class="btn btn-primary btn-apply" (click)="onApplyClick(job)">
+            <i class="eva eva-paper-plane-outline"></i>
+            Apply Now
+          </button>
+        </div>
+      </article>
+      }
+    </div>
+
+    <div class="jobs-count">
+      <p>Showing {{ filteredJobs().length }} of {{ jobs().length }} positions</p>
+    </div>
+    } @else {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="eva eva-briefcase-outline"></i>
+      </div>
+      <h3>No Positions Found</h3>
+      @if (searchTerm || selectedDepartment) {
+      <p>No jobs match your current filters. Try adjusting your search criteria.</p>
+      <button class="btn btn-primary" (click)="clearFilters()">View All Positions</button>
+      } @else {
+      <p>There are no open positions at the moment. Check back soon!</p>
+      }
+    </div>
+    } }
+  </div>
+</section>

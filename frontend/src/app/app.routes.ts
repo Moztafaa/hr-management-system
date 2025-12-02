@@ -9,6 +9,7 @@ import { LoginComponent } from './Components/auth/login/login.component';
 import { RegisterComponent } from './Components/auth/register/register.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { authGuard } from './auth.guard';
+import { LandingPageComponent } from './Components/landing/landing-page/landing-page.component';
 
 /* export const routes: Routes = [
     // { path: '', redirectTo: 'home', pathMatch: 'full', title: 'Home' },
@@ -183,5 +184,9 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
-  { path: '', redirectTo: 'pages', pathMatch: 'full' },
+  {
+    path: '',
+    component: LandingPageComponent,
+    title: 'HRM System - Human Resource Management',
+  },
 ];

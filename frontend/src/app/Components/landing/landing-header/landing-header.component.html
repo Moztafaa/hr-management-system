@@ -1,0 +1,67 @@
+<header class="landing-header">
+  <div class="header-container">
+    <!-- Logo -->
+    <a class="header-logo" href="/">
+      <div class="logo-icon">
+        <i class="eva eva-cube-outline"></i>
+      </div>
+      <span class="logo-text">HRM System</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="header-nav desktop-nav">
+      <a class="nav-link" (click)="scrollToSection('features')">Features</a>
+      <a class="nav-link" (click)="onCareersClick()">Careers</a>
+      <a class="nav-link" href="mailto:contact@hrmsystem.com">Contact</a>
+    </nav>
+
+    <!-- Desktop Actions -->
+    <div class="header-actions desktop-actions">
+      <button class="btn btn-primary" (click)="onLoginClick()">
+        <i class="eva eva-log-in-outline"></i>
+        <span>Sign In</span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="mobile-menu-toggle"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen()"
+      aria-label="Toggle navigation menu"
+    >
+      <i [class]="isMobileMenuOpen() ? 'eva eva-close-outline' : 'eva eva-menu-outline'"></i>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (isMobileMenuOpen()) {
+  <div class="mobile-menu">
+    <nav class="mobile-nav">
+      <a class="nav-link" (click)="scrollToSection('features')">
+        <i class="eva eva-grid-outline"></i>
+        Features
+      </a>
+      <a class="nav-link" (click)="onCareersClick()">
+        <i class="eva eva-briefcase-outline"></i>
+        Careers
+      </a>
+      <a class="nav-link" href="mailto:contact@hrmsystem.com">
+        <i class="eva eva-email-outline"></i>
+        Contact
+      </a>
+    </nav>
+    <div class="mobile-actions">
+      <button class="btn btn-primary btn-block" (click)="onLoginClick()">
+        <i class="eva eva-log-in-outline"></i>
+        Sign In
+      </button>
+    </div>
+  </div>
+  }
+</header>
+
+<!-- Mobile Menu Backdrop -->
+@if (isMobileMenuOpen()) {
+<div class="mobile-backdrop" (click)="closeMobileMenu()"></div>
+}

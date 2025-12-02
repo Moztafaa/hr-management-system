@@ -1,0 +1,97 @@
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <button class="modal-close" (click)="onCloseClick()" aria-label="Close modal">
+      <i class="eva eva-close-outline"></i>
+    </button>
+
+    <div class="modal-header">
+      <div class="modal-logo">
+        <i class="eva eva-cube-outline"></i>
+      </div>
+      <h2 class="modal-title">Welcome Back</h2>
+      <p class="modal-subtitle">Sign in to access your HR dashboard</p>
+    </div>
+
+    <form class="login-form" (ngSubmit)="onSubmit()">
+      @if (error()) {
+      <div class="alert alert-danger">
+        <i class="eva eva-alert-circle-outline"></i>
+        <span>{{ error() }}</span>
+      </div>
+      }
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <div class="input-wrapper">
+          <i class="eva eva-email-outline input-icon"></i>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            placeholder="Enter your email"
+            [(ngModel)]="email"
+            name="email"
+            required
+            autocomplete="email"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-wrapper">
+          <i class="eva eva-lock-outline input-icon"></i>
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            class="form-control"
+            placeholder="Enter your password"
+            [(ngModel)]="password"
+            name="password"
+            required
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
+            <i [class]="showPassword() ? 'eva eva-eye-off-outline' : 'eva eva-eye-outline'"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="checkbox-wrapper">
+          <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Remember me</span>
+        </label>
+        <a href="#" class="forgot-link">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span>Signing in...</span>
+        } @else {
+        <i class="eva eva-log-in-outline"></i>
+        <span>Sign In</span>
+        }
+      </button>
+    </form>
+
+    <div class="modal-footer">
+      <div class="login-help">
+        <p class="help-text">
+          <i class="eva eva-info-outline"></i>
+          <span
+            >Employees and HR staff use the same login. Your dashboard will be personalized based on
+            your role.</span
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

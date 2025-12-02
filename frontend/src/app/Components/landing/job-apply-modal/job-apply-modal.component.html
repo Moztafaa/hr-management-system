@@ -1,0 +1,259 @@
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <button class="modal-close" (click)="onCloseClick()" aria-label="Close modal">
+      <i class="eva eva-close-outline"></i>
+    </button>
+
+    <!-- Success State -->
+    @if (successMessage()) {
+    <div class="success-state">
+      <div class="success-icon">
+        <i class="eva eva-checkmark-circle-2-outline"></i>
+      </div>
+      <h2>Application Submitted!</h2>
+      <p>{{ successMessage() }}</p>
+      <p class="success-hint">We'll review your application and get back to you soon.</p>
+    </div>
+    } @else {
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="job-badge">
+        <i class="eva eva-briefcase-outline"></i>
+      </div>
+      <h2 class="modal-title">Apply for {{ job.title }}</h2>
+      <p class="modal-subtitle">{{ job.departmentName }} • {{ job.designationName }}</p>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+      <div class="step" [class.active]="currentStep() >= 1" [class.completed]="currentStep() > 1">
+        <div class="step-indicator">
+          @if (currentStep() > 1) {
+          <i class="eva eva-checkmark-outline"></i>
+          } @else {
+          <span>1</span>
+          }
+        </div>
+        <span class="step-label">Personal Info</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep() > 1"></div>
+      <div class="step" [class.active]="currentStep() >= 2">
+        <div class="step-indicator">
+          <span>2</span>
+        </div>
+        <span class="step-label">Application</span>
+      </div>
+    </div>
+
+    <!-- Error Alert -->
+    @if (error()) {
+    <div class="alert alert-danger">
+      <i class="eva eva-alert-circle-outline"></i>
+      <span>{{ error() }}</span>
+    </div>
+    }
+
+    <!-- Step 1: Personal Information -->
+    @if (currentStep() === 1) {
+    <form class="form-content" (ngSubmit)="nextStep()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label required">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="candidateInfo.firstName"
+            name="firstName"
+            placeholder="Enter your first name"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label required">Last Name</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="candidateInfo.lastName"
+            name="lastName"
+            placeholder="Enter your last name"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required">Email Address</label>
+        <input
+          type="email"
+          class="form-control"
+          [(ngModel)]="candidateInfo.email"
+          name="email"
+          placeholder="your.email@example.com"
+          required
+        />
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input
+            type="tel"
+            class="form-control"
+            [(ngModel)]="candidateInfo.phone"
+            name="phone"
+            placeholder="+1 (555) 000-0000"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Years of Experience</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="candidateInfo.yearsOfExperience"
+            name="yearsOfExperience"
+            placeholder="e.g., 5"
+            min="0"
+            max="50"
+          />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Current Company</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="candidateInfo.currentCompany"
+            name="currentCompany"
+            placeholder="Your current employer"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Job Title</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="candidateInfo.currentJobTitle"
+            name="currentJobTitle"
+            placeholder="Your current role"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">LinkedIn Profile</label>
+        <input
+          type="url"
+          class="form-control"
+          [(ngModel)]="candidateInfo.linkedInUrl"
+          name="linkedInUrl"
+          placeholder="https://linkedin.com/in/yourprofile"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Skills</label>
+        <textarea
+          class="form-control"
+          [(ngModel)]="candidateInfo.skills"
+          name="skills"
+          rows="2"
+          placeholder="e.g., JavaScript, TypeScript, Angular, Node.js..."
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCloseClick()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          Continue
+          <i class="eva eva-arrow-forward-outline"></i>
+        </button>
+      </div>
+    </form>
+    }
+
+    <!-- Step 2: Application Details -->
+    @if (currentStep() === 2) {
+    <form class="form-content" (ngSubmit)="submitApplication()">
+      <div class="form-group">
+        <label class="form-label">How did you hear about us?</label>
+        <select class="form-control form-select" [(ngModel)]="applicationInfo.source" name="source">
+          @for (source of sources; track source) {
+          <option [value]="source">{{ source }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Expected Salary (Annual)</label>
+        <div class="input-group">
+          <span class="input-prefix">$</span>
+          <input
+            type="number"
+            class="form-control has-prefix"
+            [(ngModel)]="applicationInfo.expectedSalary"
+            name="expectedSalary"
+            placeholder="e.g., 75000"
+            min="0"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Cover Letter</label>
+        <textarea
+          class="form-control"
+          [(ngModel)]="applicationInfo.coverLetter"
+          name="coverLetter"
+          rows="6"
+          placeholder="Tell us why you're interested in this position and what makes you a great fit..."
+        ></textarea>
+        <span class="form-hint">Optional but recommended</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Resume URL</label>
+        <input
+          type="url"
+          class="form-control"
+          [(ngModel)]="candidateInfo.resumeUrl"
+          name="resumeUrl"
+          placeholder="Link to your resume (Google Drive, Dropbox, etc.)"
+        />
+        <span class="form-hint">Share a link to your resume or portfolio</span>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-wrapper">
+          <input
+            type="checkbox"
+            [(ngModel)]="candidateInfo.willingToRelocate"
+            name="willingToRelocate"
+          />
+          <span class="checkmark"></span>
+          <span class="checkbox-label">I am willing to relocate if required</span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">
+          <i class="eva eva-arrow-back-outline"></i>
+          Back
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading()">
+          @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span>Submitting...</span>
+          } @else {
+          <i class="eva eva-paper-plane-outline"></i>
+          <span>Submit Application</span>
+          }
+        </button>
+      </div>
+    </form>
+    } }
+  </div>
+</div>

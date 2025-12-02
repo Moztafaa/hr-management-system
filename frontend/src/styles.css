@@ -93,6 +93,11 @@ body {
 }
 
 body {
+  padding-top: 0;
+}
+
+/* Override body padding for authenticated pages */
+body.authenticated-layout {
   padding-top: 4.75rem;
 }
 
