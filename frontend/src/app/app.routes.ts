@@ -116,6 +116,39 @@ export const routes: Routes = [
         ],
       },
 
+      // Training Routes
+      {
+        path: 'training',
+        canActivate: [authGuard],
+        children: [
+          {
+            path: 'courses',
+            loadComponent: () =>
+              import(
+                './Components/training/training-courses/training-course-list/training-course-list.component'
+              ).then((m) => m.TrainingCourseListComponent),
+            title: 'Training Courses',
+          },
+          {
+            path: 'enrollments',
+            loadComponent: () =>
+              import(
+                './Components/training/employee-enrollments/enrollment-list/enrollment-list.component'
+              ).then((m) => m.EnrollmentListComponent),
+            title: 'Employee Enrollments',
+          },
+          {
+            path: 'requests',
+            loadComponent: () =>
+              import(
+                './Components/training/training-requests/request-list/request-list.component'
+              ).then((m) => m.RequestListComponent),
+            title: 'Training Requests',
+          },
+          { path: '', redirectTo: 'courses', pathMatch: 'full' },
+        ],
+      },
+
       // Organization Routes (Departments & Designations)
       {
         path: 'departments',

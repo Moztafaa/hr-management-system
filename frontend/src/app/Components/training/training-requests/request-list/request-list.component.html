@@ -1,0 +1,441 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Training Requests</h2>
+      <p class="text-muted mb-0">Review and manage training requests from employees</p>
+    </div>
+    <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openCreateModal()">
+      <i class="eva eva-plus-outline"></i>
+      New Request
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label small text-muted">Filter by Status</label>
+          <select
+            class="form-select"
+            [(ngModel)]="statusFilter"
+            (ngModelChange)="onStatusFilterChange()"
+          >
+            <option [ngValue]="null">-- All Statuses --</option>
+            <option [ngValue]="TrainingRequestStatus.Pending">Pending</option>
+            <option [ngValue]="TrainingRequestStatus.Approved">Approved</option>
+            <option [ngValue]="TrainingRequestStatus.Rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <button
+            class="btn btn-outline-secondary"
+            (click)="clearFilter()"
+            [disabled]="statusFilter === null"
+          >
+            <i class="eva eva-close-outline me-1"></i>
+            Clear Filter
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 mb-0 text-muted">Loading training requests...</p>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <div>{{ error }}</div>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadRequests()">
+      <i class="eva eva-refresh-outline me-1"></i>Retry
+    </button>
+  </div>
+  }
+
+  <!-- Requests Table -->
+  @if (!isLoading && !error) {
+  <div class="card">
+    <div class="card-body p-0">
+      @if (requests.length === 0) {
+      <div class="text-center py-5">
+        <i class="eva eva-file-text-outline fs-1 text-muted"></i>
+        <p class="mt-3 mb-0 text-muted">No training requests found.</p>
+      </div>
+      } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Employee</th>
+              <th>Course</th>
+              <th>Status</th>
+              <th>Request Date</th>
+              <th>Reviewed By</th>
+              <th>Employee Note</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (request of requests; track request.id) {
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary"
+                    style="width: 40px; height: 40px"
+                  >
+                    <i class="eva eva-person-outline"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold">{{ request.employeeName }}</div>
+                    <small class="text-muted">ID: {{ request.employeeId }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fw-medium">{{ request.courseTitle }}</div>
+              </td>
+              <td>
+                <span class="badge {{ getStatusBadgeClass(request.status) }}">
+                  <i class="eva {{ getStatusIcon(request.status) }} me-1"></i>
+                  {{ getStatusText(request.status) }}
+                </span>
+              </td>
+              <td>
+                <span class="text-muted">{{ formatDate(request.requestDate) }}</span>
+              </td>
+              <td>
+                @if (request.managerName) {
+                <div>
+                  <span class="fw-medium">{{ request.managerName }}</span>
+                  <br />
+                  <small class="text-muted">{{ formatDate(request.reviewedAt) }}</small>
+                </div>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td>
+                @if (request.employeeNote) {
+                <span
+                  class="text-muted text-truncate d-inline-block"
+                  style="max-width: 150px"
+                  [title]="request.employeeNote"
+                >
+                  {{ request.employeeNote }}
+                </span>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td class="text-end pe-4">
+                @if (request.status === TrainingRequestStatus.Pending) {
+                <button
+                  class="btn btn-sm btn-light text-primary me-1"
+                  title="Review Request"
+                  (click)="openReviewModal(request)"
+                >
+                  <i class="eva eva-edit-2-outline"></i>
+                </button>
+                }
+                <button
+                  class="btn btn-sm btn-light text-danger"
+                  title="Delete"
+                  (click)="openDeleteModal(request)"
+                >
+                  <i class="eva eva-trash-2-outline"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-primary">{{ requests.length }}</div>
+          <small class="text-muted">Total Requests</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-warning">{{ getPendingCount() }}</div>
+          <small class="text-muted">Pending</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-success">{{ getApprovedCount() }}</div>
+          <small class="text-muted">Approved</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-danger">{{ getRejectedCount() }}</div>
+          <small class="text-muted">Rejected</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+
+<!-- Create Request Modal -->
+@if (showCreateModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-file-add-outline me-2"></i>
+          New Training Request
+        </h5>
+        <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="submitRequest()">
+          <div class="mb-3">
+            <label class="form-label">Employee <span class="text-danger">*</span></label>
+            <select
+              class="form-select"
+              [(ngModel)]="createFormData.employeeId"
+              name="employeeId"
+              required
+            >
+              <option [ngValue]="0" disabled>-- Select Employee --</option>
+              @for (employee of employees; track employee.id) {
+              <option [ngValue]="employee.id">
+                {{ getEmployeeFullName(employee) }} ({{ employee.email }})
+              </option>
+              }
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Training Course <span class="text-danger">*</span></label>
+            <select
+              class="form-select"
+              [(ngModel)]="createFormData.trainingCourseId"
+              name="trainingCourseId"
+              required
+            >
+              <option [ngValue]="0" disabled>-- Select Course --</option>
+              @for (course of courses; track course.id) {
+              <option [ngValue]="course.id">{{ course.title }}</option>
+              }
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Note (Optional)</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="createFormData.employeeNote"
+              name="employeeNote"
+              rows="3"
+              placeholder="Add any notes about this training request..."
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeCreateModal()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="submitRequest()"
+          [disabled]="isSaving"
+        >
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Submitting... } @else { Submit Request }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Review Modal -->
+@if (showReviewModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-checkmark-square-outline me-2"></i>
+          Review Training Request
+        </h5>
+        <button type="button" class="btn-close" (click)="closeReviewModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-4 p-3 bg-light rounded">
+          <div class="row">
+            <div class="col-6">
+              <small class="text-muted d-block">Employee</small>
+              <strong>{{ reviewRequest?.employeeName }}</strong>
+            </div>
+            <div class="col-6">
+              <small class="text-muted d-block">Course</small>
+              <strong>{{ reviewRequest?.courseTitle }}</strong>
+            </div>
+          </div>
+          @if (reviewRequest?.employeeNote) {
+          <div class="mt-3">
+            <small class="text-muted d-block">Employee Note</small>
+            <span>{{ reviewRequest?.employeeNote }}</span>
+          </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Decision <span class="text-danger">*</span></label>
+          <div class="d-flex gap-3">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="decision"
+                id="approve"
+                [value]="true"
+                [(ngModel)]="reviewApproved"
+              />
+              <label class="form-check-label text-success" for="approve">
+                <i class="eva eva-checkmark-circle-2-outline me-1"></i>
+                Approve
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="decision"
+                id="reject"
+                [value]="false"
+                [(ngModel)]="reviewApproved"
+              />
+              <label class="form-check-label text-danger" for="reject">
+                <i class="eva eva-close-circle-outline me-1"></i>
+                Reject
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Manager Note (Optional)</label>
+          <textarea
+            class="form-control"
+            [(ngModel)]="reviewNote"
+            rows="3"
+            placeholder="Add a note about your decision..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeReviewModal()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn-success]="reviewApproved"
+          [class.btn-danger]="!reviewApproved"
+          (click)="submitReview()"
+          [disabled]="isSaving"
+        >
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Processing... } @else {
+          {{ reviewApproved ? 'Approve' : 'Reject' }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">
+          <i class="eva eva-alert-triangle-outline me-2"></i>Confirm Delete
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Are you sure you want to delete the training request from
+          <strong>{{ requestToDelete?.employeeName }}</strong>
+          for course
+          <strong>"{{ requestToDelete?.courseTitle }}"</strong>?
+        </p>
+        <p class="text-muted small mb-0">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeDeleteModal()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmDelete()"
+          [disabled]="isSaving"
+        >
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Deleting... } @else { Delete }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

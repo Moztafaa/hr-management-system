@@ -1,0 +1,262 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Training Courses</h2>
+      <p class="text-muted mb-0">Manage training courses available for employees</p>
+    </div>
+    <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openCreateModal()">
+      <i class="eva eva-plus-outline"></i>
+      Add Course
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 mb-0 text-muted">Loading training courses...</p>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <div>{{ error }}</div>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadCourses()">
+      <i class="eva eva-refresh-outline me-1"></i>Retry
+    </button>
+  </div>
+  }
+
+  <!-- Courses Table -->
+  @if (!isLoading && !error) {
+  <div class="card">
+    <div class="card-body p-0">
+      @if (courses.length === 0) {
+      <div class="text-center py-5">
+        <i class="eva eva-book-open-outline fs-1 text-muted"></i>
+        <p class="mt-3 mb-0 text-muted">No training courses found. Create your first course!</p>
+      </div>
+      } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Course</th>
+              <th style="max-width: 300px">Description</th>
+              <th>Duration</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (course of courses; track course.id) {
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary"
+                    style="width: 40px; height: 40px"
+                  >
+                    <i class="eva eva-book-outline"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold">{{ course.title }}</div>
+                    <small class="text-muted">ID: {{ course.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td style="max-width: 300px">
+                <span
+                  class="text-muted text-truncate d-inline-block"
+                  style="max-width: 280px"
+                  [title]="course.description || 'No description'"
+                >
+                  {{ course.description || 'No description' }}
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-info bg-opacity-10 text-info">
+                  <i class="eva eva-clock-outline me-1"></i>
+                  {{ formatDuration(course.durationHours) }}
+                </span>
+              </td>
+              <td class="text-end pe-4">
+                <button
+                  class="btn btn-sm btn-light me-1"
+                  title="Edit"
+                  (click)="openEditModal(course)"
+                >
+                  <i class="eva eva-edit-outline"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-light text-danger"
+                  title="Delete"
+                  (click)="openDeleteModal(course)"
+                >
+                  <i class="eva eva-trash-2-outline"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-primary">{{ courses.length }}</div>
+          <small class="text-muted">Total Courses</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-success">{{ getTotalHours() }}</div>
+          <small class="text-muted">Total Training Hours</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-info">{{ getAvgDuration() }}</div>
+          <small class="text-muted">Avg. Hours/Course</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+
+<!-- Create/Edit Modal -->
+@if (showModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-book-open-outline me-2"></i>
+          {{ isEditing ? 'Edit Course' : 'Create Course' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveCourse()">
+          <div class="mb-3">
+            <label class="form-label">Course Title <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="formData.title"
+              name="title"
+              placeholder="Enter course title"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="formData.description"
+              name="description"
+              rows="3"
+              placeholder="Enter course description (optional)"
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Duration (Hours)</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="formData.durationHours"
+              name="durationHours"
+              placeholder="Enter duration in hours"
+              min="0"
+              step="0.5"
+            />
+            <div class="form-text">How long does this training take to complete?</div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeModal()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveCourse()" [disabled]="isSaving">
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Saving... } @else {
+          {{ isEditing ? 'Update' : 'Create' }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">
+          <i class="eva eva-alert-triangle-outline me-2"></i>Confirm Delete
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Are you sure you want to delete the course
+          <strong>"{{ courseToDelete?.title }}"</strong>?
+        </p>
+        <p class="text-muted small mb-0">
+          This action cannot be undone. All enrollments related to this course will also be
+          affected.
+        </p>
+      </div>
+      <div class="modal-footer border-0">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeDeleteModal()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmDelete()"
+          [disabled]="isSaving"
+        >
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Deleting... } @else { Delete }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

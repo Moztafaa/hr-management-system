@@ -1,0 +1,229 @@
+/* Card Styling */
+:host ::ng-deep .card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+  color: var(--text-color) !important;
+}
+
+/* Form Controls */
+:host ::ng-deep input,
+:host ::ng-deep select,
+:host ::ng-deep textarea,
+:host ::ng-deep .form-control,
+:host ::ng-deep .form-select {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-basic) !important;
+}
+
+:host ::ng-deep .form-control:focus,
+:host ::ng-deep .form-select:focus {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.15) !important;
+}
+
+:host ::ng-deep .form-select option {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+/* Table Styling */
+:host ::ng-deep .table {
+  color: var(--text-color) !important;
+  margin-bottom: 0;
+  background-color: transparent !important;
+}
+
+:host ::ng-deep .table thead th {
+  background-color: var(--header-bg) !important;
+  color: var(--text-hint) !important;
+  border-bottom: 1px solid var(--border-basic) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 1rem;
+  letter-spacing: 0.5px;
+}
+
+:host ::ng-deep .table-light {
+  background-color: var(--header-bg) !important;
+}
+
+:host ::ng-deep .table tbody td {
+  border-bottom: 1px solid var(--border-basic) !important;
+  padding: 1rem;
+  vertical-align: middle;
+  color: var(--text-color) !important;
+  background-color: transparent !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover td {
+  background-color: transparent !important;
+  color: var(--text-color) !important;
+}
+
+/* Avatar */
+:host ::ng-deep .avatar-initial {
+  background-color: var(--input-bg) !important;
+  color: var(--primary-color) !important;
+  font-weight: bold;
+}
+
+/* Text Colors */
+:host ::ng-deep .text-muted {
+  color: var(--text-hint) !important;
+}
+
+h2,
+h4,
+h5,
+h6,
+.fw-semibold,
+.fw-medium {
+  color: var(--text-color);
+}
+
+p {
+  color: var(--text-hint);
+}
+
+/* Button Styling */
+:host ::ng-deep .btn-light {
+  background-color: var(--input-bg) !important;
+  border-color: var(--border-basic) !important;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .btn-light:hover {
+  background-color: var(--hover-bg) !important;
+  border-color: var(--primary-color) !important;
+}
+
+:host ::ng-deep .btn-outline-secondary {
+  color: var(--text-hint) !important;
+  border-color: var(--border-basic) !important;
+}
+
+:host ::ng-deep .btn-outline-secondary:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-color) !important;
+}
+
+/* Modal Styling */
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+:host ::ng-deep .modal-content {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .modal-header {
+  border-bottom-color: var(--border-basic) !important;
+}
+
+:host ::ng-deep .modal-footer {
+  border-top-color: var(--border-basic) !important;
+}
+
+:host ::ng-deep .modal-title {
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Form Labels */
+:host ::ng-deep .form-label {
+  color: var(--text-hint) !important;
+}
+
+:host ::ng-deep .form-text {
+  color: var(--text-hint) !important;
+}
+
+/* Badge styling */
+.badge {
+  font-weight: 500;
+}
+
+:host ::ng-deep .badge.bg-primary.bg-opacity-10 {
+  background-color: rgba(51, 102, 255, 0.2) !important;
+  color: var(--color-primary) !important;
+}
+
+:host ::ng-deep .badge.bg-success.bg-opacity-10 {
+  background-color: rgba(0, 214, 143, 0.2) !important;
+  color: var(--color-success) !important;
+}
+
+:host ::ng-deep .badge.bg-secondary.bg-opacity-10 {
+  background-color: rgba(143, 155, 179, 0.2) !important;
+  color: var(--text-hint) !important;
+}
+
+:host ::ng-deep .badge.bg-warning.bg-opacity-10 {
+  background-color: rgba(255, 170, 0, 0.2) !important;
+  color: var(--color-warning) !important;
+}
+
+:host ::ng-deep .badge.bg-info.bg-opacity-10 {
+  background-color: rgba(0, 149, 255, 0.2) !important;
+  color: var(--color-info) !important;
+}
+
+/* Alert styling */
+:host ::ng-deep .alert-danger {
+  background-color: rgba(255, 61, 113, 0.15) !important;
+  border-color: rgba(255, 61, 113, 0.3) !important;
+  color: var(--color-danger) !important;
+}
+
+/* Stats cards */
+:host ::ng-deep .card.border-0 {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+}
+
+:host ::ng-deep .card.border-0 .h4 {
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .card.border-0 small {
+  color: var(--text-hint) !important;
+}
+
+/* Text colors */
+:host ::ng-deep .text-primary {
+  color: var(--color-primary) !important;
+}
+
+:host ::ng-deep .text-success {
+  color: var(--color-success) !important;
+}
+
+:host ::ng-deep .text-warning {
+  color: var(--color-warning) !important;
+}
+
+:host ::ng-deep .text-info {
+  color: var(--color-info) !important;
+}
+
+:host ::ng-deep .text-danger {
+  color: var(--color-danger) !important;
+}
+
+:host ::ng-deep .text-secondary {
+  color: var(--text-hint) !important;
+}
