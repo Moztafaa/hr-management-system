@@ -11,6 +11,12 @@ import {
   CreateLeaveRequest,
   Payslip,
 } from '../models/ess';
+import { EmployeeTraining, TrainingRequest, TrainingCourse } from '../models/training';
+
+export interface ESSTrainingRequestCreate {
+  trainingCourseId: number;
+  employeeNote?: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -62,6 +68,29 @@ export class ESSService {
 
   // Get payslip PDF download URL
   getPayslipPdfUrl(payslipId: number): string {
-    return `http://localhost:5093/api/payslips/${payslipId}/export/pdf`;
+    return `https://localhost:7005/api/payslips/${payslipId}/export/pdf`;
+  }
+
+  // Training endpoints
+  getMyCourses(): Observable<ApiResponse<EmployeeTraining[]>> {
+    return this.http.get<ApiResponse<EmployeeTraining[]>>(`${this.apiUrl}/training/my-courses`);
+  }
+
+  getMyTrainingRequests(): Observable<ApiResponse<TrainingRequest[]>> {
+    return this.http.get<ApiResponse<TrainingRequest[]>>(`${this.apiUrl}/training/my-requests`);
+  }
+
+  getAvailableCourses(): Observable<ApiResponse<TrainingCourse[]>> {
+    return this.http.get<ApiResponse<TrainingCourse[]>>(
+      `${this.apiUrl}/training/available-courses`
+    );
+  }
+
+  submitTrainingRequest(data: ESSTrainingRequestCreate): Observable<ApiResponse<TrainingRequest>> {
+    return this.http.post<ApiResponse<TrainingRequest>>(`${this.apiUrl}/training/request`, data);
+  }
+
+  cancelTrainingRequest(requestId: number): Observable<ApiResponse<boolean>> {
+    return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/training/request/${requestId}`);
   }
 }

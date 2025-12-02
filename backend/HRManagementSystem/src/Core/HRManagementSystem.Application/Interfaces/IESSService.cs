@@ -3,6 +3,7 @@ using HRManagementSystem.Application.DTOs.ESS;
 using HRManagementSystem.Application.DTOs.Leaves.LeaveBalanceDtos;
 using HRManagementSystem.Application.DTOs.Leaves.LeaveRequestDtos;
 using HRManagementSystem.Application.DTOs.Payroll.Payslip;
+using HRManagementSystem.Application.DTOs.Training;
 
 namespace HRManagementSystem.Application.Interfaces;
 
@@ -16,4 +17,11 @@ public interface IESSService
     Task<Response<List<PayslipDto>>> GetPayslipsAsync(int employeeId, CancellationToken cancellationToken = default);
     Task<Response<PayslipDto>> GetPayslipByIdAsync(int employeeId, int payslipId, CancellationToken cancellationToken = default);
     Task<Response<ESSDashboardDto>> GetDashboardAsync(int employeeId, CancellationToken cancellationToken = default);
+
+    // Training methods
+    Task<Response<List<EmployeeTrainingDto>>> GetMyCoursesAsync(int employeeId, CancellationToken cancellationToken = default);
+    Task<Response<List<TrainingRequestDto>>> GetMyTrainingRequestsAsync(int employeeId, CancellationToken cancellationToken = default);
+    Task<Response<List<TrainingCourseDto>>> GetAvailableCoursesAsync(int employeeId, CancellationToken cancellationToken = default);
+    Task<Response<TrainingRequestDto>> SubmitTrainingRequestAsync(int employeeId, ESSTrainingRequestCreateDto dto, CancellationToken cancellationToken = default);
+    Task<Response<bool>> CancelTrainingRequestAsync(int employeeId, int requestId, CancellationToken cancellationToken = default);
 }

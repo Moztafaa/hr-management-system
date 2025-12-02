@@ -1,0 +1,380 @@
+<div class="ess-training">
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <span>{{ error }}</span>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadData()">
+      <i class="eva eva-refresh-outline me-1"></i> Retry
+    </button>
+  </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isLoading) {
+  <div class="page-header d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h2 class="page-title"><i class="eva eva-book-open-outline me-2"></i>My Training</h2>
+      <p class="page-subtitle">View your courses and submit training requests</p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card enrolled">
+        <div class="stat-icon">
+          <i class="eva eva-book-outline"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ enrolledCount }}</span>
+          <span class="stat-label">Enrolled</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card completed">
+        <div class="stat-icon">
+          <i class="eva eva-checkmark-circle-2-outline"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ completedCount }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card pending">
+        <div class="stat-icon">
+          <i class="eva eva-clock-outline"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ pendingRequestsCount }}</span>
+          <span class="stat-label">Pending Requests</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card available">
+        <div class="stat-icon">
+          <i class="eva eva-layers-outline"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ availableCourses.length }}</span>
+          <span class="stat-label">Available Courses</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="card">
+    <div class="card-header p-0">
+      <ul class="nav nav-tabs card-tabs">
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'courses'"
+            (click)="setActiveTab('courses')"
+          >
+            <i class="eva eva-book-outline me-2"></i>
+            My Courses
+            <span class="badge bg-primary ms-2">{{ myCourses.length }}</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'requests'"
+            (click)="setActiveTab('requests')"
+          >
+            <i class="eva eva-file-text-outline me-2"></i>
+            My Requests
+            <span class="badge bg-warning ms-2">{{ myRequests.length }}</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'available'"
+            (click)="setActiveTab('available')"
+          >
+            <i class="eva eva-plus-circle-outline me-2"></i>
+            Available Courses
+            <span class="badge bg-success ms-2">{{ availableCourses.length }}</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div class="card-body p-0">
+      <!-- My Courses Tab -->
+      @if (activeTab === 'courses') { @if (myCourses.length === 0) {
+      <div class="empty-state">
+        <i class="eva eva-book-outline"></i>
+        <h5>No Courses Yet</h5>
+        <p>You haven't been enrolled in any training courses yet.</p>
+        <button class="btn btn-primary" (click)="setActiveTab('available')">
+          <i class="eva eva-plus-outline me-1"></i> Browse Available Courses
+        </button>
+      </div>
+      } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Duration</th>
+              <th>Status</th>
+              <th>Enrolled Date</th>
+              <th>Completion Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (course of myCourses; track course.trainingCourseId) {
+            <tr>
+              <td>
+                <div class="course-info">
+                  <span class="course-title">{{ course.trainingCourseTitle }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="duration-badge">-</span>
+              </td>
+              <td>
+                <span class="status-badge" [class]="getCourseStatusClass(course.status)">
+                  {{ course.status }}
+                </span>
+              </td>
+              <td>{{ formatDate(course.enrollmentDate) }}</td>
+              <td>{{ course.completionDate ? formatDate(course.completionDate) : '-' }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } }
+
+      <!-- My Requests Tab -->
+      @if (activeTab === 'requests') { @if (myRequests.length === 0) {
+      <div class="empty-state">
+        <i class="eva eva-file-text-outline"></i>
+        <h5>No Training Requests</h5>
+        <p>You haven't submitted any training requests yet.</p>
+        <button class="btn btn-primary" (click)="setActiveTab('available')">
+          <i class="eva eva-plus-outline me-1"></i> Request Training
+        </button>
+      </div>
+      } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Status</th>
+              <th>Request Date</th>
+              <th>Your Note</th>
+              <th>Manager Note</th>
+              <th>Reviewed At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (request of myRequests; track request.id) {
+            <tr>
+              <td>
+                <span class="course-title">{{ request.courseTitle }}</span>
+              </td>
+              <td>
+                <span class="status-badge" [class]="getStatusBadgeClass(request.status)">
+                  {{ getStatusText(request.status) }}
+                </span>
+              </td>
+              <td>{{ formatDate(request.requestDate) }}</td>
+              <td>
+                <span class="note-text">{{ request.employeeNote || '-' }}</span>
+              </td>
+              <td>
+                <span class="note-text">{{ request.managerNote || '-' }}</span>
+              </td>
+              <td>{{ request.reviewedAt ? formatDate(request.reviewedAt) : '-' }}</td>
+              <td>
+                @if (request.status === TrainingRequestStatus.Pending) {
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="openCancelModal(request)"
+                  title="Cancel Request"
+                >
+                  <i class="eva eva-close-outline"></i>
+                </button>
+                }
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } }
+
+      <!-- Available Courses Tab -->
+      @if (activeTab === 'available') { @if (availableCourses.length === 0) {
+      <div class="empty-state">
+        <i class="eva eva-checkmark-circle-2-outline"></i>
+        <h5>All Caught Up!</h5>
+        <p>You've already enrolled in or requested all available courses.</p>
+      </div>
+      } @else {
+      <div class="courses-grid p-4">
+        <div class="row g-4">
+          @for (course of availableCourses; track course.id) {
+          <div class="col-lg-4 col-md-6">
+            <div class="course-card">
+              <div class="course-card-header">
+                <i class="eva eva-book-open-outline"></i>
+              </div>
+              <div class="course-card-body">
+                <h5 class="course-card-title">{{ course.title }}</h5>
+                <p class="course-card-description">
+                  {{ course.description || 'No description available' }}
+                </p>
+                @if (course.durationHours) {
+                <div class="course-card-meta">
+                  <i class="eva eva-clock-outline me-1"></i>
+                  {{ course.durationHours }} hours
+                </div>
+                }
+              </div>
+              <div class="course-card-footer">
+                <button class="btn btn-primary w-100" (click)="openRequestModal(course)">
+                  <i class="eva eva-paper-plane-outline me-1"></i> Request Enrollment
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      } }
+    </div>
+  </div>
+  }
+
+  <!-- Request Modal -->
+  @if (showRequestModal && selectedCourse) {
+  <div class="modal-backdrop" (click)="closeRequestModal()"></div>
+  <div class="modal-container">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="eva eva-paper-plane-outline me-2"></i>Request Training Enrollment
+          </h5>
+          <button type="button" class="btn-close" (click)="closeRequestModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="selected-course-info mb-4">
+            <div class="course-icon">
+              <i class="eva eva-book-open-outline"></i>
+            </div>
+            <div class="course-details">
+              <h6>{{ selectedCourse.title }}</h6>
+              <p>{{ selectedCourse.description || 'No description' }}</p>
+              @if (selectedCourse.durationHours) {
+              <span class="duration">
+                <i class="eva eva-clock-outline me-1"></i>
+                {{ selectedCourse.durationHours }} hours
+              </span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="employeeNote" class="form-label">Note for Manager (Optional)</label>
+            <textarea
+              id="employeeNote"
+              class="form-control"
+              [(ngModel)]="employeeNote"
+              rows="3"
+              placeholder="Add any notes or reasons for requesting this training..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="closeRequestModal()"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="submitRequest()"
+            [disabled]="isSubmitting"
+          >
+            @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            Submitting... } @else {
+            <i class="eva eva-paper-plane-outline me-1"></i> Submit Request }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Cancel Confirmation Modal -->
+  @if (showCancelModal && requestToCancel) {
+  <div class="modal-backdrop" (click)="closeCancelModal()"></div>
+  <div class="modal-container">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">
+            <i class="eva eva-alert-triangle-outline me-2"></i>Cancel Training Request
+          </h5>
+          <button type="button" class="btn-close" (click)="closeCancelModal()"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to cancel your training request for:</p>
+          <div class="alert alert-light">
+            <strong>{{ requestToCancel.courseTitle }}</strong>
+          </div>
+          <p class="text-muted mb-0">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="closeCancelModal()"
+            [disabled]="isSubmitting"
+          >
+            Keep Request
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmCancel()"
+            [disabled]="isSubmitting"
+          >
+            @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            Cancelling... } @else {
+            <i class="eva eva-close-outline me-1"></i> Yes, Cancel Request }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

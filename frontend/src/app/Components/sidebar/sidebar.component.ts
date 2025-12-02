@@ -118,6 +118,7 @@ export class SidebarComponent {
       children: [
         { title: 'My Profile', link: '/pages/ess/profile' },
         { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
+        { title: 'My Training', link: '/pages/ess/training' },
         { title: 'My Payslips', link: '/pages/ess/payslips' },
         { title: 'My Dashboard', link: '/pages/ess/dashboard' },
         { title: 'Update My Image', link: '/pages/updateEmployeeImage' },

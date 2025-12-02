@@ -3,10 +3,10 @@ using HRManagementSystem.Application.DTOs.ESS;
 using HRManagementSystem.Application.DTOs.Leaves.LeaveBalanceDtos;
 using HRManagementSystem.Application.DTOs.Leaves.LeaveRequestDtos;
 using HRManagementSystem.Application.DTOs.Payroll.Payslip;
+using HRManagementSystem.Application.DTOs.Training;
 using HRManagementSystem.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace HRManagementSystem.WebApi.Controllers;
 
@@ -95,4 +95,69 @@ public class ESSController(IESSService essService) : ControllerBase
         Response<ESSDashboardDto> response = await essService.GetDashboardAsync(employeeId, cancellationToken);
         return Ok(response);
     }
+
+
+    // Training endpoints
+    [HttpGet("training/my-courses")]
+    public async Task<IActionResult> GetMyCourses(CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success) return errorResult!;
+
+        Response<List<EmployeeTrainingDto>> response = await essService.GetMyCoursesAsync(employeeId, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpGet("training/my-requests")]
+    public async Task<IActionResult> GetMyTrainingRequests(CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success) return errorResult!;
+
+        Response<List<TrainingRequestDto>> response = await essService.GetMyTrainingRequestsAsync(employeeId, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpGet("training/available-courses")]
+    public async Task<IActionResult> GetAvailableCourses(CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success) return errorResult!;
+
+        Response<List<TrainingCourseDto>> response = await essService.GetAvailableCoursesAsync(employeeId, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpPost("training/request")]
+    public async Task<IActionResult> SubmitTrainingRequest([FromBody] ESSTrainingRequestCreateDto dto, CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success) return errorResult!;
+
+        Response<TrainingRequestDto> response = await essService.SubmitTrainingRequestAsync(employeeId, dto, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpDelete("training/request/{requestId}")]
+    public async Task<IActionResult> CancelTrainingRequest(int requestId, CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success) return errorResult!;
+
+        Response<bool> response = await essService.CancelTrainingRequestAsync(employeeId, requestId, cancellationToken);
+        return Ok(response);
+    }
+    private (bool success, int employeeId, IActionResult? errorResult) TryGetCurrentEmployeeId()
+    {
+        try
+        {
+            int employeeId = GetCurrentEmployeeId();
+            return (true, employeeId, null);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return (false, 0, Unauthorized(new { Message = ex.Message }));
+        }
+    }
+
 }

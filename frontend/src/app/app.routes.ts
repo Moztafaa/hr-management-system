@@ -80,6 +80,14 @@ export const routes: Routes = [
               ),
             title: 'My Payslips',
           },
+          {
+            path: 'training',
+            loadComponent: () =>
+              import('./Components/ess/ess-training/ess-training.component').then(
+                (m) => m.EssTrainingComponent
+              ),
+            title: 'My Training',
+          },
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
       },

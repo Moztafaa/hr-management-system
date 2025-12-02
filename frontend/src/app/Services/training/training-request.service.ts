@@ -44,8 +44,8 @@ export class TrainingRequestService {
     managerNote?: string
   ): Observable<ApiResponse<TrainingRequest>> {
     return this.http.post<ApiResponse<TrainingRequest>>(
-      `${this.apiUrl}/${id}/review?managerId=${managerId}&approved=${approved}`,
-      managerNote ? JSON.stringify(managerNote) : null,
+      `${this.apiUrl}/${id}/review?managerId=${managerId}&approve=${approved}`,
+      managerNote ?? null,
       { headers: { 'Content-Type': 'application/json' } }
     );
   }
