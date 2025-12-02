@@ -61,32 +61,34 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IDictionary<string, decimal>> GetAllowanceCostBreakdownAsync(int month, int year, CancellationToken cancellationToken = default)
+    public async Task<IDictionary<string, decimal>> GetAllowanceCostBreakdownAsync(
+        int month, int year, CancellationToken cancellationToken = default)
     {
-        return (IDictionary<string, decimal>)await _context.Allowances
+        return await _context.Allowances
             .Select(a => new
             {
                 a.Name,
                 Total = a.EmployeeAllowances
                             .Where(ea => ea.Employee.Payslips.Any(p => p.Month == month && p.Year == year))
-                            .Sum(ea => ea.Amount)
+                            .Sum(ea => (decimal?)ea.Amount) ?? 0m
             })
             .ToDictionaryAsync(x => x.Name, x => x.Total, cancellationToken);
     }
 
-
-    public async Task<IDictionary<string, decimal>> GetDeductionCostBreakdownAsync(int month, int year, CancellationToken cancellationToken = default)
+    public async Task<IDictionary<string, decimal>> GetDeductionCostBreakdownAsync(
+        int month, int year, CancellationToken cancellationToken = default)
     {
-        return (IDictionary<string, decimal>)await _context.Deductions
+        return await _context.Deductions
             .Select(d => new
             {
                 d.Name,
                 Total = d.EmployeeDeductions
                             .Where(ed => ed.Employee.Payslips.Any(p => p.Month == month && p.Year == year))
-                            .Sum(ed => ed.Amount)
+                            .Sum(ed => (decimal?)ed.Amount) ?? 0m
             })
             .ToDictionaryAsync(x => x.Name, x => x.Total, cancellationToken);
     }
+
 
 
 
@@ -122,7 +124,7 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
             .GroupBy(a => a.CurrentStage)
             .Select(g => new
             {
-                Stage = g.Key,
+                Stage = g.Key.ToString(),
                 Count = g.Count()
             })
             .ToDictionaryAsync(x => x.Stage, x => x.Count, cancellationToken);
@@ -130,10 +132,16 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
 
     public async Task<double> GetAverageApplicationReviewTimeAsync(CancellationToken cancellationToken = default)
     {
-        return (double)await _context.JobApplications
+        var avg = await _context.JobApplications
             .Where(a => a.ReviewedDate != null)
-            .AverageAsync(a => EF.Functions.DateDiffDay(a.ApplicationDate, a.ReviewedDate), cancellationToken);
+            .AverageAsync(
+                a => (double?)EF.Functions.DateDiffDay(a.ApplicationDate, a.ReviewedDate),
+                cancellationToken
+            );
+
+        return avg ?? 0; 
     }
+
 
     public async Task<SalaryComparisonResultDto> GetSalaryComparisonAsync(CancellationToken cancellationToken = default)
     {
@@ -165,16 +173,17 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
             .GroupBy(l => l.Status)
             .Select(g => new
             {
-                Status = g.Key,
+                Status = g.Key.ToString(),
                 Count = g.Count()
             })
             .ToDictionaryAsync(x => x.Status, x => x.Count, cancellationToken);
     }
 
-    public async Task<IDictionary<string, int>> GetLeaveUsageByTypeAsync(CancellationToken cancellationToken = default)
+    public async Task<IDictionary<string, int>> GetLeaveUsageByTypeAsync(
+        CancellationToken cancellationToken = default)
     {
-        return (IDictionary<string, int>)await _context.LeaveRequests
-            .GroupBy(l => l.LeaveType)
+        return await _context.LeaveRequests
+            .GroupBy(l => l.LeaveType.Name)
             .Select(g => new
             {
                 Type = g.Key,
@@ -182,6 +191,7 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
             })
             .ToDictionaryAsync(x => x.Type, x => x.Count, cancellationToken);
     }
+
 
     public async Task<IEnumerable<MonthlyLeaveSummaryDto>> GetMonthlyLeaveTrendAsync(int year, CancellationToken cancellationToken = default)
     {
@@ -199,13 +209,16 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
 
     public async Task<double> GetAverageLeaveApprovalTimeAsync(CancellationToken cancellationToken = default)
     {
-        return (double)await _context.LeaveRequests
+        var avg = await _context.LeaveRequests
             .Where(l => l.ReviewedAt != null)
             .AverageAsync(
-                l => EF.Functions.DateDiffDay(l.CreatedAt, l.ReviewedAt),
+                l => (double?)EF.Functions.DateDiffDay(l.CreatedAt, l.ReviewedAt),
                 cancellationToken
             );
+
+        return avg ?? 0; 
     }
+
 
 
 
@@ -229,7 +242,12 @@ public class ReportingRepository(ApplicationDbContext _context) : IReportingRepo
             .Where(p => p.Year == year && p.Month == month)
             .SumAsync(p => p.TotalDeductions, cancellationToken);
 
-        // Optional: add other KPIs in DTO if needed (ActiveJobPostings, PendingLeaveRequests)
+        // Job postings
+        kpi.ActiveJobPostings = await GetActiveJobPostingsAsync(cancellationToken);
+
+        // Leave requests: status = Pending
+        kpi.PendingLeaveRequests = await _context.LeaveRequests
+            .CountAsync(l => l.Status == LeaveStatus.Pending, cancellationToken);
         return kpi;
     }
 

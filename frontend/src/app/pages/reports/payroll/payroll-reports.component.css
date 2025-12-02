@@ -1,0 +1,123 @@
+/* Card Styling */
+:host ::ng-deep .card {
+    background-color: var(--body-bg, #f5f5f5) !important;
+    /* Match website background */
+    border: 1px solid var(--border-basic) !important;
+    color: var(--text-color) !important;
+}
+
+/* Typography */
+h2,
+h4,
+h5,
+h6,
+.h4,
+.fw-semibold,
+.fw-medium {
+    color: var(--text-color);
+}
+
+p,
+.text-muted,
+small {
+    color: var(--text-hint) !important;
+}
+
+/* Form Controls */
+:host ::ng-deep .form-select {
+    background-color: var(--input-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-basic) !important;
+}
+
+:host ::ng-deep .form-select:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.15) !important;
+}
+
+:host ::ng-deep .form-select option {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+:host ::ng-deep .form-label {
+    color: var(--text-hint) !important;
+}
+
+/* Table Styling */
+:host ::ng-deep .table {
+    color: var(--text-color) !important;
+    margin-bottom: 0;
+    background-color: transparent !important;
+}
+
+:host ::ng-deep .table thead th {
+    background-color: var(--header-bg) !important;
+    color: var(--text-hint) !important;
+    border-bottom: 1px solid var(--border-basic) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    padding: 1rem;
+    letter-spacing: 0.5px;
+}
+
+:host ::ng-deep .table-light {
+    background-color: var(--header-bg) !important;
+}
+
+:host ::ng-deep .table tbody td {
+    border-bottom: 1px solid var(--border-basic) !important;
+    padding: 1rem;
+    vertical-align: middle;
+    color: var(--text-color) !important;
+    background-color: transparent !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--text-color) !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover td {
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+}
+
+/* Stats Cards */
+:host ::ng-deep .card.border-0 {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-basic) !important;
+}
+
+:host ::ng-deep .card.border-0 .h4 {
+    color: var(--text-color) !important;
+}
+
+/* Text Colors for Stats */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-success {
+    color: #00d68f !important;
+}
+
+.text-info {
+    color: #00cfde !important;
+}
+
+.text-warning {
+    color: #ffaa00 !important;
+}
+
+.text-danger {
+    color: #ff3d71 !important;
+}
+
+/* Empty State */
+.empty-state-icon {
+    font-size: 3rem;
+    color: var(--text-hint);
+    opacity: 0.5;
+}

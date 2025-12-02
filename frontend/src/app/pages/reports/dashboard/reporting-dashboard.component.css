@@ -1,0 +1,70 @@
+/* Card Styling */
+:host ::ng-deep .card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+  color: var(--text-color) !important;
+}
+
+/* Typography */
+h2,
+h4,
+h5,
+h6,
+.h4,
+.fw-semibold,
+.fw-medium {
+  color: var(--text-color);
+}
+
+p,
+.text-muted,
+small {
+  color: var(--text-hint) !important;
+}
+
+/* Form Controls */
+:host ::ng-deep .form-select {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-basic) !important;
+}
+
+:host ::ng-deep .form-select:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.15) !important;
+}
+
+:host ::ng-deep .form-select option {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+:host ::ng-deep .form-label {
+  color: var(--text-hint) !important;
+}
+
+/* Stats Cards */
+:host ::ng-deep .card.border-0 {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+}
+
+:host ::ng-deep .card.border-0 .h4 {
+  color: var(--text-color) !important;
+}
+
+/* Text Colors for Stats - Forced White as per user request */
+.text-primary,
+.text-success,
+.text-info,
+.text-warning,
+.text-danger {
+  color: #ffffff !important;
+}
+
+/* Empty State */
+.empty-state-icon {
+  font-size: 3rem;
+  color: var(--text-hint);
+  opacity: 0.5;
+}

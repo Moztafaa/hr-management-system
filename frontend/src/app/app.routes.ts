@@ -178,6 +178,55 @@ export const routes: Routes = [
         title: 'Designations',
       },
 
+      // Reports Routes
+      {
+        path: 'reports',
+        canActivate: [authGuard],
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import('./pages/reports/dashboard/reporting-dashboard.component').then(
+                (m) => m.ReportingDashboardComponent
+              ),
+            title: 'Reports Dashboard',
+          },
+          {
+            path: 'employees',
+            loadComponent: () =>
+              import('./pages/reports/employees/employees-reports.component').then(
+                (m) => m.EmployeesReportsComponent
+              ),
+            title: 'Employee Reports',
+          },
+          {
+            path: 'payroll',
+            loadComponent: () =>
+              import('./pages/reports/payroll/payroll-reports.component').then(
+                (m) => m.PayrollReportsComponent
+              ),
+            title: 'Payroll Reports',
+          },
+          {
+            path: 'leave',
+            loadComponent: () =>
+              import('./pages/reports/leave/leave-reports.component').then(
+                (m) => m.LeaveReportsComponent
+              ),
+            title: 'Leave Reports',
+          },
+          {
+            path: 'recruitment',
+            loadComponent: () =>
+              import('./pages/reports/recruitment/recruitment-reports.component').then(
+                (m) => m.RecruitmentReportsComponent
+              ),
+            title: 'Recruitment Reports',
+          },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ],
+      },
+
       // Notifications Route
       {
         path: 'notifications',

@@ -1,0 +1,127 @@
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Recruitment Reports</h2>
+            <p class="mb-0">Hiring pipeline and job posting analytics</p>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="card">
+        <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 mb-0">Loading recruitment metrics...</p>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error()" class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+        <div>{{ error() }}</div>
+    </div>
+
+    <div *ngIf="!isLoading() && !error()">
+        <!-- KPI Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="h4 mb-1 text-primary">{{ totalJobPostings() }}</div>
+                        <small class="text-muted">Total Job Postings</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="h4 mb-1 text-success">{{ activeJobPostings() }}</div>
+                        <small class="text-muted">Active Job Postings</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="h4 mb-1 text-info">{{ avgReviewTime() }}</div>
+                        <small class="text-muted">Avg. Review Time</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Pipeline Breakdown -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-transparent border-bottom py-3">
+                        <h5 class="card-title mb-0">Recruitment Pipeline</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Stage</th>
+                                        <th class="text-end">Candidates</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let stage of getPipelineEntries()">
+                                        <td>{{ stage.stage }}</td>
+                                        <td class="text-end fw-medium">{{ stage.count }}</td>
+                                    </tr>
+                                    <tr *ngIf="getPipelineEntries().length === 0">
+                                        <td colspan="2" class="text-center py-4">
+                                            <div class="empty-state-icon mb-2">
+                                                <i class="eva eva-funnel-outline"></i>
+                                            </div>
+                                            <p class="mb-0">No data available</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications per Job -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-transparent border-bottom py-3">
+                        <h5 class="card-title mb-0">Applications per Job</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th class="text-end">Applications</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let job of getApplicationsPerJobEntries()">
+                                        <td>{{ job.jobTitle }}</td>
+                                        <td class="text-end fw-medium">{{ job.applicationCount }}</td>
+                                    </tr>
+                                    <tr *ngIf="getApplicationsPerJobEntries().length === 0">
+                                        <td colspan="2" class="text-center py-4">
+                                            <div class="empty-state-icon mb-2">
+                                                <i class="eva eva-file-text-outline"></i>
+                                            </div>
+                                            <p class="mb-0">No data available</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
