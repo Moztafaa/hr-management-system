@@ -1,0 +1,94 @@
+<!-- Floating Action Button -->
+<button
+  class="chatbot-fab"
+  [class.active]="isOpen"
+  (click)="toggleChat()"
+  aria-label="Open HR Assistant Chat"
+>
+  <i
+    class="eva"
+    [class.eva-message-circle-outline]="!isOpen"
+    [class.eva-close-outline]="isOpen"
+  ></i>
+</button>
+
+<!-- Chat Panel -->
+<div class="chatbot-panel" [class.open]="isOpen">
+  <!-- Header -->
+  <div class="chatbot-header">
+    <div class="header-info">
+      <div class="avatar">
+        <i class="eva eva-person-outline"></i>
+      </div>
+      <div class="header-text">
+        <h6 class="mb-0">HR Assistant</h6>
+        <small class="text-success">
+          <i class="eva eva-radio-button-on-outline me-1"></i>Online
+        </small>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" (click)="clearChat()" title="Clear chat">
+        <i class="eva eva-trash-2-outline"></i>
+      </button>
+      <button class="btn-icon" (click)="closeChat()" title="Close">
+        <i class="eva eva-close-outline"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="chatbot-messages" #messagesContainer>
+    @for (message of messages(); track trackByMessageId($index, message)) {
+    <div class="message" [class.user]="message.isUser" [class.ai]="!message.isUser">
+      <div class="message-content">
+        <div class="message-bubble" [innerHTML]="message.content | markdown"></div>
+        <div class="message-time">
+          {{ formatTime(message.timestamp) }}
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Typing indicator -->
+    @if (isLoading()) {
+    <div class="message ai">
+      <div class="message-content">
+        <div class="message-bubble typing">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Input -->
+  <div class="chatbot-input">
+    <div class="input-wrapper">
+      <input
+        #messageInput
+        type="text"
+        class="form-control"
+        [(ngModel)]="userMessage"
+        (keydown)="onKeyDown($event)"
+        placeholder="Type your question..."
+        [disabled]="isLoading()"
+      />
+      <button
+        class="btn-send"
+        (click)="sendMessage()"
+        [disabled]="!userMessage.trim() || isLoading()"
+        title="Send message"
+      >
+        <i class="eva eva-paper-plane-outline"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop for mobile -->
+@if (isOpen) {
+<div class="chatbot-backdrop" (click)="closeChat()"></div>
+}

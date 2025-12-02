@@ -41,6 +41,13 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeTrainingService, EmployeeTrainingService>();
         services.AddScoped<ITrainingRequestService, TrainingRequestService>();
 
+        // AI/RAG Services
+        services.AddHttpClient();
+        services.AddScoped<IAIChatService, Services.AIChatService>();
+        services.AddScoped<IEmbeddingService, Services.EmbeddingService>();
+        services.AddSingleton<IMongoDBVectorService, Services.MongoDBVectorService>();
+        services.AddScoped<IRAGService, Services.RAGService>();
+
         services.AddAutoMapper(x => x.AddProfile(new MappingHelper()));
         services.AddAutoMapper(x => x.AddProfile(new LeaveProfile()));
         // Add other mapping profiles for Department, Employee, JobPosting, etc.

@@ -6,6 +6,7 @@ import { LayoutService } from '../../Services/layout.service';
 import { LoginComponent } from '../../Components/auth/login/login.component';
 import { RegisterComponent } from '../../Components/auth/register/register.component';
 import { ToastComponent } from '../../Components/toast/toast.component';
+import { ChatbotComponent } from '../../Components/chatbot/chatbot.component';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
@@ -20,6 +21,7 @@ import { RouterOutlet } from '@angular/router';
     LoginComponent,
     RegisterComponent,
     ToastComponent,
+    ChatbotComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css'],

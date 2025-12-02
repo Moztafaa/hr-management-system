@@ -2,7 +2,7 @@ using HRManagementSystem.Application.Helper;
 
 namespace HRManagementSystem.Application.Services;
 
-public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _faceService, IMapper _mapper) : IEmployeeService
+public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _faceService, IMapper _mapper, IRAGService _ragService) : IEmployeeService
 {
     public async Task<Response<EmployeeDto>> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto, CancellationToken cancellationToken = default)
     {
@@ -12,6 +12,9 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _f
 
             await _unitOfWork.Repository<Employee>().AddAsync(employee, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Sync employee to RAG vector store for AI queries
+            await SyncEmployeeToRAGAsync(employee, cancellationToken);
 
             EmployeeDto? dto = _mapper.Map<EmployeeDto>(employee);
 
@@ -86,7 +89,7 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _f
                 return new Response<bool>(false, "Employee not found", true);
 
             // Extract embedding for Face Recognition
-            double[] embedding= _faceService.ExtractEmbedding(image);
+            double[] embedding = _faceService.ExtractEmbedding(image);
             employee.FaceEmbedding = EmbeddingSerializer.DoubleArrayToBytes(embedding);
             await _unitOfWork.Repository<Employee>().UpdateAsync(employee);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -116,4 +119,24 @@ public class EmployeeService(IUnitOfWork _unitOfWork, IFaceRecognitionService _f
         }
     }
 
+    /// <summary>
+    /// Syncs an employee to the RAG vector store for AI-powered queries
+    /// </summary>
+    private async Task SyncEmployeeToRAGAsync(Employee employee, CancellationToken cancellationToken)
+    {
+        try
+        {
+            string employeeText = $"Employee ID: {employee.Id} - Name: {employee.FirstName} {employee.LastName} - " +
+                                  $"Email: {employee.Email} - Contact: {employee.ContactNumber ?? "N/A"} - " +
+                                  $"Gender: {employee.Gender ?? "N/A"} - Address: {employee.Address ?? "N/A"} - " +
+                                  $"Hire Date: {employee.HireDate:yyyy-MM-dd} - Basic Salary: {employee.BasicSalary}";
+
+            await _ragService.AddContextAsync("Employee", employeeText, cancellationToken);
+        }
+        catch
+        {
+            // Don't fail employee creation if RAG sync fails
+            // Consider logging this error
+        }
+    }
 }
