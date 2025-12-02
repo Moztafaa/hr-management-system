@@ -8,7 +8,7 @@ public class LeaveApprovalService(
         ILeaveRequestService _leaveRequestService,
         ILeaveBalanceService _leaveBalanceService,
         IMapper _mapper,
-        IEmailService _emailService,
+        IBackgroundJobService _backgroundJobService,
         IEmployeeService _employeeService,
         INotificationService _notificationService
     ) : ILeaveApprovalService
@@ -53,39 +53,33 @@ public class LeaveApprovalService(
             UpdateLeaveRequestDto updateLeaveReqdto = _mapper.Map<UpdateLeaveRequestDto>(leaveRequest);
             await _leaveRequestService.UpdateLeaveRequestAsync(leaveRequest.Id, updateLeaveReqdto, 1);
 
-            // Send email notification to employee
-            try
+            // Send email notification to employee via background job
+            Response<EmployeeDto> employee = await _employeeService.GetEmployeeByIdAsync(leaveRequest.EmployeeId);
+            if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.Email))
             {
-                Response<EmployeeDto> employee = await _employeeService.GetEmployeeByIdAsync(leaveRequest.EmployeeId);
-                if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.Email))
-                {
-                    await _emailService.SendLeaveApprovalEmailAsync(
+                // Queue email to be sent asynchronously
+                _backgroundJobService.Enqueue<IEmailQueueJob>(
+                    job => job.SendLeaveApprovalEmailAsync(
                         employee.Data.Email,
                         $"{employee.Data.FirstName} {employee.Data.LastName}",
                         "Leave Request",
-                        "Approved",
-                        CancellationToken.None);
-                }
-
-                // Create notification for employee
-                if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.ApplicationUserId))
-                {
-                    await _notificationService.CreateNotificationAsync(new CreateNotificationDto
-                    {
-                        RecipientUserId = employee.Data.ApplicationUserId,
-                        Title = "Leave Request Approved",
-                        Message = $"Your leave request has been approved. Enjoy your time off!",
-                        Type = NotificationType.Success,
-                        Category = NotificationCategory.LeaveApproval,
-                        Priority = NotificationPriority.High,
-                        RelatedEntityId = leaveRequest.Id,
-                        RelatedEntityType = "LeaveRequest"
-                    }, CancellationToken.None);
-                }
+                        "Approved"));
             }
-            catch (Exception emailEx)
+
+            // Create notification for employee
+            if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.ApplicationUserId))
             {
-                Console.WriteLine($"Failed to send leave approval email: {emailEx.Message}");
+                await _notificationService.CreateNotificationAsync(new CreateNotificationDto
+                {
+                    RecipientUserId = employee.Data.ApplicationUserId,
+                    Title = "Leave Request Approved",
+                    Message = $"Your leave request has been approved. Enjoy your time off!",
+                    Type = NotificationType.Success,
+                    Category = NotificationCategory.LeaveApproval,
+                    Priority = NotificationPriority.High,
+                    RelatedEntityId = leaveRequest.Id,
+                    RelatedEntityType = "LeaveRequest"
+                }, CancellationToken.None);
             }
 
             return new Response<bool>(true, "Leave request fully approved.", false);
@@ -164,39 +158,33 @@ public class LeaveApprovalService(
             UpdateLeaveRequestDto updateLeaveReqdto = _mapper.Map<UpdateLeaveRequestDto>(leaveRequest);
             await _leaveRequestService.UpdateLeaveRequestAsync(leaveRequest.Id, updateLeaveReqdto, 2);
 
-            // Send email notification to employee
-            try
+            // Send email notification to employee via background job
+            Response<EmployeeDto> employee = await _employeeService.GetEmployeeByIdAsync(leaveRequest.EmployeeId);
+            if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.Email))
             {
-                Response<EmployeeDto> employee = await _employeeService.GetEmployeeByIdAsync(leaveRequest.EmployeeId);
-                if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.Email))
-                {
-                    await _emailService.SendLeaveApprovalEmailAsync(
+                // Queue email to be sent asynchronously
+                _backgroundJobService.Enqueue<IEmailQueueJob>(
+                    job => job.SendLeaveApprovalEmailAsync(
                         employee.Data.Email,
                         $"{employee.Data.FirstName} {employee.Data.LastName}",
                         "Leave Request",
-                        "Rejected",
-                        CancellationToken.None);
-                }
-
-                // Create notification for employee
-                if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.ApplicationUserId))
-                {
-                    await _notificationService.CreateNotificationAsync(new CreateNotificationDto
-                    {
-                        RecipientUserId = employee.Data.ApplicationUserId,
-                        Title = "Leave Request Rejected",
-                        Message = $"Your leave request has been rejected. Please contact your manager for more details.",
-                        Type = NotificationType.Error,
-                        Category = NotificationCategory.LeaveApproval,
-                        Priority = NotificationPriority.High,
-                        RelatedEntityId = leaveRequest.Id,
-                        RelatedEntityType = "LeaveRequest"
-                    }, CancellationToken.None);
-                }
+                        "Rejected"));
             }
-            catch (Exception emailEx)
+
+            // Create notification for employee
+            if (!employee.HasError && !string.IsNullOrEmpty(employee.Data.ApplicationUserId))
             {
-                Console.WriteLine($"Failed to send leave rejection email: {emailEx.Message}");
+                await _notificationService.CreateNotificationAsync(new CreateNotificationDto
+                {
+                    RecipientUserId = employee.Data.ApplicationUserId,
+                    Title = "Leave Request Rejected",
+                    Message = $"Your leave request has been rejected. Please contact your manager for more details.",
+                    Type = NotificationType.Error,
+                    Category = NotificationCategory.LeaveApproval,
+                    Priority = NotificationPriority.High,
+                    RelatedEntityId = leaveRequest.Id,
+                    RelatedEntityType = "LeaveRequest"
+                }, CancellationToken.None);
             }
 
             return new Response<bool>(true, "Leave request rejected successfully.", false);

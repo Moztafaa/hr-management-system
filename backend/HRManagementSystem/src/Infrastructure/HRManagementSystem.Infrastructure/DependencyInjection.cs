@@ -131,8 +131,11 @@ public static class DependencyInjection
         // Register Background Job Service
         services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 
-        // Register Attendance Reminder Job
+        // Register Background Jobs
         services.AddScoped<IAttendanceReminderJob, AttendanceReminderJob>();
+        services.AddScoped<IEmailQueueJob, EmailQueueJob>();
+        services.AddScoped<IPayslipGenerationJob, PayslipGenerationJob>();
+        services.AddScoped<ILeaveBalanceResetJob, LeaveBalanceResetJob>();
 
         return services;
     }
