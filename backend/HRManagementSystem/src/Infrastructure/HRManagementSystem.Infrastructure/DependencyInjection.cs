@@ -1,7 +1,10 @@
+using Hangfire;
+using Hangfire.SqlServer;
 using HRManagementSystem.Domain.Interfaces.LeaveRepository;
 using HRManagementSystem.Infrastructure.Repositories.ILeaveRepository;
 using HRManagementSystem.Infrastructure.Common;
 using HRManagementSystem.Infrastructure.Services;
+using HRManagementSystem.Infrastructure.Jobs;
 
 namespace HRManagementSystem.Infrastructure;
 
@@ -100,6 +103,36 @@ public static class DependencyInjection
 
         // Register Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        // Configure Hangfire with SQL Server storage
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+            {
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.Zero,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true,
+                PrepareSchemaIfNecessary = true,
+                SchemaName = "Hangfire"
+            }));
+
+        // Add Hangfire server for processing jobs
+        services.AddHangfireServer(options =>
+        {
+            options.WorkerCount = Environment.ProcessorCount * 2;
+            options.Queues = new[] { "critical", "default", "low" };
+        });
+
+        // Register Background Job Service
+        services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+
+        // Register Attendance Reminder Job
+        services.AddScoped<IAttendanceReminderJob, AttendanceReminderJob>();
 
         return services;
     }

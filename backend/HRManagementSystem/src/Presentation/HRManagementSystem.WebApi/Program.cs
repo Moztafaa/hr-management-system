@@ -1,4 +1,6 @@
 // using FaceRecognitionDotNet; // Disabled - requires native Dlib libraries for Linux
+using Hangfire;
+using HRManagementSystem.Application.Interfaces;
 using HRManagementSystem.Application.Services;
 using HRManagementSystem.WebApi.Middleware;
 
@@ -69,6 +71,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Configure Hangfire Dashboard
+// In production, you should add authorization filter
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    DashboardTitle = "HR Management System - Background Jobs",
+    // For development, allow anonymous access
+    // In production, use: Authorization = new[] { new HangfireAuthorizationFilter() }
+    IsReadOnlyFunc = (context) => false
+});
+
 app.UseCors("AllowAngular");
 
 app.UseHttpsRedirection();
@@ -77,4 +89,46 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+// Register recurring background jobs
+RegisterRecurringJobs();
+
 await app.RunAsync();
+
+/// <summary>
+/// Registers all recurring background jobs for the HR Management System.
+/// </summary>
+static void RegisterRecurringJobs()
+{
+    // Daily check-in reminder at 8:30 AM (Monday to Friday)
+    // Cron: "30 8 * * 1-5" = At 08:30, Monday through Friday
+    RecurringJob.AddOrUpdate<IAttendanceReminderJob>(
+        recurringJobId: "daily-checkin-reminder",
+        methodCall: job => job.SendCheckInRemindersAsync(),
+        cronExpression: "30 8 * * 1-5",
+        options: new RecurringJobOptions
+        {
+            TimeZone = TimeZoneInfo.Local
+        });
+
+    // Daily check-out reminder at 5:30 PM (Monday to Friday)
+    // Cron: "30 17 * * 1-5" = At 17:30, Monday through Friday
+    RecurringJob.AddOrUpdate<IAttendanceReminderJob>(
+        recurringJobId: "daily-checkout-reminder",
+        methodCall: job => job.SendCheckOutRemindersAsync(),
+        cronExpression: "30 17 * * 1-5",
+        options: new RecurringJobOptions
+        {
+            TimeZone = TimeZoneInfo.Local
+        });
+
+    // Absent employees summary email at 10:00 AM (Monday to Friday)
+    // Cron: "0 10 * * 1-5" = At 10:00, Monday through Friday
+    RecurringJob.AddOrUpdate<IAttendanceReminderJob>(
+        recurringJobId: "absent-employees-summary",
+        methodCall: job => job.SendAbsentEmployeesSummaryAsync(),
+        cronExpression: "0 10 * * 1-5",
+        options: new RecurringJobOptions
+        {
+            TimeZone = TimeZoneInfo.Local
+        });
+}

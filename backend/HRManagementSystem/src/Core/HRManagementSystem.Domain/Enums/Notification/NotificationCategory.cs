@@ -8,5 +8,8 @@ public enum NotificationCategory
     EmployeeRegistration,
     Interview,
     Payroll,
-    System
+    System,
+    AttendanceReminder,
+    Training,
+    Performance
 }
