@@ -9,7 +9,7 @@
     </div>
 
     <!-- Search and Filter -->
-    <div class="career-filters">
+    <div class="career-filters glass-card">
       <div class="search-wrapper">
         <i class="eva eva-search-outline"></i>
         <input
@@ -54,7 +54,7 @@
 
     <!-- Error State -->
     @if (error()) {
-    <div class="error-state">
+    <div class="error-state glass-card">
       <i class="eva eva-alert-circle-outline"></i>
       <p>{{ error() }}</p>
       <button class="btn btn-primary" (click)="loadJobs()">
@@ -68,7 +68,7 @@
     @if (!isLoading() && !error()) { @if (filteredJobs().length > 0) {
     <div class="jobs-grid">
       @for (job of filteredJobs(); track job.id) {
-      <article class="job-card">
+      <article class="job-card glass-card">
         <div class="job-header">
           <div class="job-info">
             <h3 class="job-title">{{ job.title }}</h3>
@@ -129,7 +129,7 @@
       <p>Showing {{ filteredJobs().length }} of {{ jobs().length }} positions</p>
     </div>
     } @else {
-    <div class="empty-state">
+    <div class="empty-state glass-card">
       <div class="empty-icon">
         <i class="eva eva-briefcase-outline"></i>
       </div>

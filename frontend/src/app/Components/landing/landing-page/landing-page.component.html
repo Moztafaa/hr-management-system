@@ -4,48 +4,58 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-background">
-      <div class="hero-gradient"></div>
-      <div class="hero-pattern"></div>
+      <div class="hero-blob blob-1"></div>
+      <div class="hero-blob blob-2"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-overlay"></div>
     </div>
     <div class="container">
       <div class="hero-content">
         <div class="hero-badge">
-          <i class="eva eva-flash-outline"></i>
-          <span>Modern HR Solutions</span>
+          <span class="badge-icon"><i class="eva eva-flash-outline"></i></span>
+          <span class="badge-text">The Future of HR Management</span>
         </div>
         <h1 class="hero-title">
           Streamline Your
-          <span class="text-gradient">Human Resources</span>
-          Management
+          <span class="text-gradient">Workforce</span>
+          <br />
+          Unlock Potential
         </h1>
         <p class="hero-subtitle">
-          A comprehensive platform for managing employees, payroll, recruitment, and performance.
-          Empower your HR team with powerful tools designed for the modern workplace.
+          Experience the next generation of HR tools. From recruitment to payroll,
+          empower your team with a platform designed for the modern workplace.
         </p>
         <div class="hero-actions">
-          <button class="btn btn-primary btn-lg" (click)="openLoginModal()">
-            <i class="eva eva-log-in-outline"></i>
-            <span>Sign In</span>
+          <button class="btn btn-primary btn-lg glow-effect" (click)="openLoginModal()">
+            <span class="btn-content">
+              <i class="eva eva-log-in-outline"></i>
+              <span>Get Started</span>
+            </span>
           </button>
-          <button class="btn btn-outline-light btn-lg" (click)="scrollToCareers()">
-            <i class="eva eva-briefcase-outline"></i>
-            <span>View Careers</span>
+          <button class="btn btn-glass btn-lg" (click)="scrollToCareers()">
+            <span class="btn-content">
+              <i class="eva eva-briefcase-outline"></i>
+              <span>Explore Careers</span>
+            </span>
           </button>
         </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-value">500+</span>
-            <span class="stat-label">Employees Managed</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-value">50+</span>
-            <span class="stat-label">Departments</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-value">99%</span>
-            <span class="stat-label">Satisfaction Rate</span>
+
+        <div class="hero-stats-container">
+          <div class="hero-stats glass-card">
+            <div class="stat-item">
+              <span class="stat-value counter">500+</span>
+              <span class="stat-label">Companies</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-value counter">10k+</span>
+              <span class="stat-label">Employees</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-value">99%</span>
+              <span class="stat-label">Satisfaction</span>
+            </div>
           </div>
         </div>
       </div>
@@ -57,20 +67,24 @@
     <div class="container">
       <div class="section-header">
         <span class="section-badge">Features</span>
-        <h2 class="section-title">Everything You Need to Manage HR</h2>
+        <h2 class="section-title">Everything You Need</h2>
         <p class="section-subtitle">
-          Powerful tools to handle every aspect of human resource management in one unified
-          platform.
+          A complete suite of powerful tools to manage your entire human resource lifecycle.
         </p>
       </div>
       <div class="features-grid">
         @for (feature of features; track feature.title) {
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i [class]="feature.icon"></i>
+        <div class="feature-card glass-card">
+          <div class="feature-icon-wrapper">
+            <div class="feature-icon">
+              <i [class]="feature.icon"></i>
+            </div>
           </div>
-          <h3 class="feature-title">{{ feature.title }}</h3>
-          <p class="feature-description">{{ feature.description }}</p>
+          <div class="feature-content">
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-description">{{ feature.description }}</p>
+          </div>
+          <div class="feature-glow"></div>
         </div>
         }
       </div>
@@ -81,50 +95,45 @@
   <section class="how-it-works-section">
     <div class="container">
       <div class="section-header">
-        <span class="section-badge">How It Works</span>
-        <h2 class="section-title">Simple Steps to Get Started</h2>
+        <span class="section-badge">Workflow</span>
+        <h2 class="section-title">Seamless Integration</h2>
         <p class="section-subtitle">
-          Whether you're an HR professional or a job seeker, getting started is easy.
+          Getting started is effortless. Our platform adapts to your needs.
         </p>
       </div>
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h3>For HR & Employees</h3>
-            <p>
-              Sign in with your company credentials to access the HR dashboard or employee
-              self-service portal.
-            </p>
-            <button class="btn btn-sm btn-primary" (click)="openLoginModal()">Sign In Now</button>
+      <div class="steps-container">
+        <div class="steps-line"></div>
+        <div class="steps-grid">
+          <div class="step-card glass-card">
+            <div class="step-marker">01</div>
+            <div class="step-content">
+              <h3>Connect</h3>
+              <p>
+                Sign in securely to access your personalized dashboard.
+              </p>
+              <button class="btn-link" (click)="openLoginModal()">Login Now <i class="eva eva-arrow-forward-outline"></i></button>
+            </div>
           </div>
-        </div>
-        <div class="step-connector">
-          <i class="eva eva-arrow-forward-outline"></i>
-        </div>
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h3>For Job Seekers</h3>
-            <p>
-              Browse open positions in our careers section and submit your application directly.
-            </p>
-            <button class="btn btn-sm btn-outline-primary" (click)="scrollToCareers()">
-              View Open Positions
-            </button>
+
+          <div class="step-card glass-card">
+            <div class="step-marker">02</div>
+            <div class="step-content">
+              <h3>Discover</h3>
+              <p>
+                Browse opportunities and find your perfect role.
+              </p>
+              <button class="btn-link" (click)="scrollToCareers()">View Jobs <i class="eva eva-arrow-forward-outline"></i></button>
+            </div>
           </div>
-        </div>
-        <div class="step-connector">
-          <i class="eva eva-arrow-forward-outline"></i>
-        </div>
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h3>Track & Manage</h3>
-            <p>
-              Monitor applications, manage leave requests, view payslips, and more from your
-              personalized dashboard.
-            </p>
+
+          <div class="step-card glass-card">
+            <div class="step-marker">03</div>
+            <div class="step-content">
+              <h3>Manage</h3>
+              <p>
+                Track performance, leave, and payroll in one place.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -136,21 +145,24 @@
 
   <!-- CTA Section -->
   <section class="cta-section">
+    <div class="cta-background">
+      <div class="cta-blob"></div>
+    </div>
     <div class="container">
-      <div class="cta-content">
-        <h2>Ready to Transform Your HR Operations?</h2>
-        <p>
-          Join hundreds of companies already using our platform to streamline their human resources.
-        </p>
-        <div class="cta-actions">
-          <button class="btn btn-light btn-lg" (click)="openLoginModal()">
-            <i class="eva eva-log-in-outline"></i>
-            Get Started
-          </button>
-          <a href="mailto:contact@hrmsystem.com" class="btn btn-outline-light btn-lg">
-            <i class="eva eva-email-outline"></i>
-            Contact Us
-          </a>
+      <div class="cta-card glass-card">
+        <div class="cta-content">
+          <h2>Ready to Elevate Your HR?</h2>
+          <p>
+            Join the future of workforce management today.
+          </p>
+          <div class="cta-actions">
+            <button class="btn btn-primary btn-lg glow-effect" (click)="openLoginModal()">
+              <span class="btn-content">
+                <i class="eva eva-flash-outline"></i>
+                Get Started Now
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
