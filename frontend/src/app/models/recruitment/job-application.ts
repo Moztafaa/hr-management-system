@@ -88,11 +88,13 @@ export const ApplicationStatusColors: Record<string, string> = {
 };
 
 export const ApplicationSources = [
+  'CompanyWebsite',
   'LinkedIn',
-  'Indeed',
-  'Company Website',
+  'JobBoard',
   'Referral',
-  'Job Fair',
-  'Recruitment Agency',
+  'DirectApproach',
+  'Recruiter',
+  'SocialMedia',
+  'CareerFair',
   'Other',
 ];

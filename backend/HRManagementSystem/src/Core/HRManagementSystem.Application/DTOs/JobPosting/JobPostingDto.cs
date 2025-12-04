@@ -4,6 +4,7 @@ namespace HRManagementSystem.Application.DTOs.JobPosting;
 
 public class JobPostingDto
 {
+    public int Id { get; set; }
     [Required]
     [StringLength(200, MinimumLength = 5)]
     public required string Title { get; set; }

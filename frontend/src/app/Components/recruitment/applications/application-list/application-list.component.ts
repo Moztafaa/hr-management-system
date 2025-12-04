@@ -182,7 +182,7 @@ export class ApplicationListComponent implements OnInit {
 
   // Create modal methods
   openCreateModal(): void {
-    this.applicationForm.reset({ source: 'Company Website' });
+    this.applicationForm.reset({ source: 'CompanyWebsite' });
     this.useExistingCandidate = true;
     this.updateCandidateValidation();
     this.showCreateModal = true;

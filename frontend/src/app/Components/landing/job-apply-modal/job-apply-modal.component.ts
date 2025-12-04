@@ -50,7 +50,7 @@ export class JobApplyModalComponent {
 
   // Application Info
   applicationInfo = {
-    source: 'Company Website',
+    source: 'CompanyWebsite',
     coverLetter: '',
     expectedSalary: undefined as number | undefined,
   };
@@ -98,9 +98,25 @@ export class JobApplyModalComponent {
     this.isLoading.set(true);
     this.error.set(null);
 
+    // Sanitize candidate info - convert empty strings to undefined
+    const sanitizedCandidateInfo = { ...this.candidateInfo };
+    if (!sanitizedCandidateInfo.phone?.trim()) sanitizedCandidateInfo.phone = undefined;
+    if (!sanitizedCandidateInfo.linkedInUrl?.trim()) sanitizedCandidateInfo.linkedInUrl = undefined;
+    if (!sanitizedCandidateInfo.portfolioUrl?.trim())
+      sanitizedCandidateInfo.portfolioUrl = undefined;
+    if (!sanitizedCandidateInfo.resumeUrl?.trim()) sanitizedCandidateInfo.resumeUrl = undefined;
+    if (!sanitizedCandidateInfo.currentCompany?.trim())
+      sanitizedCandidateInfo.currentCompany = undefined;
+    if (!sanitizedCandidateInfo.currentJobTitle?.trim())
+      sanitizedCandidateInfo.currentJobTitle = undefined;
+    if (!sanitizedCandidateInfo.skills?.trim()) sanitizedCandidateInfo.skills = undefined;
+    if (!sanitizedCandidateInfo.education?.trim()) sanitizedCandidateInfo.education = undefined;
+    if (!sanitizedCandidateInfo.preferredWorkLocation?.trim())
+      sanitizedCandidateInfo.preferredWorkLocation = undefined;
+
     const application: CreateJobApplicationDto = {
       jobPostingId: this.job.id,
-      candidateInfo: this.candidateInfo,
+      candidateInfo: sanitizedCandidateInfo,
       source: this.applicationInfo.source,
       coverLetter: this.applicationInfo.coverLetter || undefined,
       expectedSalary: this.applicationInfo.expectedSalary,
