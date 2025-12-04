@@ -1,0 +1,153 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2 class="mb-0">
+        <i class="eva eva-message-circle-outline"></i> Feedback
+      </h2>
+    </div>
+    <div class="col-md-6 text-end">
+      <button
+        class="btn btn-primary"
+        (click)="toggleCreateForm()"
+      >
+        <i class="eva eva-plus-circle-outline"></i> Submit Feedback
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="error">
+    {{ error }}
+    <button
+      type="button"
+      class="btn-close"
+      (click)="error = null"
+    ></button>
+  </div>
+
+  <!-- Create Feedback Form -->
+  <div class="card mb-4" *ngIf="showCreateForm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Submit Feedback</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="addFeedback()">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="reviewSelect" class="form-label">
+                Performance Review <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="reviewSelect"
+                [(ngModel)]="createForm.performanceReviewId"
+                name="performanceReviewId"
+                (change)="loadFeedbacks(createForm.performanceReviewId)"
+                required
+              >
+                <option value="">Select a review</option>
+                <option
+                  *ngFor="let review of reviews"
+                  [value]="review.id"
+                >
+                  Review {{ review.id }} - Employee {{ review.employeeId }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="feedbackType" class="form-label">
+                Feedback Type <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="feedbackType"
+                [(ngModel)]="createForm.type"
+                name="type"
+                required
+              >
+                <option *ngFor="let type of feedbackTypes" [value]="type">
+                  {{ type }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="feedbackComments" class="form-label">
+            Comments <span class="text-danger">*</span>
+          </label>
+          <textarea
+            class="form-control"
+            id="feedbackComments"
+            [(ngModel)]="createForm.comments"
+            name="comments"
+            rows="4"
+            placeholder="Share your feedback here..."
+            required
+          ></textarea>
+          <small class="form-text text-muted">
+            {{ createForm.comments.length }}/500 characters
+          </small>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="eva eva-paper-plane-outline"></i> Submit
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancel()"
+          >
+            <i class="eva eva-close-circle-outline"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Feedbacks List -->
+  <div class="card" *ngIf="feedbacks.length > 0">
+    <div class="card-header">
+      <h5 class="mb-0">Feedback Received ({{ feedbacks.length }})</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>From Employee</th>
+            <th>Type</th>
+            <th>Comments</th>
+            <th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let feedback of feedbacks">
+            <td class="fw-bold">{{ feedback.fromEmployeeId }}</td>
+            <td>
+              <span [ngClass]="'badge bg-' + getTypeColor(feedback.type)">
+                {{ feedback.type }}
+              </span>
+            </td>
+            <td>{{ feedback.comments }}</td>
+            <td class="text-muted small">
+              {{ feedback.submittedAt | date: 'short' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div
+    class="alert alert-info text-center mt-4"
+    *ngIf="feedbacks.length === 0 && !showCreateForm"
+  >
+    <p class="mb-0">No feedback yet. Submit feedback to get started.</p>
+  </div>
+</div>

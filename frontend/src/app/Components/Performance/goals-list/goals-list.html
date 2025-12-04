@@ -1,0 +1,117 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Goals Management</h2>
+    <button class="btn btn-primary" (click)="toggleCreateForm()">
+      <i class="eva eva-plus-outline"></i> New Goal
+    </button>
+  </div>
+
+  <div class="card shadow-sm" *ngIf="showCreateForm">
+    <div class="card-body">
+      <h5 class="mb-3">Create New Goal</h5>
+      <div *ngIf="error && showCreateForm" class="alert alert-danger">{{ error }}</div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Performance Review <span class="text-danger">*</span></label>
+          <select class="form-control" [(ngModel)]="createForm.reviewId">
+            <option [value]="0">-- Select Review --</option>
+            <option *ngFor="let review of reviews" [value]="review.id">Review #{{ review.id }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Title <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="createForm.title" placeholder="Goal title" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" [(ngModel)]="createForm.description" rows="3" placeholder="Goal description"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Due Date <span class="text-danger">*</span></label>
+        <input type="date" class="form-control" [(ngModel)]="createForm.dueDate" />
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" (click)="createGoal()">Create Goal</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div *ngIf="!isLoading && !error" class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Target Date</th>
+              <th>Progress</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let goal of goals">
+              <td>{{ goal.title }}</td>
+              <td>{{ goal.description || '—' }}</td>
+              <td>{{ goal.dueDate | date: 'short' }}</td>
+              <td>
+                <div class="progress" style="height: 20px">
+                  <div class="progress-bar" [style.width.%]="goal.progressPercent" role="progressbar">
+                    {{ goal.progressPercent }}%
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="getStatusClass(goal.status)">
+                  {{ getStatusBadge(goal.status) }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-warning" (click)="toggleEditForm(goal)">
+                  <i class="eva eva-edit-outline"></i> Edit
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="editingGoalId !== null">
+              <td colspan="6">
+                <div class="card card-body p-3 mt-2">
+                  <h6 class="mb-3">Update Goal Progress</h6>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Progress (%)</label>
+                      <input type="number" class="form-control" [(ngModel)]="updateForm.progressPercent" min="0" max="100" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Status</label>
+                      <select class="form-control" [(ngModel)]="updateForm.status">
+                        <option *ngFor="let status of statusOptions" [value]="status">
+                          {{ getStatusBadge(status) }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-end gap-2">
+                      <button class="btn btn-success" (click)="updateGoalProgress(editingGoalId!)">
+                        <i class="eva eva-checkmark-outline"></i> Update
+                      </button>
+                      <button class="btn btn-secondary" (click)="cancelEdit()">
+                        <i class="eva eva-close-outline"></i> Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

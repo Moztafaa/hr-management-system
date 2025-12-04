@@ -31,4 +31,10 @@ export class Employee {
   deleteEmployee(id: number): Observable<ApiResponse<boolean>> {
     return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/${id}`);
   }
+
+  getEmployeeId(): number {
+    const employeeId = localStorage.getItem('userId');
+    if (!employeeId) return 0;
+    return parseInt(employeeId);
+  }
 }

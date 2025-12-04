@@ -1,0 +1,15 @@
+.container {
+  max-width: 1200px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.badge {
+  font-weight: bold;
+}

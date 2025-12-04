@@ -1,0 +1,99 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Review Cycles</h2>
+    <button class="btn btn-primary" (click)="toggleCreateForm()">
+      <i class="eva eva-plus-outline"></i> New Cycle
+    </button>
+  </div>
+
+  <div class="card shadow-sm" *ngIf="showCreateForm">
+    <div class="card-body">
+      <h5 class="mb-3">Create New Review Cycle</h5>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Cycle Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="createForm.name" placeholder="e.g., 2024 Annual Review" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Frequency <span class="text-danger">*</span></label>
+          <select class="form-control" [(ngModel)]="createForm.frequency">
+            <option value="Annual">Annual</option>
+            <option value="Quarterly">Quarterly</option>
+            <option value="Monthly">Monthly</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Start Date <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" [(ngModel)]="createForm.startDate" />
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label class="form-label">End Date <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" [(ngModel)]="createForm.endDate" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Rating Scale <span class="text-danger">*</span></label>
+          <select class="form-control" [(ngModel)]="createForm.ratingScale">
+            <option value="OneToFive">1 to 5</option>
+            <option value="Percentile">Percentile</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" [(ngModel)]="createForm.description" rows="3"></textarea>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" (click)="createCycle()">Create Cycle</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div *ngIf="isLoading" class="p-4 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="error && !showCreateForm" class="alert alert-danger m-3">{{ error }}</div>
+
+      <div *ngIf="!isLoading && !error" class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Frequency</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Rating Scale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cycle of cycles">
+              <td><strong>{{ cycle.name }}</strong></td>
+              <td>{{ cycle.frequency }}</td>
+              <td>{{ cycle.startDate | date: 'short' }}</td>
+              <td>{{ cycle.endDate | date: 'short' }}</td>
+              <td>{{ cycle.ratingScale }}</td>
+            </tr>
+            <tr *ngIf="cycles.length === 0">
+              <td colspan="5" class="text-center py-5 text-muted">No review cycles found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

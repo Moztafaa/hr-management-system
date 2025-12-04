@@ -25,19 +25,25 @@
                             <th>TotalDays</th>
                             <th>ReviewedBy</th>
                             <th>ReviewedAt</th>
+                                                    <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr *ngFor="let leave of leaveRequests">
-                            <td>{{ leave.leaveTypeName }}</td>
-                            <td>{{ leave.startDate }}</td>
-                            <td>{{ leave.endDate }}</td>
-                            <td>{{ leave.totalDays }}</td>
-                            <td>{{ leave.reviewedBy }}</td>
-                            <td>{{ leave.reviewedAt }}</td>
+                                        <tbody>
+                                                <tr *ngFor="let leave of leaveRequests">
+                                                        <td>{{ leave.leaveTypeName }}</td>
+                                                        <td>{{ leave.startDate }}</td>
+                                                        <td>{{ leave.endDate }}</td>
+                                                        <td>{{ leave.totalDays }}</td>
+                                                        <td>{{ leave.reviewedBy }}</td>
+                                                        <td>{{ leave.reviewedAt }}</td>
+                                                        <td>
+                                                            <span class="badge" [ngClass]="getStatusClass(leave.status)">
+                                                                {{ getStatusBadge(leave.status) }}
+                                                            </span>
+                                                        </td>
                         </tr>
                         <tr *ngIf="leaveRequests.length === 0">
-                            <td colspan="6" class="text-center py-5 text-muted">No leaves found</td>
+                            <td colspan="7" class="text-center py-5 text-muted">No leaves found</td>
                         </tr>
                     </tbody>
                 </table>

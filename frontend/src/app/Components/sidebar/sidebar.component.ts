@@ -52,6 +52,18 @@ export class SidebarComponent {
       ],
     },
     {
+      title: 'Performance Management',
+      icon: 'trending-up-outline',
+      children: [
+        { title: 'Review Cycles', link: '/pages/performance/review-cycles' },
+        { title: 'Performance Reviews', link: '/pages/performance/reviews' },
+        { title: 'Goals', link: '/pages/performance/goals' },
+        { title: 'KPIs', link: '/pages/performance/kpis' },
+        { title: 'Competencies', link: '/pages/performance/competencies' },
+        { title: 'Feedback', link: '/pages/performance/feedback' },
+      ],
+    },
+    {
       title: 'Payroll',
       icon: 'credit-card-outline',
       children: [
@@ -77,6 +89,7 @@ export class SidebarComponent {
       icon: 'person-outline',
       children: [
         { title: 'My Profile', link: '/pages/ess/profile' },
+        { title: 'Request Leave', link: '/pages/ess/leave-request/submit' },
         { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
         { title: 'My Payslips', link: '/pages/ess/payslips' },
         { title: 'My Dashboard', link: '/pages/ess/dashboard' },

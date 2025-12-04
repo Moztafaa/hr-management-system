@@ -1,0 +1,74 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>KPIs Management</h2>
+    <button class="btn btn-primary" (click)="toggleCreateForm()">
+      <i class="eva eva-plus-outline"></i> New KPI
+    </button>
+  </div>
+
+  <div class="card shadow-sm" *ngIf="showCreateForm">
+    <div class="card-body">
+      <h5 class="mb-3">Create New KPI</h5>
+      <div *ngIf="error && showCreateForm" class="alert alert-danger">{{ error }}</div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">KPI Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="createForm.name" placeholder="KPI name" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Target <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" [(ngModel)]="createForm.target" placeholder="Target value" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Code</label>
+          <input type="text" class="form-control" [(ngModel)]="createForm.code" placeholder="KPI code" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Unit</label>
+          <input type="text" class="form-control" [(ngModel)]="createForm.unit" placeholder="Unit (e.g., %, units)" />
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" (click)="createKpi()">Create KPI</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Unit</th>
+              <th>Target</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let kpi of kpis">
+              <td><strong>{{ kpi.code || '—' }}</strong></td>
+              <td>{{ kpi.name }}</td>
+              <td>{{ kpi.unit || '—' }}</td>
+              <td>{{ kpi.target }}</td>
+              <td>{{ kpi.description || '—' }}</td>
+            </tr>
+            <tr *ngIf="kpis.length === 0">
+              <td colspan="5" class="text-center py-5 text-muted">No KPIs found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

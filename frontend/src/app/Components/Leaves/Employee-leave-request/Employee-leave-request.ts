@@ -70,4 +70,22 @@ export class EmployeeLeaveRequest implements OnInit {
       },
     });
   }
+
+  getStatusBadge(status: number): string {
+    const statusMap: { [key: number]: string } = {
+      0: 'Pending',
+      1: 'Approved',
+      2: 'Rejected',
+    };
+    return statusMap[status] || 'Unknown';
+  }
+
+  getStatusClass(status: number): string {
+    const classMap: { [key: number]: string } = {
+      0: 'bg-warning',
+      1: 'bg-success',
+      2: 'bg-danger',
+    };
+    return classMap[status] || 'bg-secondary';
+  }
 }

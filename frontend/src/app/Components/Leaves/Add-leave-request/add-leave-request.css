@@ -1,0 +1,47 @@
+:host ::ng-deep .card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .form-control {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-basic) !important;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+:host ::ng-deep .form-control:focus {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: none;
+}
+
+.card-body .form-label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+:host ::ng-deep .form-group label {
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .text-danger {
+  color: var(--danger-color) !important;
+}
+
+:host ::ng-deep .btn {
+  font-weight: 600;
+}
+
+h2 {
+  color: var(--text-color);
+}
+
+:host ::ng-deep .alert {
+  background-color: var(--alert-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-basic) !important;
+}

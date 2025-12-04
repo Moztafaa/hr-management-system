@@ -1,0 +1,58 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Leave Approvals</h2>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div *ngIf="isLoading" class="p-4 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger m-3">{{ error }}</div>
+
+      <div *ngIf="!isLoading && !error" class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Leave Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Days</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let l of approvals">
+              <td>{{ l.employeeName }}</td>
+              <td>{{ l.leaveTypeName }}</td>
+              <td>{{ l.startDate | date:'short' }}</td>
+              <td>{{ l.endDate | date:'short' }}</td>
+              <td>{{ l.totalDays }}</td>
+              <td>
+                <span class="badge" [ngClass]="getStatusClass(l.status)">
+                  {{ getStatusBadge(l.status) }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-success me-1" (click)="approve(l.id)" [disabled]="l.status !== 0">
+                  <i class="eva eva-checkmark-outline"></i> Approve
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="reject(l.id)" [disabled]="l.status !== 0">
+                  <i class="eva eva-close-outline"></i> Reject
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="approvals.length === 0">
+              <td colspan="7" class="text-center py-5 text-muted">No pending approvals</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

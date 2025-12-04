@@ -128,6 +128,8 @@ public class AccountService(
             await _unitOfWork.RollbackTransactionAsync();
             return new Response<RegisterEmployeeResponseDto>(default!, $"An error occurred while registering the employee: {ex.Message}", true);
         }
+    
+
     }
 
     public async Task<Response<AuthResponseDto>> LoginAsync(LoginDto loginDto)

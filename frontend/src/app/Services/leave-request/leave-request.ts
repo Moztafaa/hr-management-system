@@ -18,4 +18,19 @@ export class LeaveRequest {
   getLeaveRequests(): Observable<ApiResponse<LeaveRequestModel[]>> {
     return this.http.get<ApiResponse<LeaveRequestModel[]>>(`${this.apiUrl}`);
   }
+  // Submit a leave request as an employee (uses ESS endpoint)
+  submitLeaveRequest(payload: {
+  employeeId: number;
+  leaveTypeId: number;
+  startDate: string;
+  endDate: string;
+}) {
+  return this.http.post<ApiResponse<number>>(`${this.apiUrl}`, payload);
+}
+
+
+  // Get leave requests assigned to a reviewer/manager
+  getLeaveRequestsByReviewer(id: number): Observable<ApiResponse<LeaveRequestModel[]>> {
+    return this.http.get<ApiResponse<LeaveRequestModel[]>>(`${this.apiUrl}/manager/${id}`);
+  }
 }

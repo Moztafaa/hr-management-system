@@ -1,0 +1,257 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2 class="mb-0">
+        <i class="eva eva-award-outline"></i> Competencies
+      </h2>
+    </div>
+    <div class="col-md-6 text-end">
+      <button
+        class="btn btn-primary me-2"
+        (click)="toggleCreateForm()"
+        [disabled]="showRateForm"
+      >
+        <i class="eva eva-plus-circle-outline"></i> Create Competency
+      </button>
+      <button
+        class="btn btn-success"
+        (click)="toggleRateForm()"
+        [disabled]="showCreateForm"
+      >
+        <i class="eva eva-star-outline"></i> Rate Competency
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="error">
+    {{ error }}
+    <button
+      type="button"
+      class="btn-close"
+      (click)="error = null"
+    ></button>
+  </div>
+
+  <!-- Create Competency Form -->
+  <div class="card mb-4" *ngIf="showCreateForm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Create New Competency</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="createCompetency()">
+        <div class="mb-3">
+          <label for="competencyName" class="form-label">
+            Competency Name <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="competencyName"
+            [(ngModel)]="createForm.name"
+            name="competencyName"
+            placeholder="e.g., Leadership, Communication"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="competencyDesc" class="form-label">Description</label>
+          <textarea
+            class="form-control"
+            id="competencyDesc"
+            [(ngModel)]="createForm.description"
+            name="competencyDesc"
+            rows="3"
+            placeholder="Describe this competency"
+          ></textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="eva eva-checkmark-circle-outline"></i> Create
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancel()"
+          >
+            <i class="eva eva-close-circle-outline"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rate Competency Form -->
+  <div class="card mb-4" *ngIf="showRateForm">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">Rate Competency</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="rateCompetency()">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="reviewSelect" class="form-label">
+                Performance Review <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="reviewSelect"
+                [(ngModel)]="rateForm.performanceReviewId"
+                name="performanceReviewId"
+                required
+              >
+                <option value="">Select a review</option>
+                <option
+                  *ngFor="let review of reviews"
+                  [value]="review.id"
+                >
+                  Review {{ review.id }} - Employee {{ review.employeeId }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="competencySelect" class="form-label">
+                Competency <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="competencySelect"
+                [(ngModel)]="rateForm.competencyId"
+                name="competencyId"
+                required
+              >
+                <option value="">Select a competency</option>
+                <option
+                  *ngFor="let comp of competencies"
+                  [value]="comp.id"
+                >
+                  {{ comp.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="ratingInput" class="form-label">
+                Rating (1-5) <span class="text-danger">*</span>
+              </label>
+              <div class="d-flex align-items-center gap-3">
+                <input
+                  type="range"
+                  class="form-range"
+                  id="ratingInput"
+                  [(ngModel)]="rateForm.rating"
+                  name="rating"
+                  min="1"
+                  max="5"
+                  style="flex: 1"
+                />
+                <span class="badge bg-primary" style="font-size: 1rem; min-width: 50px">
+                  {{ getRatingStars(rateForm.rating) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Notes</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="rateForm.notes"
+                name="notes"
+                rows="2"
+                placeholder="Add any notes for this rating"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success">
+            <i class="eva eva-checkmark-circle-outline"></i> Rate
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancel()"
+          >
+            <i class="eva eva-close-circle-outline"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Competencies List -->
+  <div class="card mb-4" *ngIf="competencies.length > 0">
+    <div class="card-header">
+      <h5 class="mb-0">All Competencies ({{ competencies.length }})</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let comp of competencies">
+            <td class="fw-bold">{{ comp.id }}</td>
+            <td>{{ comp.name }}</td>
+            <td>{{ comp.description || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Employee Ratings List -->
+  <div class="card" *ngIf="employeeRatings.length > 0">
+    <div class="card-header">
+      <h5 class="mb-0">Your Competency Ratings ({{ employeeRatings.length }})</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Review</th>
+            <th>Competency</th>
+            <th>Rating</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rating of employeeRatings">
+            <td class="fw-bold">Review {{ rating.performanceReviewId }}</td>
+            <td>Competency {{ rating.competencyId }}</td>
+            <td>
+              <span class="badge" [ngClass]="'bg-' + (rating.rating >= 4 ? 'success' : rating.rating >= 3 ? 'warning' : 'danger')">
+                {{ getRatingStars(rating.rating) }}
+              </span>
+            </td>
+            <td>{{ rating.notes || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div
+    class="alert alert-info text-center mt-4"
+    *ngIf="competencies.length === 0 && employeeRatings.length === 0"
+  >
+    <p class="mb-0">No competencies yet. Create one to get started.</p>
+  </div>
+</div>
