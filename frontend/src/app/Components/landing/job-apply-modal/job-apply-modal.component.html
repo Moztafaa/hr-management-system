@@ -53,131 +53,250 @@
     </div>
     }
 
-    <!-- Step 1: Personal Information -->
+    <!-- Step 1: Candidate Mode Selection & Info -->
     @if (currentStep() === 1) {
-    <form class="form-content" (ngSubmit)="nextStep()">
-      <div class="form-grid">
+    <div class="form-content">
+      <!-- Candidate Mode Toggle -->
+      <div class="candidate-mode-toggle">
+        <button
+          type="button"
+          class="mode-btn"
+          [class.active]="candidateMode() === 'new'"
+          (click)="setCandidateMode('new')"
+        >
+          <i class="eva eva-person-add-outline"></i>
+          <span>New Candidate</span>
+        </button>
+        <button
+          type="button"
+          class="mode-btn"
+          [class.active]="candidateMode() === 'existing'"
+          (click)="setCandidateMode('existing')"
+        >
+          <i class="eva eva-person-done-outline"></i>
+          <span>Applied Before</span>
+        </button>
+      </div>
+
+      <!-- Existing Candidate Lookup -->
+      @if (candidateMode() === 'existing') {
+      <div class="existing-candidate-section">
         <div class="form-group">
-          <label class="form-label required">First Name</label>
+          <label class="form-label required">Your Email Address</label>
+          <div class="email-lookup-group">
+            <input
+              type="email"
+              class="form-control"
+              [ngModel]="existingCandidateEmail()"
+              (ngModelChange)="existingCandidateEmail.set($event)"
+              name="existingEmail"
+              placeholder="Enter the email you used previously"
+              (keydown.enter)="lookupCandidate(); $event.preventDefault()"
+            />
+            <button
+              type="button"
+              class="btn btn-primary lookup-btn"
+              (click)="lookupCandidate()"
+              [disabled]="isSearchingCandidate()"
+            >
+              @if (isSearchingCandidate()) {
+              <span class="spinner-border spinner-border-sm"></span>
+              } @else {
+              <i class="eva eva-search-outline"></i>
+              }
+            </button>
+          </div>
+          <span class="form-hint">Enter the email you used when you first applied</span>
+        </div>
+
+        <!-- Found Candidate Card -->
+        @if (existingCandidate()) {
+        <div class="candidate-found-card">
+          <div class="candidate-avatar">
+            <span
+              >{{ existingCandidate()!.firstName.charAt(0)
+              }}{{ existingCandidate()!.lastName.charAt(0) }}</span
+            >
+          </div>
+          <div class="candidate-info">
+            <h4>{{ existingCandidate()!.firstName }} {{ existingCandidate()!.lastName }}</h4>
+            <p>{{ existingCandidate()!.email }}</p>
+            @if (existingCandidate()!.currentJobTitle) {
+            <span class="candidate-role">{{ existingCandidate()!.currentJobTitle }}</span>
+            }
+          </div>
+          <div class="candidate-check">
+            <i class="eva eva-checkmark-circle-2"></i>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline-secondary" (click)="onCloseClick()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" (click)="proceedWithExistingCandidate()">
+            Continue
+            <i class="eva eva-arrow-forward-outline"></i>
+          </button>
+        </div>
+        } @else {
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline-secondary" (click)="onCloseClick()">
+            Cancel
+          </button>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- New Candidate Form -->
+      @if (candidateMode() === 'new') {
+      <form (ngSubmit)="nextStep()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label required">First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="candidateInfo.firstName"
+              name="firstName"
+              placeholder="Enter your first name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label required">Last Name</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="candidateInfo.lastName"
+              name="lastName"
+              placeholder="Enter your last name"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Email Address</label>
           <input
-            type="text"
+            type="email"
             class="form-control"
-            [(ngModel)]="candidateInfo.firstName"
-            name="firstName"
-            placeholder="Enter your first name"
+            [(ngModel)]="candidateInfo.email"
+            name="email"
+            placeholder="your.email@example.com"
             required
           />
         </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input
+              type="tel"
+              class="form-control"
+              [(ngModel)]="candidateInfo.phone"
+              name="phone"
+              placeholder="+1 (555) 000-0000"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Years of Experience</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="candidateInfo.yearsOfExperience"
+              name="yearsOfExperience"
+              placeholder="e.g., 5"
+              min="0"
+              max="50"
+            />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Current Company</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="candidateInfo.currentCompany"
+              name="currentCompany"
+              placeholder="Your current employer"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Current Job Title</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="candidateInfo.currentJobTitle"
+              name="currentJobTitle"
+              placeholder="Your current role"
+            />
+          </div>
+        </div>
+
         <div class="form-group">
-          <label class="form-label required">Last Name</label>
+          <label class="form-label">LinkedIn Profile</label>
           <input
-            type="text"
+            type="url"
             class="form-control"
-            [(ngModel)]="candidateInfo.lastName"
-            name="lastName"
-            placeholder="Enter your last name"
-            required
+            [(ngModel)]="candidateInfo.linkedInUrl"
+            name="linkedInUrl"
+            placeholder="https://linkedin.com/in/yourprofile"
           />
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label required">Email Address</label>
-        <input
-          type="email"
-          class="form-control"
-          [(ngModel)]="candidateInfo.email"
-          name="email"
-          placeholder="your.email@example.com"
-          required
-        />
-      </div>
-
-      <div class="form-grid">
         <div class="form-group">
-          <label class="form-label">Phone Number</label>
-          <input
-            type="tel"
+          <label class="form-label">Skills</label>
+          <textarea
             class="form-control"
-            [(ngModel)]="candidateInfo.phone"
-            name="phone"
-            placeholder="+1 (555) 000-0000"
-          />
+            [(ngModel)]="candidateInfo.skills"
+            name="skills"
+            rows="2"
+            placeholder="e.g., JavaScript, TypeScript, Angular, Node.js..."
+          ></textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label">Years of Experience</label>
-          <input
-            type="number"
-            class="form-control"
-            [(ngModel)]="candidateInfo.yearsOfExperience"
-            name="yearsOfExperience"
-            placeholder="e.g., 5"
-            min="0"
-            max="50"
-          />
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline-secondary" (click)="onCloseClick()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Continue
+            <i class="eva eva-arrow-forward-outline"></i>
+          </button>
         </div>
-      </div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Current Company</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="candidateInfo.currentCompany"
-            name="currentCompany"
-            placeholder="Your current employer"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Current Job Title</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="candidateInfo.currentJobTitle"
-            name="currentJobTitle"
-            placeholder="Your current role"
-          />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">LinkedIn Profile</label>
-        <input
-          type="url"
-          class="form-control"
-          [(ngModel)]="candidateInfo.linkedInUrl"
-          name="linkedInUrl"
-          placeholder="https://linkedin.com/in/yourprofile"
-        />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Skills</label>
-        <textarea
-          class="form-control"
-          [(ngModel)]="candidateInfo.skills"
-          name="skills"
-          rows="2"
-          placeholder="e.g., JavaScript, TypeScript, Angular, Node.js..."
-        ></textarea>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn btn-outline-secondary" (click)="onCloseClick()">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary">
-          Continue
-          <i class="eva eva-arrow-forward-outline"></i>
-        </button>
-      </div>
-    </form>
+      </form>
+      }
+    </div>
     }
 
     <!-- Step 2: Application Details -->
     @if (currentStep() === 2) {
     <form class="form-content" (ngSubmit)="submitApplication()">
+      <!-- Show candidate summary for existing candidates -->
+      @if (candidateMode() === 'existing' && existingCandidate()) {
+      <div class="existing-candidate-summary">
+        <div class="summary-label">Applying as:</div>
+        <div class="summary-card">
+          <div class="candidate-avatar small">
+            <span
+              >{{ existingCandidate()!.firstName.charAt(0)
+              }}{{ existingCandidate()!.lastName.charAt(0) }}</span
+            >
+          </div>
+          <div class="summary-info">
+            <span class="summary-name"
+              >{{ existingCandidate()!.firstName }} {{ existingCandidate()!.lastName }}</span
+            >
+            <span class="summary-email">{{ existingCandidate()!.email }}</span>
+          </div>
+        </div>
+      </div>
+      }
+
       <div class="form-group">
         <label class="form-label">How did you hear about us?</label>
         <select class="form-control form-select" [(ngModel)]="applicationInfo.source" name="source">
@@ -214,6 +333,8 @@
         <span class="form-hint">Optional but recommended</span>
       </div>
 
+      <!-- Only show resume URL for new candidates -->
+      @if (candidateMode() === 'new') {
       <div class="form-group">
         <label class="form-label">Resume URL</label>
         <input
@@ -237,6 +358,7 @@
           <span class="checkbox-label">I am willing to relocate if required</span>
         </label>
       </div>
+      }
 
       <div class="form-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">

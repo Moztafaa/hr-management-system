@@ -2,12 +2,13 @@ import { Component, EventEmitter, Input, Output, inject, signal } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { JobApplicationService } from '../../../Services/recruitment/job-application.service';
+import { CandidateService } from '../../../Services/recruitment/candidate.service';
 import { JobPosting } from '../../../models/recruitment/job-posting';
 import {
   CreateJobApplicationDto,
   ApplicationSources,
 } from '../../../models/recruitment/job-application';
-import { CreateCandidateDto } from '../../../models/recruitment/candidate';
+import { CreateCandidateDto, Candidate } from '../../../models/recruitment/candidate';
 
 @Component({
   selector: 'app-job-apply-modal',
@@ -22,11 +23,18 @@ export class JobApplyModalComponent {
   @Output() applicationSuccess = new EventEmitter<void>();
 
   private jobApplicationService = inject(JobApplicationService);
+  private candidateService = inject(CandidateService);
 
   currentStep = signal(1);
   isLoading = signal(false);
   error = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+
+  // Candidate mode: 'new' for new candidates, 'existing' for returning candidates
+  candidateMode = signal<'new' | 'existing'>('new');
+  existingCandidateEmail = signal('');
+  existingCandidate = signal<Candidate | null>(null);
+  isSearchingCandidate = signal(false);
 
   sources = ApplicationSources;
 
@@ -54,6 +62,54 @@ export class JobApplyModalComponent {
     coverLetter: '',
     expectedSalary: undefined as number | undefined,
   };
+
+  setCandidateMode(mode: 'new' | 'existing'): void {
+    this.candidateMode.set(mode);
+    this.error.set(null);
+    this.existingCandidate.set(null);
+    this.existingCandidateEmail.set('');
+  }
+
+  lookupCandidate(): void {
+    const email = this.existingCandidateEmail().trim();
+    if (!email) {
+      this.error.set('Please enter your email address');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      this.error.set('Please enter a valid email address');
+      return;
+    }
+
+    this.isSearchingCandidate.set(true);
+    this.error.set(null);
+
+    this.candidateService.getByEmail(email).subscribe({
+      next: (response) => {
+        this.isSearchingCandidate.set(false);
+        if (!response.hasError && response.data) {
+          this.existingCandidate.set(response.data);
+          this.error.set(null);
+        } else {
+          this.error.set('No candidate found with this email. Please apply as a new candidate.');
+          this.existingCandidate.set(null);
+        }
+      },
+      error: () => {
+        this.isSearchingCandidate.set(false);
+        this.error.set('No candidate found with this email. Please apply as a new candidate.');
+        this.existingCandidate.set(null);
+      },
+    });
+  }
+
+  proceedWithExistingCandidate(): void {
+    if (this.existingCandidate()) {
+      this.currentStep.set(2);
+    }
+  }
 
   nextStep(): void {
     if (this.currentStep() === 1 && this.validateStep1()) {
@@ -90,37 +146,58 @@ export class JobApplyModalComponent {
   }
 
   submitApplication(): void {
-    if (!this.validateStep1()) {
+    // For new candidates, validate step 1
+    if (this.candidateMode() === 'new' && !this.validateStep1()) {
       this.currentStep.set(1);
+      return;
+    }
+
+    // For existing candidates, ensure we have a candidate
+    if (this.candidateMode() === 'existing' && !this.existingCandidate()) {
+      this.error.set('Please look up your candidate profile first');
       return;
     }
 
     this.isLoading.set(true);
     this.error.set(null);
 
-    // Sanitize candidate info - convert empty strings to undefined
-    const sanitizedCandidateInfo = { ...this.candidateInfo };
-    if (!sanitizedCandidateInfo.phone?.trim()) sanitizedCandidateInfo.phone = undefined;
-    if (!sanitizedCandidateInfo.linkedInUrl?.trim()) sanitizedCandidateInfo.linkedInUrl = undefined;
-    if (!sanitizedCandidateInfo.portfolioUrl?.trim())
-      sanitizedCandidateInfo.portfolioUrl = undefined;
-    if (!sanitizedCandidateInfo.resumeUrl?.trim()) sanitizedCandidateInfo.resumeUrl = undefined;
-    if (!sanitizedCandidateInfo.currentCompany?.trim())
-      sanitizedCandidateInfo.currentCompany = undefined;
-    if (!sanitizedCandidateInfo.currentJobTitle?.trim())
-      sanitizedCandidateInfo.currentJobTitle = undefined;
-    if (!sanitizedCandidateInfo.skills?.trim()) sanitizedCandidateInfo.skills = undefined;
-    if (!sanitizedCandidateInfo.education?.trim()) sanitizedCandidateInfo.education = undefined;
-    if (!sanitizedCandidateInfo.preferredWorkLocation?.trim())
-      sanitizedCandidateInfo.preferredWorkLocation = undefined;
+    let application: CreateJobApplicationDto;
 
-    const application: CreateJobApplicationDto = {
-      jobPostingId: this.job.id,
-      candidateInfo: sanitizedCandidateInfo,
-      source: this.applicationInfo.source,
-      coverLetter: this.applicationInfo.coverLetter || undefined,
-      expectedSalary: this.applicationInfo.expectedSalary,
-    };
+    if (this.candidateMode() === 'existing' && this.existingCandidate()) {
+      // Use existing candidate ID
+      application = {
+        jobPostingId: this.job.id,
+        candidateId: this.existingCandidate()!.id,
+        source: this.applicationInfo.source,
+        coverLetter: this.applicationInfo.coverLetter || undefined,
+        expectedSalary: this.applicationInfo.expectedSalary,
+      };
+    } else {
+      // Sanitize candidate info - convert empty strings to undefined
+      const sanitizedCandidateInfo = { ...this.candidateInfo };
+      if (!sanitizedCandidateInfo.phone?.trim()) sanitizedCandidateInfo.phone = undefined;
+      if (!sanitizedCandidateInfo.linkedInUrl?.trim())
+        sanitizedCandidateInfo.linkedInUrl = undefined;
+      if (!sanitizedCandidateInfo.portfolioUrl?.trim())
+        sanitizedCandidateInfo.portfolioUrl = undefined;
+      if (!sanitizedCandidateInfo.resumeUrl?.trim()) sanitizedCandidateInfo.resumeUrl = undefined;
+      if (!sanitizedCandidateInfo.currentCompany?.trim())
+        sanitizedCandidateInfo.currentCompany = undefined;
+      if (!sanitizedCandidateInfo.currentJobTitle?.trim())
+        sanitizedCandidateInfo.currentJobTitle = undefined;
+      if (!sanitizedCandidateInfo.skills?.trim()) sanitizedCandidateInfo.skills = undefined;
+      if (!sanitizedCandidateInfo.education?.trim()) sanitizedCandidateInfo.education = undefined;
+      if (!sanitizedCandidateInfo.preferredWorkLocation?.trim())
+        sanitizedCandidateInfo.preferredWorkLocation = undefined;
+
+      application = {
+        jobPostingId: this.job.id,
+        candidateInfo: sanitizedCandidateInfo,
+        source: this.applicationInfo.source,
+        coverLetter: this.applicationInfo.coverLetter || undefined,
+        expectedSalary: this.applicationInfo.expectedSalary,
+      };
+    }
 
     this.jobApplicationService.create(application).subscribe({
       next: (response) => {
