@@ -1,0 +1,338 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">KPIs</h2>
+      <p class="text-muted mb-0">Key Performance Indicators and Results</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-primary d-flex align-items-center gap-2" (click)="openKpiModal()">
+        <i class="eva eva-plus-outline"></i>
+        New KPI
+      </button>
+      <button
+        class="btn btn-primary d-flex align-items-center gap-2"
+        (click)="openResultModal()"
+        [disabled]="!selectedReviewId"
+      >
+        <i class="eva eva-plus-circle-outline"></i>
+        Add Result
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4 mb-3 mb-md-0">
+          <label class="form-label">Select Employee</label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedEmployeeId"
+            (change)="onEmployeeChange()"
+          >
+            @for (emp of employees; track emp.id) {
+            <option [ngValue]="emp.id">{{ emp.firstName }} {{ emp.lastName }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Select Review</label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedReviewId"
+            (change)="onReviewChange()"
+            [disabled]="reviews.length === 0"
+          >
+            @for (review of reviews; track review.id) {
+            <option [ngValue]="review.id">Review #{{ review.id }}</option>
+            }
+          </select>
+          @if (reviews.length === 0 && !isLoading) {
+          <div class="form-text text-warning">No reviews found for this employee</div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 mb-0 text-muted">Loading KPI results...</p>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <div>{{ error }}</div>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadKpiResults()">
+      <i class="eva eva-refresh-outline me-1"></i>Retry
+    </button>
+  </div>
+  }
+
+  <!-- KPI Results Table -->
+  @if (!isLoading && !error) {
+  <div class="card">
+    <div class="card-body p-0">
+      @if (kpiResults.length === 0) {
+      <div class="text-center py-5">
+        <i class="eva eva-activity-outline fs-1 text-muted"></i>
+        <p class="mt-3 mb-0 text-muted">No KPI results found. Add a result to get started!</p>
+      </div>
+      } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">KPI</th>
+              <th>Target</th>
+              <th>Actual</th>
+              <th>Achievement</th>
+              <th class="text-end pe-4">Weighted Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (result of kpiResults; track result.id) {
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px"
+                  >
+                    <i class="eva eva-activity-outline"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold">{{ result.kpiName || 'KPI #' + result.kpiId }}</div>
+                    <small class="text-muted">{{ result.kpiCode || 'Code: N/A' }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-secondary bg-opacity-20 text-secondary">
+                  {{ result.kpiTarget ?? 'N/A' }}
+                </span>
+              </td>
+              <td>
+                <span class="fw-semibold">{{ result.actual }}</span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="progress" style="width: 80px; height: 6px;">
+                    <div
+                      class="progress-bar"
+                      [ngClass]="getAchievementClass(result)"
+                      [style.width.%]="getAchievementWidth(result)"
+                    ></div>
+                  </div>
+                  <span class="badge" [ngClass]="getAchievementClass(result)">
+                    {{ getAchievementPercentage(result) }}%
+                  </span>
+                </div>
+              </td>
+              <td class="text-end pe-4">
+                @if (result.weightedScore !== null && result.weightedScore !== undefined) {
+                <span class="badge bg-primary">{{ result.weightedScore | number: '1.2-2' }}</span>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Summary -->
+  @if (kpiResults.length > 0) {
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-primary">{{ kpiResults.length }}</div>
+          <small class="text-muted">KPIs Measured</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-success">
+            {{ getTargetsMetCount() }}
+          </div>
+          <small class="text-muted">Targets Met</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-warning">
+            {{ getBelowTargetCount() }}
+          </div>
+          <small class="text-muted">Below Target</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+  }
+</div>
+
+<!-- Create KPI Modal -->
+@if (showKpiModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-activity-outline me-2"></i>
+          Create KPI
+        </h5>
+        <button type="button" class="btn-close" (click)="closeKpiModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveKpi()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Code <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="kpiFormData.code"
+                name="code"
+                placeholder="e.g., SALES-001"
+                required
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="kpiFormData.name"
+                name="name"
+                placeholder="e.g., Sales Revenue"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Target <span class="text-danger">*</span></label>
+              <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="kpiFormData.target"
+                name="target"
+                placeholder="Enter target value"
+                required
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Unit</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="kpiFormData.unit"
+                name="unit"
+                placeholder="e.g., USD, %, units"
+              />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="kpiFormData.description"
+              name="description"
+              rows="2"
+              placeholder="Brief description of this KPI"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeKpiModal()" [disabled]="isSaving">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveKpi()" [disabled]="isSaving">
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Creating... } @else { Create KPI }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Add Result Modal -->
+@if (showResultModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-plus-circle-outline me-2"></i>
+          Add KPI Result
+        </h5>
+        <button type="button" class="btn-close" (click)="closeResultModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveResult()">
+          <div class="mb-3">
+            <label class="form-label">KPI ID <span class="text-danger">*</span></label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="resultFormData.kpiId"
+              name="kpiId"
+              placeholder="Enter KPI ID"
+              required
+            />
+            <div class="form-text">Enter the ID of the KPI to record a result for.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Actual Value <span class="text-danger">*</span></label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="resultFormData.actual"
+              name="actual"
+              placeholder="Enter actual achieved value"
+              step="0.01"
+              required
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeResultModal()" [disabled]="isSaving">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveResult()" [disabled]="isSaving">
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Adding... } @else { Add Result }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

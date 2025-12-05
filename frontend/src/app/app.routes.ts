@@ -244,6 +244,63 @@ export const routes: Routes = [
         ],
       },
 
+      // Performance Routes
+      {
+        path: 'performance',
+        canActivate: [authGuard],
+        children: [
+          {
+            path: 'cycles',
+            loadComponent: () =>
+              import(
+                './Components/performance/review-cycles/review-cycle-list/review-cycle-list.component'
+              ).then((m) => m.ReviewCycleListComponent),
+            title: 'Review Cycles',
+          },
+          {
+            path: 'reviews',
+            loadComponent: () =>
+              import(
+                './Components/performance/reviews/review-list/review-list.component'
+              ).then((m) => m.ReviewListComponent),
+            title: 'Performance Reviews',
+          },
+          {
+            path: 'goals',
+            loadComponent: () =>
+              import(
+                './Components/performance/goals/goal-list/goal-list.component'
+              ).then((m) => m.GoalListComponent),
+            title: 'Goals',
+          },
+          {
+            path: 'kpis',
+            loadComponent: () =>
+              import(
+                './Components/performance/kpis/kpi-list/kpi-list.component'
+              ).then((m) => m.KpiListComponent),
+            title: 'KPIs',
+          },
+          {
+            path: 'competencies',
+            loadComponent: () =>
+              import(
+                './Components/performance/competencies/competency-list/competency-list.component'
+              ).then((m) => m.CompetencyListComponent),
+            title: 'Competencies',
+          },
+          {
+            path: 'feedback',
+            loadComponent: () =>
+              import(
+                './Components/performance/feedback/feedback-list/feedback-list.component'
+              ).then((m) => m.FeedbackListComponent),
+            title: 'Performance Feedback',
+          },
+          { path: '', redirectTo: 'cycles', pathMatch: 'full' },
+        ],
+      },
+
       // Reports Routes
       {
         path: 'reports',

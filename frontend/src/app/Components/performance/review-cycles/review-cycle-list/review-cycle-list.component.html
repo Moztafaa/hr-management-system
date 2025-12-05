@@ -1,0 +1,247 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Review Cycles</h2>
+      <p class="text-muted mb-0">Manage performance review cycles and periods</p>
+    </div>
+    <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openCreateModal()">
+      <i class="eva eva-plus-outline"></i>
+      New Cycle
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 mb-0 text-muted">Loading review cycles...</p>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <div>{{ error }}</div>
+    <button class="btn btn-sm btn-outline-danger ms-auto" (click)="loadCycles()">
+      <i class="eva eva-refresh-outline me-1"></i>Retry
+    </button>
+  </div>
+  }
+
+  <!-- Content -->
+  @if (!isLoading && !error) {
+  <!-- Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-primary">{{ cycles.length }}</div>
+          <small class="text-muted">Total Cycles</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-success">{{ activeCycles.length }}</div>
+          <small class="text-muted">Active Cycles</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <div class="h4 mb-1 text-info">{{ cycles.length - activeCycles.length }}</div>
+          <small class="text-muted">Inactive/Completed</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cycles Table -->
+  <div class="card">
+    <div class="card-body p-0">
+      @if (cycles.length === 0) {
+      <div class="text-center py-5">
+        <i class="eva eva-calendar-outline fs-1 text-muted"></i>
+        <p class="mt-3 mb-0 text-muted">No review cycles found. Create your first cycle!</p>
+      </div>
+      } @else {
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Cycle Name</th>
+              <th>Frequency</th>
+              <th>Rating Scale</th>
+              <th>Period</th>
+              <th>Status</th>
+              <th class="text-end pe-4">Days Left</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cycle of cycles; track cycle.id) {
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px"
+                  >
+                    <i class="eva eva-calendar-outline"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold">{{ cycle.name }}</div>
+                    <small class="text-muted">ID: {{ cycle.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-opacity-20" [ngClass]="getFrequencyClass(cycle.frequency)">
+                  {{ getFrequencyLabel(cycle.frequency) }}
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-secondary bg-opacity-20 text-secondary">
+                  {{ getRatingScaleLabel(cycle.ratingScale) }}
+                </span>
+              </td>
+              <td>
+                <div class="d-flex flex-column">
+                  <small>{{ formatDate(cycle.startDate) }}</small>
+                  <small class="text-muted">to {{ formatDate(cycle.endDate) }}</small>
+                </div>
+              </td>
+              <td>
+                @if (isActive(cycle)) {
+                <span class="badge bg-success">
+                  <i class="eva eva-checkmark-circle-outline me-1"></i>Active
+                </span>
+                } @else {
+                <span class="badge bg-secondary">
+                  <i class="eva eva-clock-outline me-1"></i>Inactive
+                </span>
+                }
+              </td>
+              <td class="text-end pe-4">
+                @if (isActive(cycle)) {
+                <span class="badge bg-info bg-opacity-20 text-info">
+                  {{ getDaysRemaining(cycle) }} days
+                </span>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>
+
+<!-- Create Modal -->
+@if (showModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="eva eva-calendar-outline me-2"></i>
+          Create Review Cycle
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveCycle()">
+          <div class="mb-3">
+            <label class="form-label">Cycle Name <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="formData.name"
+              name="name"
+              placeholder="e.g., Q1 2025 Performance Review"
+              required
+            />
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Frequency <span class="text-danger">*</span></label>
+              <select
+                class="form-select"
+                [(ngModel)]="formData.frequency"
+                name="frequency"
+                required
+              >
+                <option [ngValue]="CycleFrequency.Annual">Annual</option>
+                <option [ngValue]="CycleFrequency.Quarterly">Quarterly</option>
+                <option [ngValue]="CycleFrequency.Monthly">Monthly</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Rating Scale <span class="text-danger">*</span></label>
+              <select
+                class="form-select"
+                [(ngModel)]="formData.ratingScale"
+                name="ratingScale"
+                required
+              >
+                <option [ngValue]="RatingScaleType.OneToFive">1-5 Scale</option>
+                <option [ngValue]="RatingScaleType.Percentile">Percentile</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Start Date <span class="text-danger">*</span></label>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="formData.startDate"
+                name="startDate"
+                required
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">End Date <span class="text-danger">*</span></label>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="formData.endDate"
+                name="endDate"
+                required
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeModal()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveCycle()" [disabled]="isSaving">
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          Creating... } @else { Create Cycle }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
