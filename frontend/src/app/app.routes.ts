@@ -43,6 +43,29 @@ export const routes: Routes = [
         canActivate: [authGuard],
         title: 'Employee Management',
       },
+      {
+        path: 'attendance',
+        canActivate: [authGuard],
+        children: [
+          { path: 'check', component: CheckIn, title: 'Check In/Out' },
+          { path: 'checkout', component: CheckOut, title: 'Check Out' },
+          {
+            path: 'records',
+            loadComponent: () => import('./Components/Attendance/attendance-records/attendance-records.component').then(m => m.AttendanceRecordsComponent),
+            title: 'Attendance Records'
+          },
+          { path: '', redirectTo: 'check', pathMatch: 'full' }
+        ]
+      },
+      {
+        path: 'employees/resignations',
+        loadComponent: () =>
+          import('./Components/employees/resignation-list/resignation-list.component').then(
+            (m) => m.ResignationListComponent
+          ),
+        canActivate: [authGuard],
+        title: 'Resignation Requests',
+      },
       { path: 'checkIn', component: CheckIn, title: 'CheckIn' },
       { path: 'checkOut', component: CheckOut, title: 'CheckOut' },
       { path: 'updateEmployeeImage', component: UpdateEmployeeImage, title: 'UpdateEmployeeImage' },
