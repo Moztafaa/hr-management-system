@@ -89,7 +89,7 @@
           <thead class="table-light">
             <tr>
               <th class="ps-4">Goal</th>
-              <th style="width: 200px;">Progress</th>
+              <th style="width: 200px">Progress</th>
               <th>Status</th>
               <th>Due Date</th>
               <th class="text-end pe-4">Actions</th>
@@ -114,14 +114,16 @@
               </td>
               <td>
                 <div class="d-flex align-items-center gap-2">
-                  <div class="progress flex-grow-1" style="height: 8px;">
+                  <div class="progress flex-grow-1" style="height: 8px">
                     <div
                       class="progress-bar"
                       [ngClass]="getProgressColor(goal.progressPercent)"
                       [style.width.%]="goal.progressPercent"
                     ></div>
                   </div>
-                  <span class="fw-semibold" style="min-width: 45px;">{{ goal.progressPercent }}%</span>
+                  <span class="fw-semibold" style="min-width: 45px"
+                    >{{ goal.progressPercent }}%</span
+                  >
                 </div>
               </td>
               <td>
@@ -192,8 +194,7 @@
       </div>
     </div>
   </div>
-  }
-  }
+  } }
 </div>
 
 <!-- Create Modal -->
@@ -234,17 +235,17 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Due Date</label>
-            <input
-              type="date"
-              class="form-control"
-              [(ngModel)]="formData.dueDate"
-              name="dueDate"
-            />
+            <input type="date" class="form-control" [(ngModel)]="formData.dueDate" name="dueDate" />
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeModal()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeModal()"
+          [disabled]="isSaving"
+        >
           Cancel
         </button>
         <button type="button" class="btn btn-primary" (click)="saveGoal()" [disabled]="isSaving">
@@ -272,7 +273,9 @@
         <button type="button" class="btn-close" (click)="closeProgressModal()"></button>
       </div>
       <div class="modal-body">
-        <p class="text-muted mb-3">Updating: <strong>{{ selectedGoal?.title }}</strong></p>
+        <p class="text-muted mb-3">
+          Updating: <strong>{{ selectedGoal?.title }}</strong>
+        </p>
         <form (ngSubmit)="updateProgress()">
           <div class="mb-3">
             <label class="form-label">Progress (%)</label>
@@ -286,7 +289,7 @@
               required
             />
             <div class="mt-2">
-              <div class="progress" style="height: 10px;">
+              <div class="progress" style="height: 10px">
                 <div
                   class="progress-bar"
                   [ngClass]="getProgressColor(progressFormData.progressPercent)"
@@ -307,10 +310,20 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeProgressModal()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeProgressModal()"
+          [disabled]="isSaving"
+        >
           Cancel
         </button>
-        <button type="button" class="btn btn-primary" (click)="updateProgress()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="updateProgress()"
+          [disabled]="isSaving"
+        >
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm me-1"></span>
           Updating... } @else { Update Progress }

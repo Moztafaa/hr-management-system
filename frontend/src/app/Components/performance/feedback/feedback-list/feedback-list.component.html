@@ -49,11 +49,7 @@
         </div>
         <div class="col-md-4">
           <label class="form-label">Filter by Type</label>
-          <select
-            class="form-select"
-            [(ngModel)]="selectedType"
-            (change)="onTypeChange()"
-          >
+          <select class="form-select" [(ngModel)]="selectedType" (change)="onTypeChange()">
             <option [ngValue]="null">All Types</option>
             @for (type of feedbackTypes; track type.value) {
             <option [ngValue]="type.value">{{ type.name }}</option>
@@ -165,8 +161,7 @@
       </div>
     </div>
   </div>
-  }
-  }
+  } }
 </div>
 
 <!-- Create Feedback Modal -->
@@ -200,12 +195,7 @@
             </div>
             <div class="col-md-6">
               <label class="form-label">Feedback Type <span class="text-danger">*</span></label>
-              <select
-                class="form-select"
-                [(ngModel)]="formData.type"
-                name="type"
-                required
-              >
+              <select class="form-select" [(ngModel)]="formData.type" name="type" required>
                 @for (type of feedbackTypes; track type.value) {
                 <option [ngValue]="type.value">{{ type.name }}</option>
                 }
@@ -238,10 +228,20 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeCreateModal()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeCreateModal()"
+          [disabled]="isSaving"
+        >
           Cancel
         </button>
-        <button type="button" class="btn btn-primary" (click)="saveFeedback()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="saveFeedback()"
+          [disabled]="isSaving"
+        >
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm me-1"></span>
           Submitting... } @else { Submit Feedback }

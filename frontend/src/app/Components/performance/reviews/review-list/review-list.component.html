@@ -100,7 +100,9 @@
                   </div>
                   <div>
                     <div class="fw-semibold">Review #{{ review.id }}</div>
-                    <small class="text-muted">Employee: {{ getEmployeeName(review.employeeId) }}</small>
+                    <small class="text-muted"
+                      >Employee: {{ getEmployeeName(review.employeeId) }}</small
+                    >
                   </div>
                 </div>
               </td>
@@ -116,7 +118,7 @@
               </td>
               <td>
                 @if (review.finalRating !== null && review.finalRating !== undefined) {
-                <span class="badge bg-primary">{{ review.finalRating | number: '1.1-1' }}</span>
+                <span class="badge bg-primary">{{ review.finalRating | number : '1.1-1' }}</span>
                 } @else {
                 <span class="text-muted">-</span>
                 }
@@ -167,7 +169,12 @@
         <form (ngSubmit)="saveReview()">
           <div class="mb-3">
             <label class="form-label">Employee <span class="text-danger">*</span></label>
-            <select class="form-select" [(ngModel)]="formData.employeeId" name="employeeId" required>
+            <select
+              class="form-select"
+              [(ngModel)]="formData.employeeId"
+              name="employeeId"
+              required
+            >
               @for (emp of employees; track emp.id) {
               <option [ngValue]="emp.id">{{ emp.firstName }} {{ emp.lastName }}</option>
               }
@@ -175,7 +182,12 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Review Cycle <span class="text-danger">*</span></label>
-            <select class="form-select" [(ngModel)]="formData.reviewCycleId" name="reviewCycleId" required>
+            <select
+              class="form-select"
+              [(ngModel)]="formData.reviewCycleId"
+              name="reviewCycleId"
+              required
+            >
               @for (cycle of cycles; track cycle.id) {
               <option [ngValue]="cycle.id">{{ cycle.name }}</option>
               }
@@ -184,7 +196,12 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeModal()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeModal()"
+          [disabled]="isSaving"
+        >
           Cancel
         </button>
         <button type="button" class="btn btn-primary" (click)="saveReview()" [disabled]="isSaving">
@@ -212,9 +229,7 @@
         <button type="button" class="btn-close" (click)="closeCloseModal()"></button>
       </div>
       <div class="modal-body">
-        <p>
-          You are about to close Review #{{ selectedReview?.id }}.
-        </p>
+        <p>You are about to close Review #{{ selectedReview?.id }}.</p>
         <div class="mb-3">
           <label class="form-label">Final Rating (Optional)</label>
           <input
@@ -230,10 +245,20 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeCloseModal()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeCloseModal()"
+          [disabled]="isSaving"
+        >
           Cancel
         </button>
-        <button type="button" class="btn btn-success" (click)="confirmCloseReview()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="confirmCloseReview()"
+          [disabled]="isSaving"
+        >
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm me-1"></span>
           Closing... } @else { Close Review }
@@ -268,11 +293,11 @@
         } @else if (selectedReport) {
         <!-- Final Rating -->
         <div class="mb-4">
-          <h6 class="fw-bold mb-2">
-            <i class="eva eva-star-outline me-1"></i> Final Rating
-          </h6>
+          <h6 class="fw-bold mb-2"><i class="eva eva-star-outline me-1"></i> Final Rating</h6>
           @if (selectedReport.finalRating !== null && selectedReport.finalRating !== undefined) {
-          <span class="badge bg-primary fs-5">{{ selectedReport.finalRating | number: '1.1-1' }}</span>
+          <span class="badge bg-primary fs-5">{{
+            selectedReport.finalRating | number : '1.1-1'
+          }}</span>
           } @else {
           <span class="text-muted">Not yet rated</span>
           }
@@ -301,7 +326,7 @@
                 <tr>
                   <td>{{ goal.title }}</td>
                   <td>
-                    <div class="progress" style="height: 6px; width: 100px;">
+                    <div class="progress" style="height: 6px; width: 100px">
                       <div
                         class="progress-bar bg-primary"
                         [style.width.%]="goal.progressPercent"
@@ -326,7 +351,9 @@
         <!-- KPI Results -->
         <div class="mb-4">
           <h6 class="fw-bold mb-2">
-            <i class="eva eva-activity-outline me-1"></i> KPI Results ({{ selectedReport.kpiResults.length }})
+            <i class="eva eva-activity-outline me-1"></i> KPI Results ({{
+              selectedReport.kpiResults.length
+            }})
           </h6>
           @if (selectedReport.kpiResults.length === 0) {
           <p class="text-muted">No KPI results recorded.</p>
@@ -357,7 +384,9 @@
         <!-- Competency Ratings -->
         <div class="mb-4">
           <h6 class="fw-bold mb-2">
-            <i class="eva eva-award-outline me-1"></i> Competency Ratings ({{ selectedReport.competencyRatings.length }})
+            <i class="eva eva-award-outline me-1"></i> Competency Ratings ({{
+              selectedReport.competencyRatings.length
+            }})
           </h6>
           @if (selectedReport.competencyRatings.length === 0) {
           <p class="text-muted">No competency ratings recorded.</p>
@@ -375,7 +404,9 @@
                 @for (rating of selectedReport.competencyRatings; track rating.id) {
                 <tr>
                   <td>{{ rating.competencyName || 'Competency #' + rating.competencyId }}</td>
-                  <td><span class="badge bg-info">{{ rating.rating }}</span></td>
+                  <td>
+                    <span class="badge bg-info">{{ rating.rating }}</span>
+                  </td>
                   <td class="text-muted">{{ rating.notes || '-' }}</td>
                 </tr>
                 }
@@ -388,12 +419,13 @@
         <!-- Feedback -->
         <div>
           <h6 class="fw-bold mb-2">
-            <i class="eva eva-message-circle-outline me-1"></i> Feedback ({{ selectedReport.feedbacks.length }})
+            <i class="eva eva-message-circle-outline me-1"></i> Feedback ({{
+              selectedReport.feedbacks.length
+            }})
           </h6>
           @if (selectedReport.feedbacks.length === 0) {
           <p class="text-muted">No feedback submitted.</p>
-          } @else {
-          @for (fb of selectedReport.feedbacks; track fb.id) {
+          } @else { @for (fb of selectedReport.feedbacks; track fb.id) {
           <div class="mb-2 p-2 border rounded feedback-item">
             <div class="d-flex justify-content-between align-items-center mb-1">
               <span class="badge" [ngClass]="getFeedbackTypeClass(fb.type)">
@@ -403,8 +435,7 @@
             </div>
             <p class="mb-0">{{ fb.comments }}</p>
           </div>
-          }
-          }
+          } }
         </div>
         }
       </div>

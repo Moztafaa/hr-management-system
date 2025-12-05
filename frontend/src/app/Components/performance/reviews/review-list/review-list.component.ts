@@ -214,24 +214,22 @@ export class ReviewListComponent implements OnInit {
 
     this.isSaving = true;
 
-    this.reviewService
-      .close(this.selectedReview.id, this.finalRating || undefined)
-      .subscribe({
-        next: (response) => {
-          if (!response.hasError) {
-            this.toastService.success('Review closed successfully');
-            this.closeCloseModal();
-            this.loadReviews();
-          } else {
-            this.toastService.error(response.errorMessage || 'Failed to close review');
-          }
-          this.isSaving = false;
-        },
-        error: () => {
-          this.toastService.error('Failed to close review');
-          this.isSaving = false;
-        },
-      });
+    this.reviewService.close(this.selectedReview.id, this.finalRating || undefined).subscribe({
+      next: (response) => {
+        if (!response.hasError) {
+          this.toastService.success('Review closed successfully');
+          this.closeCloseModal();
+          this.loadReviews();
+        } else {
+          this.toastService.error(response.errorMessage || 'Failed to close review');
+        }
+        this.isSaving = false;
+      },
+      error: () => {
+        this.toastService.error('Failed to close review');
+        this.isSaving = false;
+      },
+    });
   }
 
   private extractValidationErrors(err: any): string {

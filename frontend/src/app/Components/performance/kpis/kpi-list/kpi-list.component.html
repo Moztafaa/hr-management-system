@@ -6,7 +6,10 @@
       <p class="text-muted mb-0">Key Performance Indicators and Results</p>
     </div>
     <div class="d-flex gap-2">
-      <button class="btn btn-outline-primary d-flex align-items-center gap-2" (click)="openKpiModal()">
+      <button
+        class="btn btn-outline-primary d-flex align-items-center gap-2"
+        (click)="openKpiModal()"
+      >
         <i class="eva eva-plus-outline"></i>
         New KPI
       </button>
@@ -128,7 +131,7 @@
               </td>
               <td>
                 <div class="d-flex align-items-center gap-2">
-                  <div class="progress" style="width: 80px; height: 6px;">
+                  <div class="progress" style="width: 80px; height: 6px">
                     <div
                       class="progress-bar"
                       [ngClass]="getAchievementClass(result)"
@@ -142,7 +145,7 @@
               </td>
               <td class="text-end pe-4">
                 @if (result.weightedScore !== null && result.weightedScore !== undefined) {
-                <span class="badge bg-primary">{{ result.weightedScore | number: '1.2-2' }}</span>
+                <span class="badge bg-primary">{{ result.weightedScore | number : '1.2-2' }}</span>
                 } @else {
                 <span class="text-muted">-</span>
                 }
@@ -188,8 +191,7 @@
       </div>
     </div>
   </div>
-  }
-  }
+  } }
 </div>
 
 <!-- Create KPI Modal -->
@@ -267,7 +269,12 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeKpiModal()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeKpiModal()"
+          [disabled]="isSaving"
+        >
           Cancel
         </button>
         <button type="button" class="btn btn-primary" (click)="saveKpi()" [disabled]="isSaving">
@@ -323,7 +330,12 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeResultModal()" [disabled]="isSaving">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeResultModal()"
+          [disabled]="isSaving"
+        >
           Cancel
         </button>
         <button type="button" class="btn btn-primary" (click)="saveResult()" [disabled]="isSaving">

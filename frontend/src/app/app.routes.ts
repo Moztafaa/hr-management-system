@@ -260,25 +260,25 @@ export const routes: Routes = [
           {
             path: 'reviews',
             loadComponent: () =>
-              import(
-                './Components/performance/reviews/review-list/review-list.component'
-              ).then((m) => m.ReviewListComponent),
+              import('./Components/performance/reviews/review-list/review-list.component').then(
+                (m) => m.ReviewListComponent
+              ),
             title: 'Performance Reviews',
           },
           {
             path: 'goals',
             loadComponent: () =>
-              import(
-                './Components/performance/goals/goal-list/goal-list.component'
-              ).then((m) => m.GoalListComponent),
+              import('./Components/performance/goals/goal-list/goal-list.component').then(
+                (m) => m.GoalListComponent
+              ),
             title: 'Goals',
           },
           {
             path: 'kpis',
             loadComponent: () =>
-              import(
-                './Components/performance/kpis/kpi-list/kpi-list.component'
-              ).then((m) => m.KpiListComponent),
+              import('./Components/performance/kpis/kpi-list/kpi-list.component').then(
+                (m) => m.KpiListComponent
+              ),
             title: 'KPIs',
           },
           {
