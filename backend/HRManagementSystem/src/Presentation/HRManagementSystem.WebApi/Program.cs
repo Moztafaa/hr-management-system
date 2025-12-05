@@ -1,4 +1,4 @@
- //using FaceRecognitionDotNet; // Disabled - requires native Dlib libraries for Linux
+using FaceRecognitionDotNet; // Disabled - requires native Dlib libraries for Linux
 using HRManagementSystem.Application.Services;
 using HRManagementSystem.WebApi.Extensions;
 using HRManagementSystem.WebApi.Middleware;
@@ -46,12 +46,12 @@ builder.Services.AddSwaggerGen(c =>
 
 // TODO: Face recognition disabled - requires native Dlib libraries for Linux
 // To enable, install: sudo apt-get install libdlib-dev libopenblas-dev liblapack-dev
-// var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
-// Console.WriteLine($"Loading face models from: {modelPath}");
-// builder.Services.AddSingleton(sp =>
-// {
-//     return FaceRecognition.Create(modelPath);
-// });
+var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
+Console.WriteLine($"Loading face models from: {modelPath}");
+builder.Services.AddSingleton(sp =>
+{
+    return FaceRecognition.Create(modelPath);
+});
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 // Add Application and Infrastructure layers

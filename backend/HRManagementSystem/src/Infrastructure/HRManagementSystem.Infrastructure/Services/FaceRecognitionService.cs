@@ -1,4 +1,4 @@
-﻿/* using System.Drawing;
+﻿using System.Drawing;
 using FaceRecognitionDotNet;
 namespace HRManagementSystem.Infrastructure.Services;
 public class FaceRecognitionService : IFaceRecognitionService
@@ -38,4 +38,3 @@ public class FaceRecognitionService : IFaceRecognitionService
         return distance <= tolerance;
     }
 }
- */

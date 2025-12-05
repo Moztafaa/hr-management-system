@@ -1,7 +1,7 @@
 ﻿using HRManagementSystem.Application.Helper;
 
 namespace HRManagementSystem.Application.Services;
-public class AttendanceService(IUnitOfWork _unitOfWork, IMapper _mapper/*, IFaceRecognitionService _faceService*/) : IAttendanceService
+public class AttendanceService(IUnitOfWork _unitOfWork, IMapper _mapper, IFaceRecognitionService _faceService) : IAttendanceService
 {
     public async Task<Response<int>> CheckInAsync(int employeeId, byte[] image)
     {
@@ -12,12 +12,12 @@ public class AttendanceService(IUnitOfWork _unitOfWork, IMapper _mapper/*, IFace
         }
 
         // Extract new embedding
-        //double[] newEmbedding = _faceService.ExtractEmbedding(image);
-        //byte[] embedding = employee.FaceEmbedding;
-        //// Compare embeddings
-        //bool isMatch = _faceService.CompareEmbeddings(EmbeddingSerializer.BytesToDoubleArray(embedding), newEmbedding);
-        //if (!isMatch)
-        //    return new Response<int>(-1, "Face does not match employee.", true);
+        double[] newEmbedding = _faceService.ExtractEmbedding(image);
+        byte[] embedding = employee.FaceEmbedding;
+        // Compare embeddings
+        bool isMatch = _faceService.CompareEmbeddings(EmbeddingSerializer.BytesToDoubleArray(embedding), newEmbedding);
+        if (!isMatch)
+            return new Response<int>(-1, "Face does not match employee.", true);
 
         // Check existing record
         var existing = await _unitOfWork.Attendances.GetTodayAttendanceAsync(employeeId, DateTime.UtcNow);
@@ -46,12 +46,12 @@ public class AttendanceService(IUnitOfWork _unitOfWork, IMapper _mapper/*, IFace
         {
             return new Response<int>(-1, "Employee not found.", true);
         }
-        //double[] newEmbedding = _faceService.ExtractEmbedding(image);
-        //byte[] embedding = employee.FaceEmbedding;
-        // Compare embeddings
+        double[] newEmbedding = _faceService.ExtractEmbedding(image);
+        byte[] embedding = employee.FaceEmbedding;
+        //Compare embeddings
 
-        //if (!_faceService.CompareEmbeddings(EmbeddingSerializer.BytesToDoubleArray(embedding), newEmbedding))
-        //    return new Response<int>(-1, "Face does not match employee.", true);
+        if (!_faceService.CompareEmbeddings(EmbeddingSerializer.BytesToDoubleArray(embedding), newEmbedding))
+            return new Response<int>(-1, "Face does not match employee.", true);
 
         var attendance = await _unitOfWork.Attendances.GetTodayAttendanceAsync(employeeId, DateTime.UtcNow);
         if (attendance == null)
