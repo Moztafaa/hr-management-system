@@ -11,5 +11,7 @@ public enum NotificationCategory
     System,
     AttendanceReminder,
     Training,
-    Performance
+    Performance,
+    Resignation,
+    ResignationApproval
 }

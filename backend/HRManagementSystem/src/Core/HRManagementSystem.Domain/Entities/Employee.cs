@@ -33,4 +33,7 @@ public class Employee : BaseEntity
     public ICollection<EmployeeTraining>? EmployeeTrainings { get; set; }
     public ICollection<TrainingRequest>? TrainingRequests { get; set; }
 
+    public ICollection<Resignation>? Resignations { get; set; }
+    public ICollection<ResignationApproval>? ResignationApprovals { get; set; }
+
 }

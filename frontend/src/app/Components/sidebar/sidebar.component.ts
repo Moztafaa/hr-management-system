@@ -31,6 +31,7 @@ export class SidebarComponent {
       children: [
         { title: 'Employee List', link: '/pages/employees' },
         { title: 'Add Employee', link: '/pages/employees/create' },
+        { title: 'Resignation Requests', link: '/pages/employees/resignations' },
       ],
     },
     {
@@ -118,6 +119,7 @@ export class SidebarComponent {
       children: [
         { title: 'My Profile', link: '/pages/ess/profile' },
         { title: 'My Leave Requests', link: '/pages/ess/leave-requests' },
+        { title: 'My Resignations', link: '/pages/ess/resignations' },
         { title: 'My Training', link: '/pages/ess/training' },
         { title: 'My Payslips', link: '/pages/ess/payslips' },
         { title: 'My Dashboard', link: '/pages/ess/dashboard' },

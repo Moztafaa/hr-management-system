@@ -35,4 +35,9 @@ public interface IEmailQueueJob
     /// Sends a payslip notification email asynchronously.
     /// </summary>
     Task SendPayslipEmailAsync(string recipientEmail, string employeeName, string period, decimal netSalary);
+
+    /// <summary>
+    /// Sends a resignation notification email asynchronously.
+    /// </summary>
+    Task SendResignationNotificationEmailAsync(string recipientEmail, string recipientName, string employeeName, string status, DateTime lastWorkingDate);
 }

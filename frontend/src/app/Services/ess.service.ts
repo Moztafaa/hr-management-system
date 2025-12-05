@@ -10,6 +10,8 @@ import {
   LeaveRequest,
   CreateLeaveRequest,
   Payslip,
+  Resignation,
+  CreateResignation,
 } from '../models/ess';
 import { EmployeeTraining, TrainingRequest, TrainingCourse } from '../models/training';
 
@@ -92,5 +94,25 @@ export class ESSService {
 
   cancelTrainingRequest(requestId: number): Observable<ApiResponse<boolean>> {
     return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/training/request/${requestId}`);
+  }
+
+  // Resignation endpoints
+  getMyResignations(): Observable<ApiResponse<Resignation[]>> {
+    return this.http.get<ApiResponse<Resignation[]>>(`${this.apiUrl}/resignations`);
+  }
+
+  getActiveResignation(): Observable<ApiResponse<Resignation | null>> {
+    return this.http.get<ApiResponse<Resignation | null>>(`${this.apiUrl}/resignations/active`);
+  }
+
+  submitResignation(data: CreateResignation): Observable<ApiResponse<Resignation>> {
+    return this.http.post<ApiResponse<Resignation>>(`${this.apiUrl}/resignations`, data);
+  }
+
+  withdrawResignation(resignationId: number): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(
+      `${this.apiUrl}/resignations/${resignationId}/withdraw`,
+      {}
+    );
   }
 }

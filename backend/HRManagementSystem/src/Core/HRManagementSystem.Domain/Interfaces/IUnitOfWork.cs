@@ -33,6 +33,8 @@ public interface IUnitOfWork : IDisposable
     IEmployeeCompetencyRatingRepository EmployeeCompetencyRatings { get; }
     IFeedbackRepository Feedbacks { get; }
 
+    IResignationRepository Resignations { get; }
+    IResignationApprovalRepository ResignationApprovals { get; }
 
     IReportingRepository Reporting { get; }
     ITrainingCourseRepository TrainingCourses { get; }

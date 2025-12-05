@@ -3,8 +3,10 @@ using HRManagementSystem.Application.DTOs.ESS;
 using HRManagementSystem.Application.DTOs.Leaves.LeaveBalanceDtos;
 using HRManagementSystem.Application.DTOs.Leaves.LeaveRequestDtos;
 using HRManagementSystem.Application.DTOs.Payroll.Payslip;
+using HRManagementSystem.Application.DTOs.Resignation;
 using HRManagementSystem.Application.DTOs.Training;
 using HRManagementSystem.Application.Interfaces;
+using HRManagementSystem.Application.Interfaces.IResignationServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +15,7 @@ namespace HRManagementSystem.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class ESSController(IESSService essService) : ControllerBase
+public class ESSController(IESSService essService, IResignationService resignationService) : ControllerBase
 {
     private int GetCurrentEmployeeId()
     {
@@ -102,7 +104,8 @@ public class ESSController(IESSService essService) : ControllerBase
     public async Task<IActionResult> GetMyCourses(CancellationToken cancellationToken)
     {
         (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
-        if (!success) return errorResult!;
+        if (!success)
+            return errorResult!;
 
         Response<List<EmployeeTrainingDto>> response = await essService.GetMyCoursesAsync(employeeId, cancellationToken);
         return Ok(response);
@@ -112,7 +115,8 @@ public class ESSController(IESSService essService) : ControllerBase
     public async Task<IActionResult> GetMyTrainingRequests(CancellationToken cancellationToken)
     {
         (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
-        if (!success) return errorResult!;
+        if (!success)
+            return errorResult!;
 
         Response<List<TrainingRequestDto>> response = await essService.GetMyTrainingRequestsAsync(employeeId, cancellationToken);
         return Ok(response);
@@ -122,7 +126,8 @@ public class ESSController(IESSService essService) : ControllerBase
     public async Task<IActionResult> GetAvailableCourses(CancellationToken cancellationToken)
     {
         (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
-        if (!success) return errorResult!;
+        if (!success)
+            return errorResult!;
 
         Response<List<TrainingCourseDto>> response = await essService.GetAvailableCoursesAsync(employeeId, cancellationToken);
         return Ok(response);
@@ -132,7 +137,8 @@ public class ESSController(IESSService essService) : ControllerBase
     public async Task<IActionResult> SubmitTrainingRequest([FromBody] ESSTrainingRequestCreateDto dto, CancellationToken cancellationToken)
     {
         (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
-        if (!success) return errorResult!;
+        if (!success)
+            return errorResult!;
 
         Response<TrainingRequestDto> response = await essService.SubmitTrainingRequestAsync(employeeId, dto, cancellationToken);
         return Ok(response);
@@ -142,11 +148,74 @@ public class ESSController(IESSService essService) : ControllerBase
     public async Task<IActionResult> CancelTrainingRequest(int requestId, CancellationToken cancellationToken)
     {
         (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
-        if (!success) return errorResult!;
+        if (!success)
+            return errorResult!;
 
         Response<bool> response = await essService.CancelTrainingRequestAsync(employeeId, requestId, cancellationToken);
         return Ok(response);
     }
+
+    // ==================== Resignation Endpoints ====================
+
+    [HttpGet("resignations")]
+    public async Task<IActionResult> GetMyResignations(CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success)
+            return errorResult!;
+
+        Response<IEnumerable<ResignationDto>> response = await resignationService.GetResignationsByEmployeeIdAsync(employeeId, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpGet("resignations/active")]
+    public async Task<IActionResult> GetActiveResignation(CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success)
+            return errorResult!;
+
+        Response<ResignationDto?> response = await resignationService.GetActiveResignationByEmployeeIdAsync(employeeId, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpPost("resignations")]
+    public async Task<IActionResult> SubmitResignation([FromBody] CreateResignationDto dto, CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success)
+            return errorResult!;
+
+        // Ensure the employee can only submit resignations for themselves
+        dto.EmployeeId = employeeId;
+
+        Response<ResignationDto> response = await resignationService.CreateResignationAsync(dto, cancellationToken);
+        if (response.HasError)
+            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+
+        return Ok(response);
+    }
+
+    [HttpPost("resignations/{resignationId}/withdraw")]
+    public async Task<IActionResult> WithdrawResignation(int resignationId, CancellationToken cancellationToken)
+    {
+        (bool success, int employeeId, IActionResult? errorResult) = TryGetCurrentEmployeeId();
+        if (!success)
+            return errorResult!;
+
+        WithdrawResignationDto dto = new()
+        {
+            ResignationId = resignationId,
+            EmployeeId = employeeId
+        };
+
+        Response<bool> response = await resignationService.WithdrawResignationAsync(dto, cancellationToken);
+        if (response.HasError)
+            return BadRequest(new { hasError = response.HasError, errorMessage = response.ErrorMessage });
+
+        return Ok(response);
+    }
+
     private (bool success, int employeeId, IActionResult? errorResult) TryGetCurrentEmployeeId()
     {
         try

@@ -1,0 +1,317 @@
+.resignation-list-container {
+  padding: 1rem;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+/* Stats Cards */
+.stat-card {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-basic);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card .stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.stat-card.total .stat-icon {
+  background: rgba(51, 102, 255, 0.15);
+  color: #3366ff;
+}
+
+.stat-card.pending .stat-icon {
+  background: rgba(255, 170, 0, 0.15);
+  color: #ffaa00;
+}
+
+.stat-card.approved .stat-icon {
+  background: rgba(0, 214, 143, 0.15);
+  color: #00d68f;
+}
+
+.stat-card.rejected .stat-icon {
+  background: rgba(255, 61, 113, 0.15);
+  color: #ff3d71;
+}
+
+.stat-card .stat-content h6 {
+  margin: 0;
+  color: var(--text-hint);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+/* Card Styling */
+:host ::ng-deep .card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+  border-radius: 12px;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .card-header {
+  background-color: var(--header-bg) !important;
+  border-bottom: 1px solid var(--border-basic) !important;
+  padding: 1rem 1.25rem;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+:host ::ng-deep .card-header h6 {
+  font-weight: 600;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .card-body {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+/* Form Controls */
+:host ::ng-deep input,
+:host ::ng-deep select,
+:host ::ng-deep textarea,
+:host ::ng-deep .form-control,
+:host ::ng-deep .form-select {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-basic) !important;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+
+:host ::ng-deep .form-control:focus,
+:host ::ng-deep .form-select:focus {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.15) !important;
+}
+
+:host ::ng-deep .form-select option {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+:host ::ng-deep .form-label {
+  color: var(--text-hint) !important;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Table Styling */
+:host ::ng-deep .table {
+  color: var(--text-color) !important;
+  margin-bottom: 0;
+  background-color: transparent !important;
+}
+
+:host ::ng-deep .table thead th {
+  background-color: var(--header-bg) !important;
+  color: var(--text-hint) !important;
+  border-bottom: 1px solid var(--border-basic) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 1rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .table tbody td {
+  border-bottom: 1px solid var(--border-basic) !important;
+  padding: 1rem;
+  vertical-align: middle;
+  color: var(--text-color) !important;
+  background-color: transparent !important;
+}
+
+:host ::ng-deep .table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover td {
+  background-color: transparent !important;
+  color: var(--text-color) !important;
+}
+
+/* Modal Styling */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+.modal {
+  z-index: 1050;
+}
+
+:host ::ng-deep .modal-content {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-basic) !important;
+  color: var(--text-color) !important;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+:host ::ng-deep .modal-header {
+  border-bottom-color: var(--border-basic) !important;
+  border-radius: 12px 12px 0 0;
+  padding: 1.25rem;
+}
+
+:host ::ng-deep .modal-body {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  padding: 1.5rem;
+}
+
+:host ::ng-deep .modal-footer {
+  border-top-color: var(--border-basic) !important;
+  padding: 1rem 1.5rem;
+}
+
+:host ::ng-deep .modal-title {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+:host ::ng-deep .btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Button Styling */
+.btn {
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+}
+
+:host ::ng-deep .btn-outline-primary {
+  color: #3366ff !important;
+  border-color: #3366ff !important;
+}
+
+:host ::ng-deep .btn-outline-primary:hover {
+  background-color: #3366ff !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .btn-secondary {
+  background-color: var(--input-bg) !important;
+  border-color: var(--border-basic) !important;
+  color: var(--text-color) !important;
+}
+
+:host ::ng-deep .btn-secondary:hover {
+  background-color: var(--hover-bg) !important;
+  border-color: var(--border-basic) !important;
+}
+
+/* Alert Styling */
+:host ::ng-deep .alert {
+  border-radius: 10px;
+  border: none;
+}
+
+:host ::ng-deep .alert-info {
+  background-color: rgba(0, 207, 222, 0.15) !important;
+  border-color: rgba(0, 207, 222, 0.3) !important;
+  color: #00cfde !important;
+}
+
+:host ::ng-deep .alert-warning {
+  background-color: rgba(255, 170, 0, 0.15) !important;
+  border-color: rgba(255, 170, 0, 0.3) !important;
+  color: #ffaa00 !important;
+}
+
+:host ::ng-deep .alert-danger {
+  background-color: rgba(255, 61, 113, 0.15) !important;
+  border-color: rgba(255, 61, 113, 0.3) !important;
+  color: #ff3d71 !important;
+}
+
+/* Text Colors */
+:host ::ng-deep .text-muted {
+  color: var(--text-hint) !important;
+}
+
+h2,
+h4,
+h5,
+h6,
+.fw-semibold,
+.fw-medium {
+  color: var(--text-color);
+}
+
+p {
+  color: var(--text-hint);
+}
+
+/* Collapse Section */
+.collapse-section .card {
+  margin-bottom: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+}

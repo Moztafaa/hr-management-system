@@ -158,6 +158,20 @@ public class EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailSe
         return await SendEmailAsync(emailDto, cancellationToken);
     }
 
+    public async Task<Response<bool>> SendResignationNotificationEmailAsync(string recipientEmail, string recipientName, string employeeName, string status, DateTime lastWorkingDate, CancellationToken cancellationToken = default)
+    {
+        var emailBody = GetResignationEmailTemplate(recipientName, employeeName, status, lastWorkingDate);
+        var emailDto = new EmailDto
+        {
+            To = recipientEmail,
+            Subject = $"Resignation Request - {status}",
+            Body = emailBody,
+            IsHtml = true
+        };
+
+        return await SendEmailAsync(emailDto, cancellationToken);
+    }
+
     #region Email Templates
 
     private string GetWelcomeEmailTemplate(string recipientName)
@@ -348,6 +362,62 @@ public class EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailSe
                         <p>Please log in to the HR Management System to view your complete payslip details.</p>
                         <p>If you have any questions regarding your payslip, please contact the payroll department.</p>
                         <p>Best regards,<br/>Payroll Team</p>
+                    </div>
+                    <div class='footer'>
+                        <p>This is an automated message from HR Management System. Please do not reply to this email.</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+    }
+
+    private string GetResignationEmailTemplate(string recipientName, string employeeName, string status, DateTime lastWorkingDate)
+    {
+        var statusColor = status.ToLower() switch
+        {
+            "approved" => "#4CAF50",
+            "rejected" => "#f44336",
+            "withdrawn" => "#9E9E9E",
+            _ => "#FF9800"
+        };
+
+        var statusMessage = status.ToLower() switch
+        {
+            "approved" => $"The resignation has been approved. The last working date will be {lastWorkingDate:MMMM dd, yyyy}.",
+            "rejected" => "The resignation request has been rejected. Please contact HR for more details.",
+            "withdrawn" => "The resignation request has been withdrawn by the employee.",
+            "pending review" => $"A resignation request has been submitted and requires your review. The proposed last working date is {lastWorkingDate:MMMM dd, yyyy}.",
+            _ => "The resignation status has been updated."
+        };
+
+        return $@"
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background-color: {statusColor}; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }}
+                    .content {{ background-color: #f9f9f9; padding: 30px; border-radius: 0 0 5px 5px; }}
+                    .status {{ font-weight: bold; color: {statusColor}; font-size: 18px; text-transform: uppercase; }}
+                    .info-box {{ background-color: #fff; padding: 20px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+                    .footer {{ margin-top: 20px; text-align: center; font-size: 12px; color: #777; }}
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h1>Resignation Request Update</h1>
+                    </div>
+                    <div class='content'>
+                        <p>Dear {recipientName},</p>
+                        <div class='info-box'>
+                            <p><strong>Employee:</strong> {employeeName}</p>
+                            <p><strong>Status:</strong> <span class='status'>{status}</span></p>
+                            <p><strong>Last Working Date:</strong> {lastWorkingDate:MMMM dd, yyyy}</p>
+                        </div>
+                        <p>{statusMessage}</p>
+                        <p>Please log in to the HR Management System for more details.</p>
+                        <p>Best regards,<br/>HR Team</p>
                     </div>
                     <div class='footer'>
                         <p>This is an automated message from HR Management System. Please do not reply to this email.</p>

@@ -121,4 +121,21 @@ public class EmailQueueJob(
             throw;
         }
     }
+
+    /// <inheritdoc />
+    public async Task SendResignationNotificationEmailAsync(string recipientEmail, string recipientName, string employeeName, string status, DateTime lastWorkingDate)
+    {
+        logger.LogInformation("Sending resignation {Status} email to {Email}", status, recipientEmail);
+
+        try
+        {
+            await emailService.SendResignationNotificationEmailAsync(recipientEmail, recipientName, employeeName, status, lastWorkingDate);
+            logger.LogInformation("Resignation {Status} email sent successfully to {Email}", status, recipientEmail);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send resignation {Status} email to {Email}", status, recipientEmail);
+            throw;
+        }
+    }
 }

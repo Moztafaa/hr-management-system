@@ -11,4 +11,5 @@ public interface IEmailService
     Task<Response<bool>> SendPasswordResetEmailAsync(string recipientEmail, string resetToken, CancellationToken cancellationToken = default);
     Task<Response<bool>> SendJobApplicationStatusEmailAsync(string recipientEmail, string candidateName, string jobTitle, string status, CancellationToken cancellationToken = default);
     Task<Response<bool>> SendPayslipEmailAsync(string recipientEmail, string employeeName, string period, decimal netSalary, CancellationToken cancellationToken = default);
+    Task<Response<bool>> SendResignationNotificationEmailAsync(string recipientEmail, string recipientName, string employeeName, string status, DateTime lastWorkingDate, CancellationToken cancellationToken = default);
 }

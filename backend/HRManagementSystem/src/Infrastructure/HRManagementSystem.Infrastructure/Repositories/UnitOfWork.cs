@@ -1,5 +1,6 @@
 using HRManagementSystem.Domain.Interfaces.LeaveRepository;
 using HRManagementSystem.Infrastructure.Repositories.ILeaveRepository;
+using HRManagementSystem.Infrastructure.Repositories.ResignationRepos;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HRManagementSystem.Infrastructure.Repositories;
@@ -40,6 +41,9 @@ public class UnitOfWork : IUnitOfWork
     private ICompetencyRepository? _competencies;
     private IEmployeeCompetencyRatingRepository? _employeeCompetencyRatings;
     private IFeedbackRepository? _feedbacks;
+
+    private IResignationRepository? _resignations;
+    private IResignationApprovalRepository? _resignationApprovals;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -105,6 +109,9 @@ public class UnitOfWork : IUnitOfWork
     public ICompetencyRepository Competencies => _competencies ??= new CompetencyRepository(_context);
     public IEmployeeCompetencyRatingRepository EmployeeCompetencyRatings => _employeeCompetencyRatings ??= new EmployeeCompetencyRatingRepository(_context);
     public IFeedbackRepository Feedbacks => _feedbacks ??= new FeedbackRepository(_context);
+
+    public IResignationRepository Resignations => _resignations ??= new ResignationRepository(_context);
+    public IResignationApprovalRepository ResignationApprovals => _resignationApprovals ??= new ResignationApprovalRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

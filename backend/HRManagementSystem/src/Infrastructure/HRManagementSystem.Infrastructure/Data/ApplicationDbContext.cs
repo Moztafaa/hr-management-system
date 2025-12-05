@@ -33,6 +33,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.ApplyConfiguration(new EmployeeTrainingConfiguration());
         builder.ApplyConfiguration(new TrainingCourseConfiguration());
         builder.ApplyConfiguration(new TrainingRequestConfiguration());
+        builder.ApplyConfiguration(new ResignationConfiguration());
+        builder.ApplyConfiguration(new ResignationApprovalConfiguration());
 
         // Seed initial data
         builder.SeedDepartments();
@@ -120,4 +122,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<EmployeeCompetencyRating> EmployeeCompetencyRatings { get; set; }
     public DbSet<Feedback> Feedbacks { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+
+    public DbSet<Resignation> Resignations { get; set; }
+    public DbSet<ResignationApproval> ResignationApprovals { get; set; }
 }

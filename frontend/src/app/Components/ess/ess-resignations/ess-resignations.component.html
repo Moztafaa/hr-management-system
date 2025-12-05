@@ -1,0 +1,353 @@
+<div class="ess-resignations-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3">Loading resignation data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="alert alert-danger" role="alert">
+    <i class="eva eva-alert-circle-outline me-2"></i>
+    {{ error }}
+    <button type="button" class="btn btn-link" (click)="loadData()">Try again</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !error">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="mb-0">
+        <i class="eva eva-log-out-outline me-2"></i>
+        My Resignations
+      </h4>
+      <button
+        class="btn btn-danger"
+        (click)="openModal()"
+        [disabled]="hasActiveResignation"
+        [title]="
+          hasActiveResignation ? 'You already have an active resignation' : 'Submit Resignation'
+        "
+      >
+        <i class="eva eva-plus-outline me-1"></i>
+        Submit Resignation
+      </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="stat-card pending">
+          <div class="stat-icon">
+            <i class="eva eva-clock-outline"></i>
+          </div>
+          <div class="stat-content">
+            <h6>Pending</h6>
+            <span class="stat-value">{{ pendingCount }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card approved">
+          <div class="stat-icon">
+            <i class="eva eva-checkmark-circle-2-outline"></i>
+          </div>
+          <div class="stat-content">
+            <h6>Approved</h6>
+            <span class="stat-value">{{ approvedCount }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card rejected">
+          <div class="stat-icon">
+            <i class="eva eva-close-circle-outline"></i>
+          </div>
+          <div class="stat-content">
+            <h6>Rejected</h6>
+            <span class="stat-value">{{ rejectedCount }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Resignation Alert -->
+    <div *ngIf="activeResignation" class="alert alert-warning mb-4">
+      <div class="d-flex align-items-center">
+        <i class="eva eva-alert-triangle-outline me-2 fs-4"></i>
+        <div>
+          <strong>Active Resignation Request</strong>
+          <p class="mb-0 mt-1">
+            You have a pending resignation submitted on
+            {{ formatDate(activeResignation.submissionDate) }} with last working date
+            {{ formatDate(activeResignation.lastWorkingDate) }}.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resignations Table -->
+    <div class="card">
+      <div class="card-header">
+        <h6 class="mb-0">Resignation History</h6>
+      </div>
+      <div class="card-body p-0">
+        <div *ngIf="resignations.length === 0" class="text-center py-5 text-muted">
+          <i class="eva eva-file-text-outline fs-1"></i>
+          <p class="mt-2">No resignation requests found</p>
+        </div>
+
+        <div *ngIf="resignations.length > 0" class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Submitted On</th>
+                <th>Last Working Date</th>
+                <th>Notice Period</th>
+                <th>Immediate</th>
+                <th>Status</th>
+                <th>Reviewed By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let resignation of resignations">
+                <td>{{ formatDate(resignation.submissionDate) }}</td>
+                <td>{{ formatDate(resignation.lastWorkingDate) }}</td>
+                <td>{{ resignation.noticePeriodDays }} days</td>
+                <td>
+                  <span
+                    [class]="
+                      resignation.isImmediateResignation ? 'badge bg-danger' : 'badge bg-secondary'
+                    "
+                  >
+                    {{ resignation.isImmediateResignation ? 'Yes' : 'No' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class]="getStatusClass(resignation.status)">
+                    {{ ResignationStatusLabels[resignation.status] }}
+                  </span>
+                </td>
+                <td>{{ resignation.reviewerName || '-' }}</td>
+                <td>
+                  <button
+                    *ngIf="resignation.status === 'Pending'"
+                    class="btn btn-sm btn-outline-warning"
+                    (click)="openWithdrawModal(resignation)"
+                    title="Withdraw Resignation"
+                  >
+                    <i class="eva eva-undo-outline"></i>
+                  </button>
+                  <span *ngIf="resignation.status !== 'Pending'" class="text-muted">-</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resignation Details Section -->
+    <div *ngIf="activeResignation" class="card mt-4">
+      <div class="card-header">
+        <h6 class="mb-0">Active Resignation Details</h6>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label>Reason for Resignation</label>
+              <p>{{ activeResignation.reason }}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label>Handover Notes</label>
+              <p>{{ activeResignation.handoverNotes || 'No handover notes provided' }}</p>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="activeResignation.rejectionReason" class="alert alert-danger mt-3">
+          <strong>Rejection Reason:</strong> {{ activeResignation.rejectionReason }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Submit Resignation Modal -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()"></div>
+<div class="modal d-block" tabindex="-1" *ngIf="showModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="eva eva-log-out-outline me-2"></i>
+          Submit Resignation
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <form [formGroup]="resignationForm" (ngSubmit)="submitResignation()">
+        <div class="modal-body">
+          <div class="alert alert-info mb-4">
+            <i class="eva eva-info-outline me-2"></i>
+            Please note that your resignation will require approval from your manager.
+          </div>
+
+          <!-- Reason -->
+          <div class="mb-3">
+            <label for="reason" class="form-label"
+              >Reason for Resignation <span class="text-danger">*</span></label
+            >
+            <textarea
+              id="reason"
+              class="form-control"
+              formControlName="reason"
+              rows="4"
+              placeholder="Please provide a detailed reason for your resignation..."
+              [class.is-invalid]="
+                resignationForm.get('reason')?.touched && resignationForm.get('reason')?.invalid
+              "
+            ></textarea>
+            <div class="invalid-feedback" *ngIf="getFieldError('reason')">
+              {{ getFieldError('reason') }}
+            </div>
+            <small class="text-muted">Minimum 10 characters required</small>
+          </div>
+
+          <!-- Last Working Date -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="lastWorkingDate" class="form-label"
+                >Last Working Date <span class="text-danger">*</span></label
+              >
+              <input
+                type="date"
+                id="lastWorkingDate"
+                class="form-control"
+                formControlName="lastWorkingDate"
+                [class.is-invalid]="
+                  resignationForm.get('lastWorkingDate')?.touched &&
+                  resignationForm.get('lastWorkingDate')?.invalid
+                "
+              />
+              <div class="invalid-feedback" *ngIf="getFieldError('lastWorkingDate')">
+                {{ getFieldError('lastWorkingDate') }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Notice Period</label>
+              <div class="form-control-plaintext">
+                <span class="badge bg-info fs-6">{{ calculateNoticePeriod() }} days</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Immediate Resignation -->
+          <div class="mb-3">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="isImmediateResignation"
+                formControlName="isImmediateResignation"
+              />
+              <label class="form-check-label" for="isImmediateResignation">
+                This is an immediate resignation (without notice period)
+              </label>
+            </div>
+            <small class="text-muted">
+              Note: Immediate resignations may be subject to company policy and may affect your
+              final settlement.
+            </small>
+          </div>
+
+          <!-- Handover Notes -->
+          <div class="mb-3">
+            <label for="handoverNotes" class="form-label">Handover Notes</label>
+            <textarea
+              id="handoverNotes"
+              class="form-control"
+              formControlName="handoverNotes"
+              rows="3"
+              placeholder="Provide any notes for knowledge transfer or handover..."
+              [class.is-invalid]="
+                resignationForm.get('handoverNotes')?.touched &&
+                resignationForm.get('handoverNotes')?.invalid
+              "
+            ></textarea>
+            <div class="invalid-feedback" *ngIf="getFieldError('handoverNotes')">
+              {{ getFieldError('handoverNotes') }}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeModal()"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-danger"
+            [disabled]="resignationForm.invalid || isSubmitting"
+          >
+            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
+            {{ isSubmitting ? 'Submitting...' : 'Submit Resignation' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Withdraw Confirmation Modal -->
+<div class="modal-backdrop" *ngIf="showWithdrawModal" (click)="closeWithdrawModal()"></div>
+<div class="modal d-block" tabindex="-1" *ngIf="showWithdrawModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title">
+          <i class="eva eva-undo-outline me-2"></i>
+          Withdraw Resignation
+        </h5>
+        <button type="button" class="btn-close" (click)="closeWithdrawModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to withdraw your resignation request?</p>
+        <div *ngIf="selectedResignationForWithdraw" class="alert alert-secondary">
+          <small>
+            <strong>Submitted:</strong>
+            {{ formatDate(selectedResignationForWithdraw.submissionDate) }}<br />
+            <strong>Last Working Date:</strong>
+            {{ formatDate(selectedResignationForWithdraw.lastWorkingDate) }}
+          </small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeWithdrawModal()"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-warning"
+          (click)="confirmWithdraw()"
+          [disabled]="isSubmitting"
+        >
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
+          {{ isSubmitting ? 'Withdrawing...' : 'Withdraw' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

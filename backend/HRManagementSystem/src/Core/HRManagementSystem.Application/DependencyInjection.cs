@@ -1,4 +1,6 @@
 using HRManagementSystem.Application.Interfaces;
+using HRManagementSystem.Application.Interfaces.IResignationServices;
+using HRManagementSystem.Application.Services.ResignationServices;
 using HRManagementSystem.Infrastructure.Services;
 
 namespace HRManagementSystem.Application;
@@ -41,6 +43,10 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeTrainingService, EmployeeTrainingService>();
         services.AddScoped<ITrainingRequestService, TrainingRequestService>();
 
+        // Resignation Services
+        services.AddScoped<IResignationService, ResignationService>();
+        services.AddScoped<IResignationApprovalService, ResignationApprovalService>();
+
         // AI/RAG Services
         services.AddHttpClient();
         services.AddScoped<IAIChatService, Services.AIChatService>();
@@ -61,6 +67,7 @@ public static class DependencyInjection
         services.AddAutoMapper(x => x.AddProfile(new ESSProfile()));
         services.AddAutoMapper(x => x.AddProfile(new PayrollProfile()));
         services.AddAutoMapper(x => x.AddProfile(new TrainingProfile()));
+        services.AddAutoMapper(x => x.AddProfile(new ResignationProfile()));
 
         return services;
     }
