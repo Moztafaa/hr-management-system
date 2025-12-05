@@ -1,0 +1,80 @@
+:host ::ng-deep .card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-basic) !important;
+    color: var(--text-color) !important;
+}
+
+:host ::ng-deep input,
+:host ::ng-deep select,
+:host ::ng-deep textarea,
+:host ::ng-deep .form-control {
+    background-color: var(--input-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-basic) !important;
+}
+
+:host ::ng-deep .form-control:focus {
+    background-color: var(--input-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+:host ::ng-deep .table {
+    color: var(--text-color) !important;
+    margin-bottom: 0;
+    background-color: transparent !important;
+}
+
+:host ::ng-deep .table thead th {
+    background-color: var(--header-bg) !important;
+    color: var(--text-hint) !important;
+    border-bottom: 1px solid var(--border-basic) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    padding: 1rem;
+}
+
+:host ::ng-deep .table tbody td {
+    border-bottom: 1px solid var(--border-basic) !important;
+    padding: 1rem;
+    vertical-align: middle;
+    color: var(--text-color) !important;
+    background-color: transparent !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--text-color) !important;
+}
+
+:host ::ng-deep .table-hover tbody tr:hover td {
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+}
+
+:host ::ng-deep .avatar-initial {
+    background-color: var(--input-bg) !important;
+    color: var(--primary-color) !important;
+    font-weight: bold;
+}
+
+:host ::ng-deep .text-muted {
+    color: var(--text-hint) !important;
+}
+
+:host ::ng-deep .btn-light {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-basic) !important;
+    color: var(--text-color) !important;
+}
+
+:host ::ng-deep .btn-light:hover {
+    background-color: var(--hover-bg) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+}
+
+h2 {
+    color: var(--text-color);
+}

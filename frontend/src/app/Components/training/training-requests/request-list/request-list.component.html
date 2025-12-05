@@ -1,14 +1,11 @@
 <div class="container-fluid py-4">
-  <!-- Header -->
+  <!-- Header (Removed New Request Button) -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
       <h2 class="mb-1">Training Requests</h2>
       <p class="text-muted mb-0">Review and manage training requests from employees</p>
     </div>
-    <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openCreateModal()">
-      <i class="eva eva-plus-outline"></i>
-      New Request
-    </button>
+    <!-- Removed the "New Request" button -->
   </div>
 
   <!-- Filters -->
@@ -17,11 +14,7 @@
       <div class="row g-3 align-items-end">
         <div class="col-md-4">
           <label class="form-label small text-muted">Filter by Status</label>
-          <select
-            class="form-select"
-            [(ngModel)]="statusFilter"
-            (ngModelChange)="onStatusFilterChange()"
-          >
+          <select class="form-select" [(ngModel)]="statusFilter" (ngModelChange)="onStatusFilterChange()">
             <option [ngValue]="null">-- All Statuses --</option>
             <option [ngValue]="TrainingRequestStatus.Pending">Pending</option>
             <option [ngValue]="TrainingRequestStatus.Approved">Approved</option>
@@ -29,11 +22,7 @@
           </select>
         </div>
         <div class="col-md-4">
-          <button
-            class="btn btn-outline-secondary"
-            (click)="clearFilter()"
-            [disabled]="statusFilter === null"
-          >
+          <button class="btn btn-outline-secondary" (click)="clearFilter()" [disabled]="statusFilter === null">
             <i class="eva eva-close-outline me-1"></i>
             Clear Filter
           </button>
@@ -85,6 +74,7 @@
               <th>Request Date</th>
               <th>Reviewed By</th>
               <th>Employee Note</th>
+              <th>Manager Note</th>
               <th class="text-end pe-4">Actions</th>
             </tr>
           </thead>
@@ -95,8 +85,7 @@
                 <div class="d-flex align-items-center">
                   <div
                     class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary"
-                    style="width: 40px; height: 40px"
-                  >
+                    style="width: 40px; height: 40px">
                     <i class="eva eva-person-outline"></i>
                   </div>
                   <div>
@@ -130,34 +119,42 @@
               </td>
               <td>
                 @if (request.employeeNote) {
-                <span
-                  class="text-muted text-truncate d-inline-block"
-                  style="max-width: 150px"
-                  [title]="request.employeeNote"
-                >
+                <span class="text-muted text-truncate d-inline-block" style="max-width: 150px"
+                  [title]="request.employeeNote" data-bs-toggle="tooltip" data-bs-placement="top">
                   {{ request.employeeNote }}
                 </span>
                 } @else {
                 <span class="text-muted">-</span>
                 }
               </td>
-              <td class="text-end pe-4">
-                @if (request.status === TrainingRequestStatus.Pending) {
-                <button
-                  class="btn btn-sm btn-light text-primary me-1"
-                  title="Review Request"
-                  (click)="openReviewModal(request)"
-                >
-                  <i class="eva eva-edit-2-outline"></i>
-                </button>
+              <td>
+                @if (request.managerNote) {
+                <span class="text-muted text-truncate d-inline-block" style="max-width: 150px"
+                  [title]="request.managerNote" data-bs-toggle="tooltip" data-bs-placement="top">
+                  {{ request.managerNote }}
+                </span>
+                } @else {
+                <span class="text-muted">-</span>
                 }
-                <button
-                  class="btn btn-sm btn-light text-danger"
-                  title="Delete"
-                  (click)="openDeleteModal(request)"
-                >
-                  <i class="eva eva-trash-2-outline"></i>
-                </button>
+              </td>
+              <td class="text-end pe-4">
+                @if (isPending(request.status)) {
+                <div class="d-flex gap-1 justify-content-end">
+                  <!-- Approve Button (Icon only - matches Enrollments style) -->
+                  <button class="btn btn-sm btn-light text-success me-1" title="Approve Request"
+                    (click)="openReviewModal(request, true)">
+                    <i class="eva eva-checkmark-circle-2-outline"></i>
+                  </button>
+
+                  <!-- Reject Button (Icon only - matches Enrollments style) -->
+                  <button class="btn btn-sm btn-light text-danger" title="Reject Request"
+                    (click)="openReviewModal(request, false)">
+                    <i class="eva eva-close-circle-outline"></i>
+                  </button>
+                </div>
+                } @else {
+                <span class="text-muted small">Reviewed</span>
+                }
               </td>
             </tr>
             }
@@ -206,88 +203,6 @@
   }
 </div>
 
-<!-- Create Request Modal -->
-@if (showCreateModal) {
-<div class="modal-backdrop fade show"></div>
-<div class="modal show d-block" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <i class="eva eva-file-add-outline me-2"></i>
-          New Training Request
-        </h5>
-        <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="submitRequest()">
-          <div class="mb-3">
-            <label class="form-label">Employee <span class="text-danger">*</span></label>
-            <select
-              class="form-select"
-              [(ngModel)]="createFormData.employeeId"
-              name="employeeId"
-              required
-            >
-              <option [ngValue]="0" disabled>-- Select Employee --</option>
-              @for (employee of employees; track employee.id) {
-              <option [ngValue]="employee.id">
-                {{ getEmployeeFullName(employee) }} ({{ employee.email }})
-              </option>
-              }
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Training Course <span class="text-danger">*</span></label>
-            <select
-              class="form-select"
-              [(ngModel)]="createFormData.trainingCourseId"
-              name="trainingCourseId"
-              required
-            >
-              <option [ngValue]="0" disabled>-- Select Course --</option>
-              @for (course of courses; track course.id) {
-              <option [ngValue]="course.id">{{ course.title }}</option>
-              }
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Note (Optional)</label>
-            <textarea
-              class="form-control"
-              [(ngModel)]="createFormData.employeeNote"
-              name="employeeNote"
-              rows="3"
-              placeholder="Add any notes about this training request..."
-            ></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="closeCreateModal()"
-          [disabled]="isSaving"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="submitRequest()"
-          [disabled]="isSaving"
-        >
-          @if (isSaving) {
-          <span class="spinner-border spinner-border-sm me-1"></span>
-          Submitting... } @else { Submit Request }
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-}
-
 <!-- Review Modal -->
 @if (showReviewModal) {
 <div class="modal-backdrop fade show"></div>
@@ -296,143 +211,72 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          <i class="eva eva-checkmark-square-outline me-2"></i>
-          Review Training Request
+          <i class="eva {{ reviewApproved ? 'eva-checkmark-square-outline' : 'eva-close-square-outline' }} me-2"></i>
+          {{ reviewApproved ? 'Approve' : 'Reject' }} Training Request
         </h5>
         <button type="button" class="btn-close" (click)="closeReviewModal()"></button>
       </div>
+
       <div class="modal-body">
-        <div class="mb-4 p-3 bg-light rounded">
-          <div class="row">
-            <div class="col-6">
-              <small class="text-muted d-block">Employee</small>
-              <strong>{{ reviewRequest?.employeeName }}</strong>
+        <!-- Simple summary -->
+        <div class="alert alert-light mb-4">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <div
+                class="avatar-initial rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center"
+                style="width: 50px; height: 50px;">
+                <i class="eva eva-person-outline"></i>
+              </div>
             </div>
-            <div class="col-6">
-              <small class="text-muted d-block">Course</small>
-              <strong>{{ reviewRequest?.courseTitle }}</strong>
-            </div>
-          </div>
-          @if (reviewRequest?.employeeNote) {
-          <div class="mt-3">
-            <small class="text-muted d-block">Employee Note</small>
-            <span>{{ reviewRequest?.employeeNote }}</span>
-          </div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Decision <span class="text-danger">*</span></label>
-          <div class="d-flex gap-3">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="decision"
-                id="approve"
-                [value]="true"
-                [(ngModel)]="reviewApproved"
-              />
-              <label class="form-check-label text-success" for="approve">
-                <i class="eva eva-checkmark-circle-2-outline me-1"></i>
-                Approve
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="decision"
-                id="reject"
-                [value]="false"
-                [(ngModel)]="reviewApproved"
-              />
-              <label class="form-check-label text-danger" for="reject">
-                <i class="eva eva-close-circle-outline me-1"></i>
-                Reject
-              </label>
+            <div class="flex-grow-1 ms-3">
+              <h6 class="mb-1">{{ reviewRequest?.employeeName }}</h6>
+              <p class="mb-0 text-muted small">{{ reviewRequest?.courseTitle }}</p>
+              @if (reviewRequest?.employeeNote) {
+              <p class="mb-0 mt-2 small">
+                <strong>Employee note:</strong> {{ reviewRequest?.employeeNote }}
+              </p>
+              }
             </div>
           </div>
         </div>
 
+        <!-- Decision confirmation -->
+        <div class="alert {{ reviewApproved ? 'alert-success' : 'alert-danger' }} mb-4">
+          <div class="d-flex align-items-center">
+            <i
+              class="eva {{ reviewApproved ? 'eva-checkmark-circle-2-outline' : 'eva-close-circle-outline' }} me-2 fs-4"></i>
+            <div>
+              <strong>This request will be {{ reviewApproved ? 'approved' : 'rejected' }}</strong>
+              <div class="small mt-1">Status will change from Pending to {{ reviewApproved ? 'Approved' : 'Rejected' }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manager note input -->
         <div class="mb-3">
-          <label class="form-label">Manager Note (Optional)</label>
-          <textarea
-            class="form-control"
-            [(ngModel)]="reviewNote"
-            rows="3"
-            placeholder="Add a note about your decision..."
-          ></textarea>
+          <label class="form-label fw-medium">Add a note (Optional)</label>
+          <textarea class="form-control" [(ngModel)]="reviewNote" rows="3"
+            placeholder="Add a note explaining your decision..." [class.border-success]="reviewApproved"
+            [class.border-danger]="!reviewApproved"></textarea>
+          <div class="form-text small text-muted">
+            This note will be visible to the employee. Leave empty if no note needed.
+          </div>
         </div>
       </div>
+
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="closeReviewModal()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-outline-secondary" (click)="closeReviewModal()" [disabled]="isSaving">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn"
-          [class.btn-success]="reviewApproved"
-          [class.btn-danger]="!reviewApproved"
-          (click)="submitReview()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn {{ reviewApproved ? 'btn-success' : 'btn-danger' }} d-flex align-items-center"
+          (click)="submitReview()" [disabled]="isSaving">
           @if (isSaving) {
-          <span class="spinner-border spinner-border-sm me-1"></span>
+          <span class="spinner-border spinner-border-sm me-2"></span>
           Processing... } @else {
-          {{ reviewApproved ? 'Approve' : 'Reject' }}
+          <i class="eva {{ reviewApproved ? 'eva-checkmark-circle-outline' : 'eva-close-circle-outline' }} me-2"></i>
+          {{ reviewApproved ? 'Approve Request' : 'Reject Request' }}
           }
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-}
-
-<!-- Delete Confirmation Modal -->
-@if (showDeleteModal) {
-<div class="modal-backdrop fade show"></div>
-<div class="modal show d-block" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header border-0">
-        <h5 class="modal-title text-danger">
-          <i class="eva eva-alert-triangle-outline me-2"></i>Confirm Delete
-        </h5>
-        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
-      </div>
-      <div class="modal-body">
-        <p>
-          Are you sure you want to delete the training request from
-          <strong>{{ requestToDelete?.employeeName }}</strong>
-          for course
-          <strong>"{{ requestToDelete?.courseTitle }}"</strong>?
-        </p>
-        <p class="text-muted small mb-0">This action cannot be undone.</p>
-      </div>
-      <div class="modal-footer border-0">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="closeDeleteModal()"
-          [disabled]="isSaving"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          (click)="confirmDelete()"
-          [disabled]="isSaving"
-        >
-          @if (isSaving) {
-          <span class="spinner-border spinner-border-sm me-1"></span>
-          Deleting... } @else { Delete }
         </button>
       </div>
     </div>

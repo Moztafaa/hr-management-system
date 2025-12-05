@@ -43,10 +43,15 @@ export class TrainingRequestService {
     approved: boolean,
     managerNote?: string
   ): Observable<ApiResponse<TrainingRequest>> {
+    // Send managerNote as a JSON string or null
+    const body = managerNote !== undefined ? JSON.stringify(managerNote) : null;
+    
     return this.http.post<ApiResponse<TrainingRequest>>(
       `${this.apiUrl}/${id}/review?managerId=${managerId}&approve=${approved}`,
-      managerNote ?? null,
-      { headers: { 'Content-Type': 'application/json' } }
+      body,
+      { 
+        headers: { 'Content-Type': 'application/json' } 
+      }
     );
   }
 

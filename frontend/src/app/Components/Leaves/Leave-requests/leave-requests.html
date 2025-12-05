@@ -1,0 +1,76 @@
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Leave Requests</h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div *ngIf="isLoading" class="p-4 text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <div *ngIf="error" class="alert alert-danger m-3" role="alert">
+                {{ error }}
+            </div>
+
+            <div *ngIf="!isLoading && !error" class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Leave Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Days</th>
+                            <th>Status</th>
+                            <th>Reviewed By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let leave of leaveRequests">
+                            <td>{{ leave.employeeName }}</td>
+                            <td>{{ leave.leaveTypeName }}</td>
+                            <td>{{ leave.startDate | date }}</td>
+                            <td>{{ leave.endDate | date }}</td>
+                            <td>{{ leave.totalDays }}</td>
+                            <td>
+                                <span class="badge rounded-pill" [ngClass]="getStatusBadgeClass(leave.status)">
+                                    {{ getStatusText(leave.status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <div *ngIf="leave.reviewedBy">
+                                    {{ leave.reviewedBy }}<br>
+                                    <small class="text-muted">{{ leave.reviewedAt | date:'short' }}</small>
+                                </div>
+                                <span *ngIf="!leave.reviewedBy">-</span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <!-- Approve button - only for pending requests -->
+                                    <button *ngIf="leave.status === 0" class="btn btn-sm btn-success"
+                                        (click)="approve(leave)" title="Approve">
+                                        <i class="eva eva-checkmark-outline"></i>
+                                    </button>
+
+                                    <!-- Reject button - only for pending requests -->
+                                    <button *ngIf="leave.status === 0" class="btn btn-sm btn-warning"
+                                        (click)="reject(leave)" title="Reject">
+                                        <i class="eva eva-close-outline"></i>
+                                    </button>
+                                </div>
+                                <span *ngIf="leave.status !== 0 && leave.status !== 3" class="text-muted">-</span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="leaveRequests.length === 0">
+                            <td colspan="8" class="text-center py-5 text-muted">No leave requests found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

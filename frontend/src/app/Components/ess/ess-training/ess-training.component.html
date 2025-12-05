@@ -207,7 +207,7 @@
               </td>
               <td>{{ request.reviewedAt ? formatDate(request.reviewedAt) : '-' }}</td>
               <td>
-                @if (request.status === TrainingRequestStatus.Pending) {
+                @if (isPending(request.status)) {
                 <button
                   class="btn btn-sm btn-outline-danger"
                   (click)="openCancelModal(request)"

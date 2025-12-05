@@ -3,5 +3,5 @@ public class LeaveApprovalActionDto
 {
     public int LeaveRequestId { get; set; }
     public int ApproverId { get; set; }
-    public LevelApproval Level { get; set; }
+    public LevelApproval Level { get; set; } = LevelApproval.Manager;
 }

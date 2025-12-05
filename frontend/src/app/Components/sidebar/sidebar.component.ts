@@ -46,7 +46,8 @@ export class SidebarComponent {
       title: 'Attendance',
       icon: 'clock-outline',
       children: [
-        { title: 'Check In/Out', link: '/pages/attendance/check' },
+        { title: 'Check In', link: '/pages/attendance/check' },
+        { title: 'Check Out', link: '/pages/attendance/checkout' },
         { title: 'Attendance Records', link: '/pages/attendance/records' },
       ],
     },
@@ -56,8 +57,9 @@ export class SidebarComponent {
       children: [
         { title: 'Leave Types', link: '/pages/leave/types' },
         { title: 'Leave Requests', link: '/pages/leave/requests' },
-        { title: 'Leave Approvals', link: '/pages/leave/approvals' },
+        { title: 'My Approvals', link: '/pages/leave/approvals' },
         { title: 'Leave Balances', link: '/pages/leave/balances' },
+        { title: 'Manage Balances', link: '/pages/leave/manage-balances' },
       ],
     },
     {

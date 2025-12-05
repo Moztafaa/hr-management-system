@@ -82,16 +82,12 @@
             <div class="balance-type">{{ getLeaveTypeName(balance.leaveTypeId) }}</div>
             <div class="balance-bar">
               <div class="progress" style="height: 6px">
-                <div
-                  class="progress-bar"
-                  [class.bg-success]="balance.remainingDays > balance.totalAllocated * 0.5"
+                <div class="progress-bar" [class.bg-success]="balance.remainingDays > balance.totalAllocated * 0.5"
                   [class.bg-warning]="
                     balance.remainingDays <= balance.totalAllocated * 0.5 &&
                     balance.remainingDays > balance.totalAllocated * 0.2
-                  "
-                  [class.bg-danger]="balance.remainingDays <= balance.totalAllocated * 0.2"
-                  [style.width.%]="(balance.remainingDays / balance.totalAllocated) * 100"
-                ></div>
+                  " [class.bg-danger]="balance.remainingDays <= balance.totalAllocated * 0.2"
+                  [style.width.%]="(balance.remainingDays / balance.totalAllocated) * 100"></div>
               </div>
             </div>
             <div class="balance-stats">
@@ -155,6 +151,20 @@
               <td class="text-muted">
                 {{ request.createdAt ? formatDate(request.createdAt) : '-' }}
               </td>
+              <!-- <td>
+                @if (request.status === LeaveStatus.Pending) {
+                <div class="btn-group" role="group">
+                  <button class="btn btn-sm btn-primary" (click)="editRequest(request)" title="Edit Request">
+                    <i class="eva eva-edit-outline"></i> Edit
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteRequest(request.id)" title="Delete Request">
+                    <i class="eva eva-trash-2-outline"></i> Delete
+                  </button>
+                </div>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td> -->
             </tr>
             }
           </tbody>
@@ -180,12 +190,8 @@
             <!-- Leave Type -->
             <div class="form-group mb-4">
               <label for="leaveType" class="form-label">Leave Type *</label>
-              <select
-                id="leaveType"
-                class="form-select"
-                formControlName="leaveTypeId"
-                [class.is-invalid]="getFieldError('leaveTypeId')"
-              >
+              <select id="leaveType" class="form-select" formControlName="leaveTypeId"
+                [class.is-invalid]="getFieldError('leaveTypeId')">
                 <option value="">Select leave type</option>
                 @for (type of leaveTypes; track type.id) {
                 <option [value]="type.id">
@@ -204,26 +210,16 @@
             <div class="row g-3 mb-4">
               <div class="col-md-6">
                 <label for="startDate" class="form-label">Start Date *</label>
-                <input
-                  type="date"
-                  id="startDate"
-                  class="form-control"
-                  formControlName="startDate"
-                  [class.is-invalid]="getFieldError('startDate')"
-                />
+                <input type="date" id="startDate" class="form-control" formControlName="startDate"
+                  [class.is-invalid]="getFieldError('startDate')" />
                 @if (getFieldError('startDate')) {
                 <div class="invalid-feedback">{{ getFieldError('startDate') }}</div>
                 }
               </div>
               <div class="col-md-6">
                 <label for="endDate" class="form-label">End Date *</label>
-                <input
-                  type="date"
-                  id="endDate"
-                  class="form-control"
-                  formControlName="endDate"
-                  [class.is-invalid]="getFieldError('endDate')"
-                />
+                <input type="date" id="endDate" class="form-control" formControlName="endDate"
+                  [class.is-invalid]="getFieldError('endDate')" />
                 @if (getFieldError('endDate')) {
                 <div class="invalid-feedback">{{ getFieldError('endDate') }}</div>
                 }
@@ -234,38 +230,22 @@
             @if (calculateDays() > 0) {
             <div class="days-summary mb-4">
               <i class="eva eva-calendar-outline me-2"></i>
-              <span
-                >Total: <strong>{{ calculateDays() }} day(s)</strong></span
-              >
+              <span>Total: <strong>{{ calculateDays() }} day(s)</strong></span>
             </div>
             }
 
             <!-- Reason -->
             <div class="form-group">
               <label for="reason" class="form-label">Reason (Optional)</label>
-              <textarea
-                id="reason"
-                class="form-control"
-                formControlName="reason"
-                rows="3"
-                placeholder="Enter reason for leave request"
-              ></textarea>
+              <textarea id="reason" class="form-control" formControlName="reason" rows="3"
+                placeholder="Enter reason for leave request"></textarea>
             </div>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              (click)="closeModal()"
-              [disabled]="isSubmitting"
-            >
+            <button type="button" class="btn btn-outline-secondary" (click)="closeModal()" [disabled]="isSubmitting">
               Cancel
             </button>
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="isSubmitting || leaveForm.invalid"
-            >
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting || leaveForm.invalid">
               @if (isSubmitting) {
               <span class="spinner-border spinner-border-sm me-1"></span>
               Submitting... } @else {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AfterNadaEmadWork : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -1167,18 +1167,18 @@ namespace HRManagementSystem.Infrastructure.Migrations
                 columns: new[] { "DeductionId", "EmployeeId", "Amount", "CreatedAt", "EndDate", "IsPercentage", "Recurrence", "StartDate", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 1, 2250.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, 1, 3750.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 1, 2, 1800.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, 2, 2500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 1, 3, 1350.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, 3, 1500.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 1, 4, 1980.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, 4, 2750.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 1, 5, 1440.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, 5, 1600.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 1, 6, 2160.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, 6, 3000.00m, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
+                    { 1, 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, 1, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 1, 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, 2, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 1, 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, 3, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 1, 4, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, 4, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 1, 5, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, 5, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2022, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 1, 6, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, 6, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "Permanent", new DateTime(2021, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
                 });
 
             migrationBuilder.InsertData(

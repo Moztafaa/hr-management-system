@@ -1,8 +1,67 @@
 /* Card Styling */
 :host ::ng-deep .card {
   background-color: var(--card-bg) !important;
-  border: 1px solid var(--border-basic) !important;
+  border: 1px solid var(--border-bg-basic) !important;
   color: var(--text-color) !important;
+}
+
+/* Course Title Styling - REMOVE WHITE SPACE/BACKGROUND */
+:host ::ng-deep .course-title,
+:host ::ng-deep h1.course-title,
+:host ::ng-deep h2.course-title,
+:host ::ng-deep h3.course-title,
+:host ::ng-deep .card-title.course-title,
+:host ::ng-deep .training-title,
+:host ::ng-deep .training-title-container {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* If the white part is a container/wrapper around the title */
+:host ::ng-deep .course-title-wrapper,
+:host ::ng-deep .title-container,
+:host ::ng-deep .header-container {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* FIX FOR MODAL ALERT-LIGHT SPECIFICALLY - Remove white background */
+:host ::ng-deep .modal-body .alert.alert-light {
+  background-color: transparent !important;
+  border: 1px solid var(--border-basic) !important;
+}
+
+/* Target the specific alert in the review modal */
+:host ::ng-deep .modal[class*="show"] .alert.alert-light,
+:host ::ng-deep .modal-backdrop ~ .modal .alert.alert-light {
+  background-color: transparent !important;
+  border-color: var(--border-basic) !important;
+}
+
+/* Also make sure the text inside is visible */
+:host ::ng-deep .modal-body .alert.alert-light h6,
+:host ::ng-deep .modal-body .alert.alert-light .text-muted {
+  color: var(--text-color) !important;
+}
+
+/* Alternative: If you want to completely remove the alert styling */
+:host ::ng-deep .modal-body .alert.alert-light {
+  background: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+:host ::ng-deep .modal-body .alert.alert-light .d-flex {
+  background: none !important;
+  background-color: transparent !important;
 }
 
 /* Form Controls */
@@ -193,7 +252,7 @@ p {
   color: var(--text-hint) !important;
 }
 
-/* Review modal info box */
+/* Review modal info box - THIS IS THE MAIN FIX */
 :host ::ng-deep .bg-light {
   background-color: var(--input-bg) !important;
 }
@@ -232,4 +291,64 @@ p {
 
 :host ::ng-deep .text-danger {
   color: var(--color-danger) !important;
+}
+
+/* Tooltip styling */
+[data-bs-toggle="tooltip"] {
+  cursor: pointer;
+}
+
+.tooltip {
+  font-size: 0.875rem;
+}
+
+/* Ensure tooltips work with text truncation */
+.text-truncate {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Status badge styling - consistent with Enrollments */
+:host ::ng-deep .badge.status-pending {
+  background-color: rgba(255, 170, 0, 0.2) !important;
+  color: var(--color-warning) !important;
+}
+
+:host ::ng-deep .badge.status-approved {
+  background-color: rgba(0, 214, 143, 0.2) !important;
+  color: var(--color-success) !important;
+}
+
+:host ::ng-deep .badge.status-rejected {
+  background-color: rgba(255, 61, 113, 0.2) !important;
+  color: var(--color-danger) !important;
+}
+
+:host ::ng-deep .badge.status-enrolled {
+  background-color: rgba(0, 149, 255, 0.2) !important;
+  color: var(--color-info) !important;
+}
+
+:host ::ng-deep .badge.status-completed {
+  background-color: rgba(0, 214, 143, 0.2) !important;
+  color: var(--color-success) !important;
+}
+
+:host ::ng-deep .badge.status-cancelled {
+  background-color: rgba(143, 155, 179, 0.2) !important;
+  color: var(--text-hint) !important;
+}
+
+/* Consistent button spacing */
+:host ::ng-deep .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+:host ::ng-deep .me-1 {
+  margin-right: 0.25rem !important;
+}
+
+:host ::ng-deep .d-flex.gap-1 {
+  gap: 0.25rem;
 }

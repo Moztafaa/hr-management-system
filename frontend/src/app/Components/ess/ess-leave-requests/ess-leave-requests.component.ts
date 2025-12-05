@@ -1,10 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ESSService } from '../../../Services/ess.service';
 import { LeaveTypeService } from '../../../Services/leave-type.service';
 import { ToastService } from '../../../Services/toast.service';
+import { ApiResponse } from '../../../models/api-response';
 import {
   LeaveRequest,
   CreateLeaveRequest,
@@ -27,6 +29,7 @@ export class EssLeaveRequestsComponent implements OnInit {
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
 
   leaveRequests: LeaveRequest[] = [];
   leaveBalances: LeaveBalance[] = [];
@@ -242,5 +245,37 @@ export class EssLeaveRequestsComponent implements OnInit {
       if (control.errors['required']) return 'This field is required';
     }
     return null;
+  }
+
+  editRequest(request: LeaveRequest): void {
+    // For ESS module, we can reopen the modal with the request data
+    this.leaveForm.patchValue({
+      leaveTypeId: request.leaveTypeId,
+      startDate: request.startDate.split('T')[0],
+      endDate: request.endDate.split('T')[0],
+      reason: request.reason || ''
+    });
+    this.showModal = true;
+  }
+
+  deleteRequest(requestId: number): void {
+    if (!confirm('Are you sure you want to delete this leave request? This action cannot be undone.')) {
+      return;
+    }
+
+    // Call the delete API endpoint
+    this.http.delete<ApiResponse<void>>(`https://localhost:7005/api/LeaveRequest/${requestId}`).subscribe({
+      next: (response) => {
+        if (!response.hasError) {
+          this.toastService.success('Leave request deleted successfully');
+          this.loadData();
+        } else {
+          this.toastService.error(response.errorMessage || 'Failed to delete leave request');
+        }
+      },
+      error: () => {
+        this.toastService.error('An error occurred while deleting the request');
+      },
+    });
   }
 }

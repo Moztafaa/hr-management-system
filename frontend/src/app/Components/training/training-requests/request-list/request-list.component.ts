@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TrainingRequestService } from '../../../../Services/training/training-request.service';
@@ -13,6 +13,8 @@ import {
   TrainingCourse,
 } from '../../../../models/training';
 
+declare const bootstrap: any;
+
 @Component({
   selector: 'app-request-list',
   standalone: true,
@@ -20,7 +22,7 @@ import {
   templateUrl: './request-list.component.html',
   styleUrls: ['./request-list.component.css'],
 })
-export class RequestListComponent implements OnInit {
+export class RequestListComponent implements OnInit, AfterViewInit, OnDestroy {
   private requestService = inject(TrainingRequestService);
   private courseService = inject(TrainingCourseService);
   private employeeService = inject(EmployeeService);
@@ -34,32 +36,24 @@ export class RequestListComponent implements OnInit {
   isLoadingEmployees = false;
   error: string | null = null;
 
-  // Filter
-  statusFilter: TrainingRequestStatus | null = null;
+  // Filter - use string or number
+  statusFilter: string | TrainingRequestStatus | null = null;
 
   // Modal state
-  showCreateModal = false;
   showReviewModal = false;
-  showDeleteModal = false;
   isSaving = false;
-
-  // Form data for new request
-  createFormData: CreateTrainingRequestDto = {
-    employeeId: 0,
-    trainingCourseId: 0,
-    employeeNote: '',
-  };
 
   // Review modal state
   reviewRequest: TrainingRequest | null = null;
   reviewApproved = true;
+  reviewAction: string = 'Review';
   reviewNote = '';
-
-  // Delete modal state
-  requestToDelete: TrainingRequest | null = null;
 
   // Current user info
   currentEmployeeId: number | null = null;
+
+  // Tooltip instances
+  private tooltipInstances: any[] = [];
 
   // Expose enum to template
   TrainingRequestStatus = TrainingRequestStatus;
@@ -71,8 +65,46 @@ export class RequestListComponent implements OnInit {
     this.loadRequests();
   }
 
+  ngAfterViewInit(): void {
+    // Initialize Bootstrap tooltips after view is ready
+    this.initializeTooltips();
+  }
+
+  ngOnDestroy(): void {
+    // Clean up tooltips to prevent memory leaks
+    this.destroyTooltips();
+  }
+
+  private initializeTooltips(): void {
+    // Clean up existing tooltips first
+    this.destroyTooltips();
+
+    // Initialize tooltips for all elements with data-bs-toggle="tooltip"
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+    // Store tooltip instances for later cleanup
+    this.tooltipInstances = Array.from(tooltipTriggerList).map(
+      tooltipTriggerEl => {
+        // Check if tooltip already exists
+        if ((tooltipTriggerEl as any)._tooltip) {
+          return (tooltipTriggerEl as any)._tooltip;
+        }
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      }
+    );
+  }
+
+  private destroyTooltips(): void {
+    // Dispose of all tooltip instances
+    this.tooltipInstances.forEach(tooltip => {
+      if (tooltip && typeof tooltip.dispose === 'function') {
+        tooltip.dispose();
+      }
+    });
+    this.tooltipInstances = [];
+  }
+
   loadCurrentUser(): void {
-    // Get employee ID from localStorage (stored during login)
     const userId = localStorage.getItem('userId');
     if (userId) {
       this.currentEmployeeId = parseInt(userId, 10);
@@ -85,13 +117,15 @@ export class RequestListComponent implements OnInit {
 
     const request$ =
       this.statusFilter !== null
-        ? this.requestService.getByStatus(this.statusFilter)
+        ? this.requestService.getByStatus(this.statusFilter as TrainingRequestStatus)
         : this.requestService.getAll();
 
     request$.subscribe({
       next: (response) => {
         if (!response.hasError && response.data) {
           this.requests = response.data;
+          // Reinitialize tooltips after data loads
+          setTimeout(() => this.initializeTooltips(), 100);
         } else {
           this.error = response.errorMessage || 'Failed to load training requests';
           this.toastService.error(this.error);
@@ -145,48 +179,10 @@ export class RequestListComponent implements OnInit {
     this.loadRequests();
   }
 
-  openCreateModal(): void {
-    this.createFormData = {
-      employeeId: this.currentEmployeeId || 0,
-      trainingCourseId: 0,
-      employeeNote: '',
-    };
-    this.showCreateModal = true;
-  }
-
-  closeCreateModal(): void {
-    this.showCreateModal = false;
-  }
-
-  submitRequest(): void {
-    if (!this.createFormData.employeeId || !this.createFormData.trainingCourseId) {
-      this.toastService.error('Please select both employee and course');
-      return;
-    }
-
-    this.isSaving = true;
-    this.requestService.create(this.createFormData).subscribe({
-      next: (response) => {
-        if (!response.hasError) {
-          this.toastService.success('Training request submitted successfully');
-          this.closeCreateModal();
-          this.loadRequests();
-        } else {
-          this.toastService.error(response.errorMessage || 'Failed to submit request');
-        }
-        this.isSaving = false;
-      },
-      error: (err) => {
-        const errorMessage = this.extractValidationErrors(err);
-        this.toastService.error(errorMessage);
-        this.isSaving = false;
-      },
-    });
-  }
-
-  openReviewModal(request: TrainingRequest): void {
+  openReviewModal(request: TrainingRequest, approved: boolean): void {
     this.reviewRequest = request;
-    this.reviewApproved = true;
+    this.reviewApproved = approved;
+    this.reviewAction = approved ? 'Approve' : 'Reject';
     this.reviewNote = '';
     this.showReviewModal = true;
   }
@@ -231,38 +227,6 @@ export class RequestListComponent implements OnInit {
       });
   }
 
-  openDeleteModal(request: TrainingRequest): void {
-    this.requestToDelete = request;
-    this.showDeleteModal = true;
-  }
-
-  closeDeleteModal(): void {
-    this.showDeleteModal = false;
-    this.requestToDelete = null;
-  }
-
-  confirmDelete(): void {
-    if (!this.requestToDelete) return;
-
-    this.isSaving = true;
-    this.requestService.delete(this.requestToDelete.id).subscribe({
-      next: (response) => {
-        if (!response.hasError) {
-          this.toastService.success('Training request deleted successfully');
-          this.closeDeleteModal();
-          this.loadRequests();
-        } else {
-          this.toastService.error(response.errorMessage || 'Failed to delete request');
-        }
-        this.isSaving = false;
-      },
-      error: () => {
-        this.toastService.error('An error occurred while deleting the request');
-        this.isSaving = false;
-      },
-    });
-  }
-
   private extractValidationErrors(err: any): string {
     if (err?.error?.errors) {
       const errors = err.error.errors;
@@ -286,21 +250,46 @@ export class RequestListComponent implements OnInit {
     return 'An error occurred while processing the request';
   }
 
-  getStatusBadgeClass(status: TrainingRequestStatus): string {
-    switch (status) {
-      case TrainingRequestStatus.Pending:
-        return 'bg-warning bg-opacity-10 text-warning';
-      case TrainingRequestStatus.Approved:
-        return 'bg-success bg-opacity-10 text-success';
-      case TrainingRequestStatus.Rejected:
-        return 'bg-danger bg-opacity-10 text-danger';
+  // Helper method to convert string status to enum
+  private getStatusEnum(status: string | TrainingRequestStatus): TrainingRequestStatus {
+    if (typeof status === 'number') {
+      return status;
+    }
+
+    switch (status?.toLowerCase()) {
+      case 'pending':
+      case '0':
+        return TrainingRequestStatus.Pending;
+      case 'approved':
+      case '1':
+        return TrainingRequestStatus.Approved;
+      case 'rejected':
+      case '2':
+        return TrainingRequestStatus.Rejected;
       default:
-        return 'bg-light text-dark';
+        return TrainingRequestStatus.Pending;
     }
   }
 
-  getStatusIcon(status: TrainingRequestStatus): string {
-    switch (status) {
+  getStatusBadgeClass(status: string | TrainingRequestStatus): string {
+    const statusEnum = this.getStatusEnum(status);
+
+    switch (statusEnum) {
+      case TrainingRequestStatus.Pending:
+        return 'status-pending'; // Updated
+      case TrainingRequestStatus.Approved:
+        return 'status-approved'; // Updated
+      case TrainingRequestStatus.Rejected:
+        return 'status-rejected'; // Updated
+      default:
+        return 'status-pending'; // Updated
+    }
+  }
+
+  getStatusIcon(status: string | TrainingRequestStatus): string {
+    const statusEnum = this.getStatusEnum(status);
+
+    switch (statusEnum) {
       case TrainingRequestStatus.Pending:
         return 'eva-clock-outline';
       case TrainingRequestStatus.Approved:
@@ -312,8 +301,10 @@ export class RequestListComponent implements OnInit {
     }
   }
 
-  getStatusText(status: TrainingRequestStatus): string {
-    switch (status) {
+  getStatusText(status: string | TrainingRequestStatus): string {
+    const statusEnum = this.getStatusEnum(status);
+
+    switch (statusEnum) {
       case TrainingRequestStatus.Pending:
         return 'Pending';
       case TrainingRequestStatus.Approved:
@@ -321,8 +312,13 @@ export class RequestListComponent implements OnInit {
       case TrainingRequestStatus.Rejected:
         return 'Rejected';
       default:
-        return 'Unknown';
+        return 'Pending';
     }
+  }
+
+  // Check if status is pending (for template comparisons)
+  isPending(status: string | TrainingRequestStatus): boolean {
+    return this.getStatusEnum(status) === TrainingRequestStatus.Pending;
   }
 
   formatDate(dateString?: string): string {
@@ -339,14 +335,20 @@ export class RequestListComponent implements OnInit {
   }
 
   getPendingCount(): number {
-    return this.requests.filter((r) => r.status === TrainingRequestStatus.Pending).length;
+    return this.requests.filter((r) =>
+      this.getStatusEnum(r.status) === TrainingRequestStatus.Pending
+    ).length;
   }
 
   getApprovedCount(): number {
-    return this.requests.filter((r) => r.status === TrainingRequestStatus.Approved).length;
+    return this.requests.filter((r) =>
+      this.getStatusEnum(r.status) === TrainingRequestStatus.Approved
+    ).length;
   }
 
   getRejectedCount(): number {
-    return this.requests.filter((r) => r.status === TrainingRequestStatus.Rejected).length;
+    return this.requests.filter((r) =>
+      this.getStatusEnum(r.status) === TrainingRequestStatus.Rejected
+    ).length;
   }
 }

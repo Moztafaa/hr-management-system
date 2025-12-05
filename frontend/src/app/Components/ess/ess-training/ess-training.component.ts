@@ -188,9 +188,37 @@ export class EssTrainingComponent implements OnInit {
     });
   }
 
-  // Helper methods
-  getStatusBadgeClass(status: TrainingRequestStatus): string {
-    switch (status) {
+  // Helper method to convert string status to enum
+  private getStatusEnum(status: string | TrainingRequestStatus): TrainingRequestStatus {
+    if (typeof status === 'number') {
+      return status;
+    }
+    
+    switch (status?.toLowerCase()) {
+      case 'pending':
+      case '0':
+        return TrainingRequestStatus.Pending;
+      case 'approved':
+      case '1':
+        return TrainingRequestStatus.Approved;
+      case 'rejected':
+      case '2':
+        return TrainingRequestStatus.Rejected;
+      default:
+        return TrainingRequestStatus.Pending;
+    }
+  }
+
+  // Check if status is pending
+  isPending(status: string | TrainingRequestStatus): boolean {
+    return this.getStatusEnum(status) === TrainingRequestStatus.Pending;
+  }
+
+  // Updated helper methods to handle both string and enum
+  getStatusBadgeClass(status: string | TrainingRequestStatus): string {
+    const statusEnum = this.getStatusEnum(status);
+    
+    switch (statusEnum) {
       case TrainingRequestStatus.Pending:
         return 'status-pending';
       case TrainingRequestStatus.Approved:
@@ -202,8 +230,10 @@ export class EssTrainingComponent implements OnInit {
     }
   }
 
-  getStatusText(status: TrainingRequestStatus): string {
-    switch (status) {
+  getStatusText(status: string | TrainingRequestStatus): string {
+    const statusEnum = this.getStatusEnum(status);
+    
+    switch (statusEnum) {
       case TrainingRequestStatus.Pending:
         return 'Pending';
       case TrainingRequestStatus.Approved:
@@ -237,7 +267,7 @@ export class EssTrainingComponent implements OnInit {
     });
   }
 
-  // Stats
+  // Updated stats methods to handle string status
   get enrolledCount(): number {
     return this.myCourses.filter((c) => c.status === 'Enrolled').length;
   }
@@ -251,14 +281,18 @@ export class EssTrainingComponent implements OnInit {
   }
 
   get pendingRequestsCount(): number {
-    return this.myRequests.filter((r) => r.status === TrainingRequestStatus.Pending).length;
+    return this.myRequests.filter((r) => this.isPending(r.status)).length;
   }
 
   get approvedRequestsCount(): number {
-    return this.myRequests.filter((r) => r.status === TrainingRequestStatus.Approved).length;
+    return this.myRequests.filter((r) => 
+      this.getStatusEnum(r.status) === TrainingRequestStatus.Approved
+    ).length;
   }
 
   get rejectedRequestsCount(): number {
-    return this.myRequests.filter((r) => r.status === TrainingRequestStatus.Rejected).length;
+    return this.myRequests.filter((r) => 
+      this.getStatusEnum(r.status) === TrainingRequestStatus.Rejected
+    ).length;
   }
 }
