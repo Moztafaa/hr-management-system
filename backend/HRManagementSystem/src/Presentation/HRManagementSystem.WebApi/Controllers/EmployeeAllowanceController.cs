@@ -2,8 +2,6 @@ namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-// [Authorize]
-// [Authorize(Roles = "Admin,HR")]
 public class EmployeeAllowanceController(IEmployeeAllowanceService _employeeAllowanceService) : ControllerBase
 {
     [HttpGet]

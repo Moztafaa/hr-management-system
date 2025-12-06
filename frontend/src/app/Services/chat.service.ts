@@ -98,4 +98,9 @@ export class ChatService {
       this._messages.set([this.getGreeting()]);
     }
   }
+
+  // Sync employees data to MongoDB for chatbot
+  syncEmployeesToMongoDB(): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/sync-employees`, {});
+  }
 }

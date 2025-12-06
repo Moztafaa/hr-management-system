@@ -30,7 +30,15 @@ export class LoginComponent {
           if (!res.hasError && res.data) {
             this.errorMessage = '';
             this.layoutService.closeLogin();
-            this.router.navigate(['/pages/dashboard']);
+
+            // Redirect based on role
+            const roles = res.data.roles || [];
+            if (roles.includes('HR') || roles.includes('Manager')) {
+              this.router.navigate(['/pages/dashboard']);
+            } else {
+              // Employee or other roles go to ESS dashboard
+              this.router.navigate(['/pages/ess/dashboard']);
+            }
           } else {
             this.errorMessage = res.errorMessage || 'Login failed';
             alert(this.errorMessage);
@@ -51,7 +59,7 @@ export class LoginComponent {
 
   close() {
     this.layoutService.closeLogin();
-    this.router.navigate(['/pages/dashboard']);
+    this.router.navigate(['/']);
   }
 
   openRegister() {

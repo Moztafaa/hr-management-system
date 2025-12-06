@@ -21,11 +21,19 @@ export class Login {
     this.authService.login({ email: this.email, password: this.password, rememberMe: true })
       .subscribe({
         next: res => {
-          if (res.hasError == false) {
+          if (res.hasError == false && res.data) {
             this.authService.saveToken(res.data.token);
             this.authService.saveUserId(res.data.employeeId);
             this.errorMessage = '';
-            alert('Login successful! Token saved.');
+
+            // Redirect based on role
+            const roles = res.data.roles || [];
+            if (roles.includes('HR') || roles.includes('Manager')) {
+              this.router.navigate(['/pages/dashboard']);
+            } else {
+              // Employee or other roles go to ESS dashboard
+              this.router.navigate(['/pages/ess/dashboard']);
+            }
           }
         },
         error: err => {

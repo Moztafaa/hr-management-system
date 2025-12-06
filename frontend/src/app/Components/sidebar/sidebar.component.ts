@@ -28,7 +28,7 @@ export class SidebarComponent {
   isSidebarOpen = this.layoutService.isSidebarOpen;
 
   menuItems: MenuItem[] = [
-    { title: 'Dashboard', icon: 'home-outline', link: '/pages/dashboard', allowedRoles: ['HR', 'Manager', 'Employee'] },
+    { title: 'Dashboard', icon: 'home-outline', link: '/pages/dashboard', allowedRoles: ['HR', 'Manager'] },
 
     {
       title: 'Employee Management',
@@ -36,7 +36,6 @@ export class SidebarComponent {
       allowedRoles: ['HR'],
       children: [
         { title: 'Employee List', link: '/pages/employees', allowedRoles: ['HR'] },
-        { title: 'Add Employee', link: '/pages/employees/create', allowedRoles: ['HR'] },
         { title: 'Resignation Requests', link: '/pages/employees/resignations', allowedRoles: ['HR', 'Manager'] },
       ],
     },
@@ -46,13 +45,13 @@ export class SidebarComponent {
       allowedRoles: ['HR'],
       children: [
         { title: 'Departments', link: '/pages/departments', allowedRoles: ['HR'] },
-        { title: 'Designations', link: '/pages/designations', allowedRoles: [ 'HR'] },
+        { title: 'Designations', link: '/pages/designations', allowedRoles: ['HR'] },
       ],
     },
     {
       title: 'Attendance',
       icon: 'clock-outline',
-      allowedRoles: ['HR', 'Manager','Employee'],
+      allowedRoles: ['HR', 'Manager', 'Employee'],
       children: [
         { title: 'Check In', link: '/pages/attendance/check', allowedRoles: ['HR', 'Manager', 'Employee'] },
         { title: 'Check Out', link: '/pages/attendance/checkout', allowedRoles: ['HR', 'Manager', 'Employee'] },
@@ -66,8 +65,8 @@ export class SidebarComponent {
       children: [
         { title: 'Leave Types', link: '/pages/leave/types', allowedRoles: ['HR'] },
         { title: 'Leave Requests', link: '/pages/leave/requests', allowedRoles: ['HR'] },
-        { title: 'My Approvals', link: '/pages/leave/approvals', allowedRoles: ['Manager', 'HR'] },
-        { title: 'Leave Balances', link: '/pages/leave/balances', allowedRoles: ['HR'] },
+        // { title: 'My Approvals', link: '/pages/leave/approvals', allowedRoles: ['Manager', 'HR'] },
+        // { title: 'Leave Balances', link: '/pages/leave/balances', allowedRoles: ['HR'] },
         { title: 'Manage Balances', link: '/pages/leave/manage-balances', allowedRoles: ['HR'] },
       ],
     },
@@ -86,13 +85,13 @@ export class SidebarComponent {
     {
       title: 'Performance',
       icon: 'trending-up-outline',
-      allowedRoles: ['HR', 'Manager','Employee'],
+      allowedRoles: ['HR', 'Manager', 'Employee'],
       children: [
         { title: 'Review Cycles', link: '/pages/performance/cycles', allowedRoles: ['HR'] },
         { title: 'Reviews', link: '/pages/performance/reviews', allowedRoles: ['HR', 'Manager'] },
         { title: 'Goals', link: '/pages/performance/goals', allowedRoles: ['HR', 'Manager', 'Employee'] },
         { title: 'KPIs', link: '/pages/performance/kpis', allowedRoles: ['HR', 'Manager'] },
-        { title: 'Competencies', link: '/pages/performance/competencies', allowedRoles: [ 'HR'] },
+        { title: 'Competencies', link: '/pages/performance/competencies', allowedRoles: ['HR'] },
         { title: 'Feedback', link: '/pages/performance/feedback', allowedRoles: ['HR', 'Manager', 'Employee'] },
       ],
     },
@@ -147,7 +146,7 @@ export class SidebarComponent {
       title: 'Settings',
       icon: 'settings-2-outline',
       allowedRoles: ['HR', 'Manager', 'Employee'],
-//       children: [{ title: 'Change Password', link: '/pages/account/change-password' }],
+      //       children: [{ title: 'Change Password', link: '/pages/account/change-password' }],
       children: [{ title: 'Change Password', link: '/pages/change-password' }],
 
     },

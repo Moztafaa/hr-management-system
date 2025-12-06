@@ -12,6 +12,7 @@ import { DesignationService } from '../../../Services/designation.service';
 import { Department } from '../../../models/department';
 import { Designation } from '../../../models/designation';
 import { ToastService } from '../../../Services/toast.service';
+import { ChatService } from '../../../Services/chat.service';
 
 @Component({
   selector: 'app-employee-list',
@@ -25,6 +26,7 @@ export class EmployeeList implements OnInit {
   private departmentService = inject(DepartmentService);
   private designationService = inject(DesignationService);
   private toastService = inject(ToastService);
+  private chatService = inject(ChatService);
 
   employees: EmployeeModel[] = [];
   departments: Department[] = [];
@@ -44,6 +46,7 @@ export class EmployeeList implements OnInit {
   showCredentialsModal = false;
   isEditing = false;
   isSaving = false;
+  isSyncing = false; // For sync button state
 
   // Form data for creating new employee
   createFormData: RegisterEmployeeDto = this.getEmptyCreateFormData();
@@ -55,6 +58,9 @@ export class EmployeeList implements OnInit {
 
   // Store created employee credentials to show to HR
   createdEmployeeCredentials: { email: string; password: string; fullName: string } | null = null;
+
+  // Selected role for new employee
+  selectedRole: string = 'Employee';
 
   ngOnInit() {
     this.loadEmployees();
@@ -124,7 +130,7 @@ export class EmployeeList implements OnInit {
           this.departments = response.data;
         }
       },
-      error: () => {},
+      error: () => { },
     });
   }
 
@@ -135,7 +141,7 @@ export class EmployeeList implements OnInit {
           this.designations = response.data;
         }
       },
-      error: () => {},
+      error: () => { },
     });
   }
 
@@ -159,6 +165,7 @@ export class EmployeeList implements OnInit {
   openCreateModal(): void {
     this.isEditing = false;
     this.createFormData = this.getEmptyCreateFormData();
+    this.selectedRole = 'Employee'; // Reset role to default
     this.selectedEmployee = null;
     this.showModal = true;
   }
@@ -272,6 +279,9 @@ export class EmployeeList implements OnInit {
 
     // Store password before sending (we'll show it to HR after successful creation)
     const passwordToShow = this.createFormData.password;
+
+    // Set the selected role
+    this.createFormData.roles = [this.selectedRole];
 
     this.employeeService.registerEmployee(this.createFormData).subscribe({
       next: (response) => {
@@ -484,5 +494,25 @@ export class EmployeeList implements OnInit {
       const hireDate = new Date(emp.hireDate);
       return hireDate >= firstDayOfMonth;
     }).length;
+  }
+
+  // Sync employees to MongoDB for chatbot
+  syncEmployeesToChatbot(): void {
+    this.isSyncing = true;
+    this.chatService.syncEmployeesToMongoDB().subscribe({
+      next: (response) => {
+        this.isSyncing = false;
+        if (!response.hasError) {
+          this.toastService.success('Employee data synced to chatbot successfully!');
+        } else {
+          this.toastService.error(response.errorMessage || 'Failed to sync employee data');
+        }
+      },
+      error: (err) => {
+        this.isSyncing = false;
+        console.error('Sync error:', err);
+        this.toastService.error('An error occurred while syncing employee data');
+      },
+    });
   }
 }

@@ -5,10 +5,22 @@
       <h2 class="mb-1">Employee Management</h2>
       <p class="mb-0">Manage employee records and information</p>
     </div>
-    <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openCreateModal()">
-      <i class="eva eva-plus-outline"></i>
-      Add Employee
-    </button>
+    <div class="d-flex gap-2">
+      <button class="btn btn-info d-flex align-items-center gap-2" (click)="syncEmployeesToChatbot()"
+        [disabled]="isSyncing" title="Sync employee data to chatbot database">
+        @if (isSyncing) {
+        <span class="spinner-border spinner-border-sm"></span>
+        Syncing...
+        } @else {
+        <i class="eva eva-sync-outline"></i>
+        Sync to Chatbot
+        }
+      </button>
+      <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openCreateModal()">
+        <i class="eva eva-plus-outline"></i>
+        Add Employee
+      </button>
+    </div>
   </div>
 
   <!-- Search and Filters -->
@@ -21,12 +33,7 @@
             <span class="input-group-text">
               <i class="eva eva-search-outline"></i>
             </span>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Search by name or email..."
-              [(ngModel)]="searchTerm"
-            />
+            <input type="text" class="form-control" placeholder="Search by name or email..." [(ngModel)]="searchTerm" />
           </div>
         </div>
         <div class="col-md-3">
@@ -72,7 +79,7 @@
   <!-- Error State -->
   @if (error && !isLoading) {
   <div class="alert alert-danger d-flex align-items-center" role="alert">
-    <i class="eva eva-alert-circle-outline me-2 fs-4"></i>
+    <i class="eva eva-alert-circle-outline me- fs-4"></i>
     <div>{{ error }}</div>
   </div>
   }
@@ -108,10 +115,8 @@
             <tr>
               <td>
                 <div class="d-flex align-items-center">
-                  <div
-                    class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px"
-                  >
+                  <div class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px">
                     {{ getInitials(employee.firstName, employee.lastName) }}
                   </div>
                   <div>
@@ -138,25 +143,13 @@
                 <span class="fw-medium">{{ formatCurrency(employee.basicSalary) }}</span>
               </td>
               <td class="text-end text-nowrap">
-                <button
-                  class="btn btn-sm btn-outline-primary me-1"
-                  title="View Details"
-                  (click)="viewDetail(employee)"
-                >
+                <button class="btn btn-sm btn-outline-primary me-1" title="View Details" (click)="viewDetail(employee)">
                   <i class="eva eva-eye-outline"></i>
                 </button>
-                <button
-                  class="btn btn-sm btn-outline-info me-1"
-                  title="Edit"
-                  (click)="openEditModal(employee)"
-                >
+                <button class="btn btn-sm btn-outline-info me-1" title="Edit" (click)="openEditModal(employee)">
                   <i class="eva eva-edit-outline"></i>
                 </button>
-                <button
-                  class="btn btn-sm btn-outline-danger"
-                  title="Delete"
-                  (click)="openDeleteModal(employee)"
-                >
+                <button class="btn btn-sm btn-outline-danger" title="Delete" (click)="openDeleteModal(employee)">
                   <i class="eva eva-trash-2-outline"></i>
                 </button>
               </td>
@@ -220,29 +213,17 @@
           </h6>
           <div class="alert alert-info mb-3">
             <i class="eva eva-info-outline me-2"></i>
-            <small
-              >Create login credentials for the new employee. You can generate a random password or
-              enter one manually.</small
-            >
+            <small>Create login credentials for the new employee. You can generate a random password or
+              enter one manually.</small>
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Password <span class="text-danger">*</span></label>
               <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="createFormData.password"
-                  name="password"
-                  placeholder="Enter password"
-                  required
-                />
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  (click)="onGeneratePassword()"
-                  title="Generate Password"
-                >
+                <input type="text" class="form-control" [(ngModel)]="createFormData.password" name="password"
+                  placeholder="Enter password" required />
+                <button type="button" class="btn btn-outline-primary" (click)="onGeneratePassword()"
+                  title="Generate Password">
                   <i class="eva eva-refresh-outline"></i>
                 </button>
               </div>
@@ -250,14 +231,20 @@
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="createFormData.confirmPassword"
-                name="confirmPassword"
-                placeholder="Confirm password"
-                required
-              />
+              <input type="text" class="form-control" [(ngModel)]="createFormData.confirmPassword"
+                name="confirmPassword" placeholder="Confirm password" required />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Role <span class="text-danger">*</span></label>
+              <select class="form-select" [(ngModel)]="selectedRole" name="role" required>
+                <option value="">-- Select Role --</option>
+                <option value="Employee">Employee</option>
+                <option value="Manager">Manager</option>
+                <option value="HR">HR</option>
+              </select>
+              <div class="form-text">Assign system role to the employee</div>
             </div>
           </div>
 
@@ -269,59 +256,31 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">First Name <span class="text-danger">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="createFormData.firstName"
-                name="firstName"
-                placeholder="Enter first name"
-                required
-              />
+              <input type="text" class="form-control" [(ngModel)]="createFormData.firstName" name="firstName"
+                placeholder="Enter first name" required />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Last Name <span class="text-danger">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="createFormData.lastName"
-                name="lastName"
-                placeholder="Enter last name"
-                required
-              />
+              <input type="text" class="form-control" [(ngModel)]="createFormData.lastName" name="lastName"
+                placeholder="Enter last name" required />
             </div>
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Email <span class="text-danger">*</span></label>
-              <input
-                type="email"
-                class="form-control"
-                [(ngModel)]="createFormData.email"
-                name="email"
-                placeholder="Enter email address"
-                required
-              />
+              <input type="email" class="form-control" [(ngModel)]="createFormData.email" name="email"
+                placeholder="Enter email address" required />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Contact Number</label>
-              <input
-                type="tel"
-                class="form-control"
-                [(ngModel)]="createFormData.contactNumber"
-                name="contactNumber"
-                placeholder="Enter contact number"
-              />
+              <input type="tel" class="form-control" [(ngModel)]="createFormData.contactNumber" name="contactNumber"
+                placeholder="Enter contact number" />
             </div>
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Date of Birth</label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="createFormData.dateOfBirth"
-                name="dateOfBirth"
-              />
+              <input type="date" class="form-control" [(ngModel)]="createFormData.dateOfBirth" name="dateOfBirth" />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Gender</label>
@@ -335,13 +294,8 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Address</label>
-            <textarea
-              class="form-control"
-              [(ngModel)]="createFormData.address"
-              name="address"
-              rows="2"
-              placeholder="Enter address"
-            ></textarea>
+            <textarea class="form-control" [(ngModel)]="createFormData.address" name="address" rows="2"
+              placeholder="Enter address"></textarea>
           </div>
 
           <hr class="my-4" />
@@ -352,12 +306,7 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Department <span class="text-danger">*</span></label>
-              <select
-                class="form-select"
-                [(ngModel)]="createFormData.deptId"
-                name="deptId"
-                required
-              >
+              <select class="form-select" [(ngModel)]="createFormData.deptId" name="deptId" required>
                 <option [ngValue]="0">-- Select Department --</option>
                 @for (dept of departments; track dept.id) {
                 <option [ngValue]="dept.id">{{ dept.name }}</option>
@@ -366,12 +315,7 @@
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Designation <span class="text-danger">*</span></label>
-              <select
-                class="form-select"
-                [(ngModel)]="createFormData.designationId"
-                name="designationId"
-                required
-              >
+              <select class="form-select" [(ngModel)]="createFormData.designationId" name="designationId" required>
                 <option [ngValue]="0">-- Select Designation --</option>
                 @for (designation of designations; track designation.id) {
                 <option [ngValue]="designation.id">{{ designation.title }}</option>
@@ -382,49 +326,25 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Hire Date <span class="text-danger">*</span></label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="createFormData.hireDate"
-                name="hireDate"
-                required
-              />
+              <input type="date" class="form-control" [(ngModel)]="createFormData.hireDate" name="hireDate" required />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Basic Salary <span class="text-danger">*</span></label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input
-                  type="number"
-                  class="form-control"
-                  [(ngModel)]="createFormData.basicSalary"
-                  name="basicSalary"
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  required
-                />
+                <input type="number" class="form-control" [(ngModel)]="createFormData.basicSalary" name="basicSalary"
+                  placeholder="0.00" min="0" step="0.01" required />
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Effective Start Date</label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="createFormData.eFF_Start"
-                name="eFF_Start"
-              />
+              <input type="date" class="form-control" [(ngModel)]="createFormData.eFF_Start" name="eFF_Start" />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Effective End Date</label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="createFormData.eFF_End"
-                name="eFF_End"
-              />
+              <input type="date" class="form-control" [(ngModel)]="createFormData.eFF_End" name="eFF_End" />
             </div>
           </div>
         </form>
@@ -439,59 +359,31 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">First Name <span class="text-danger">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="editFormData.firstName"
-                name="firstName"
-                placeholder="Enter first name"
-                required
-              />
+              <input type="text" class="form-control" [(ngModel)]="editFormData.firstName" name="firstName"
+                placeholder="Enter first name" required />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Last Name <span class="text-danger">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="editFormData.lastName"
-                name="lastName"
-                placeholder="Enter last name"
-                required
-              />
+              <input type="text" class="form-control" [(ngModel)]="editFormData.lastName" name="lastName"
+                placeholder="Enter last name" required />
             </div>
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Email <span class="text-danger">*</span></label>
-              <input
-                type="email"
-                class="form-control"
-                [(ngModel)]="editFormData.email"
-                name="email"
-                placeholder="Enter email address"
-                required
-              />
+              <input type="email" class="form-control" [(ngModel)]="editFormData.email" name="email"
+                placeholder="Enter email address" required />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Contact Number</label>
-              <input
-                type="tel"
-                class="form-control"
-                [(ngModel)]="editFormData.contactNumber"
-                name="contactNumber"
-                placeholder="Enter contact number"
-              />
+              <input type="tel" class="form-control" [(ngModel)]="editFormData.contactNumber" name="contactNumber"
+                placeholder="Enter contact number" />
             </div>
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Date of Birth</label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="editFormData.dateOfBirth"
-                name="dateOfBirth"
-              />
+              <input type="date" class="form-control" [(ngModel)]="editFormData.dateOfBirth" name="dateOfBirth" />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Gender</label>
@@ -505,13 +397,8 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Address</label>
-            <textarea
-              class="form-control"
-              [(ngModel)]="editFormData.address"
-              name="address"
-              rows="2"
-              placeholder="Enter address"
-            ></textarea>
+            <textarea class="form-control" [(ngModel)]="editFormData.address" name="address" rows="2"
+              placeholder="Enter address"></textarea>
           </div>
 
           <hr class="my-4" />
@@ -531,12 +418,7 @@
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Designation <span class="text-danger">*</span></label>
-              <select
-                class="form-select"
-                [(ngModel)]="editFormData.designationId"
-                name="designationId"
-                required
-              >
+              <select class="form-select" [(ngModel)]="editFormData.designationId" name="designationId" required>
                 <option [ngValue]="0">-- Select Designation --</option>
                 @for (designation of designations; track designation.id) {
                 <option [ngValue]="designation.id">{{ designation.title }}</option>
@@ -547,69 +429,35 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Hire Date <span class="text-danger">*</span></label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="editFormData.hireDate"
-                name="hireDate"
-                required
-              />
+              <input type="date" class="form-control" [(ngModel)]="editFormData.hireDate" name="hireDate" required />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Basic Salary <span class="text-danger">*</span></label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input
-                  type="number"
-                  class="form-control"
-                  [(ngModel)]="editFormData.basicSalary"
-                  name="basicSalary"
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  required
-                />
+                <input type="number" class="form-control" [(ngModel)]="editFormData.basicSalary" name="basicSalary"
+                  placeholder="0.00" min="0" step="0.01" required />
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Effective Start Date</label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="editFormData.eFF_Start"
-                name="eFF_Start"
-              />
+              <input type="date" class="form-control" [(ngModel)]="editFormData.eFF_Start" name="eFF_Start" />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Effective End Date</label>
-              <input
-                type="date"
-                class="form-control"
-                [(ngModel)]="editFormData.eFF_End"
-                name="eFF_End"
-              />
+              <input type="date" class="form-control" [(ngModel)]="editFormData.eFF_End" name="eFF_End" />
             </div>
           </div>
         </form>
         }
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="closeModal()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-secondary" (click)="closeModal()" [disabled]="isSaving">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="saveEmployee()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-primary" (click)="saveEmployee()" [disabled]="isSaving">
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm me-1"></span>
           Saving... } @else {
@@ -633,10 +481,8 @@
       </div>
       <div class="modal-body">
         <div class="text-center mb-4">
-          <div
-            class="avatar-initial rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3"
-            style="width: 80px; height: 80px; font-size: 1.5rem"
-          >
+          <div class="avatar-initial rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3"
+            style="width: 80px; height: 80px; font-size: 1.5rem">
             {{ getInitials(selectedEmployee.firstName, selectedEmployee.lastName) }}
           </div>
           <h4 class="mb-1">{{ selectedEmployee.firstName }} {{ selectedEmployee.lastName }}</h4>
@@ -717,11 +563,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-outline-info"
-          (click)="closeDetailModal(); openEditModal(selectedEmployee)"
-        >
+        <button type="button" class="btn btn-outline-info"
+          (click)="closeDetailModal(); openEditModal(selectedEmployee)">
           <i class="eva eva-edit-outline me-1"></i>Edit
         </button>
         <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">Close</button>
@@ -746,8 +589,7 @@
         </div>
         <p class="text-center">
           Are you sure you want to delete
-          <strong>{{ employeeToDelete?.firstName }} {{ employeeToDelete?.lastName }}</strong
-          >?
+          <strong>{{ employeeToDelete?.firstName }} {{ employeeToDelete?.lastName }}</strong>?
         </p>
         <p class="text-muted small mb-0 text-center">
           This action cannot be undone. All data associated with this employee will be permanently
@@ -755,20 +597,10 @@
         </p>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="closeDeleteModal()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()" [disabled]="isSaving">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          (click)="confirmDelete()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()" [disabled]="isSaving">
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm me-1"></span>
           Deleting... } @else {
@@ -790,87 +622,52 @@
         <h5 class="modal-title">
           <i class="eva eva-checkmark-circle-outline me-2"></i>Employee Account Created
         </h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          (click)="closeCredentialsModal()"
-        ></button>
+        <button type="button" class="btn-close btn-close-white" (click)="closeCredentialsModal()"></button>
       </div>
       <div class="modal-body">
         <div class="text-center mb-4">
-          <div class="mb-3">
-            <i class="eva eva-person-done-outline text-success" style="font-size: 4rem"></i>
-          </div>
-          <h5 class="mb-1">{{ createdEmployeeCredentials.fullName }}</h5>
-          <p class="text-muted mb-0">Employee account has been successfully created!</p>
+          <i class="eva eva-checkmark-circle text-success" style="font-size: 4rem"></i>
+          <h5 class="mt-3">Account Successfully Created!</h5>
+          <p class="text-muted">
+            Employee <strong>{{ createdEmployeeCredentials.fullName }}</strong> can now log in with
+            these credentials:
+          </p>
         </div>
 
-        <div class="alert alert-warning mb-3">
-          <i class="eva eva-alert-circle-outline me-2"></i>
-          <strong>Important:</strong> Please save or share these credentials with the employee. The
-          password will not be shown again.
+        <div class="alert alert-warning">
+          <i class="eva eva-alert-triangle-outline me-2"></i>
+          <strong>Important:</strong> Please share these credentials with the employee securely.
+          This is the only time you'll see the password.
         </div>
 
         <div class="card bg-light">
           <div class="card-body">
             <div class="mb-3">
-              <label class="form-label text-muted small mb-1">Email (Login)</label>
+              <label class="form-label fw-bold">Email</label>
               <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control bg-white"
-                  [value]="createdEmployeeCredentials.email"
-                  readonly
-                />
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  (click)="copyToClipboard(createdEmployeeCredentials.email, 'Email')"
-                  title="Copy email"
-                >
+                <input type="text" class="form-control" [value]="createdEmployeeCredentials.email" readonly />
+                <button class="btn btn-outline-secondary"
+                  (click)="copyToClipboard(createdEmployeeCredentials.email, 'Email')" title="Copy Email">
                   <i class="eva eva-copy-outline"></i>
                 </button>
               </div>
             </div>
-            <div class="mb-0">
-              <label class="form-label text-muted small mb-1">Password</label>
+            <div>
+              <label class="form-label fw-bold">Password</label>
               <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control bg-white font-monospace"
-                  [value]="createdEmployeeCredentials.password"
-                  readonly
-                />
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  (click)="copyToClipboard(createdEmployeeCredentials.password, 'Password')"
-                  title="Copy password"
-                >
+                <input type="text" class="form-control font-monospace" [value]="createdEmployeeCredentials.password"
+                  readonly />
+                <button class="btn btn-outline-secondary"
+                  (click)="copyToClipboard(createdEmployeeCredentials.password, 'Password')" title="Copy Password">
                   <i class="eva eva-copy-outline"></i>
                 </button>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="mt-3 text-center">
-          <button
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            (click)="
-              copyToClipboard(
-                createdEmployeeCredentials.email + '\n' + createdEmployeeCredentials.password,
-                'Credentials'
-              )
-            "
-          >
-            <i class="eva eva-copy-outline me-1"></i>Copy Both
-          </button>
-        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="closeCredentialsModal()">
+        <button type="button" class="btn btn-primary" (click)="closeCredentialsModal()">
           <i class="eva eva-checkmark-outline me-1"></i>Done
         </button>
       </div>

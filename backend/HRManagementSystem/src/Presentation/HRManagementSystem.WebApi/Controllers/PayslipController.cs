@@ -2,7 +2,6 @@ namespace HRManagementSystem.WebApi.Controllers;
 
 [ApiController]
 [Route("api/payslips")]
-// [Authorize(Roles = "Admin,HR,Payroll")]
 public class PayslipController : BaseApiController
 {
     private readonly IPayslipService _payslipService;
@@ -49,7 +48,7 @@ public class PayslipController : BaseApiController
         [FromQuery] int year,
         CancellationToken cancellationToken)
     {
-        // Same logic as generate — service will handle update vs create
+        // Same logic as generate ï¿½ service will handle update vs create
         var response = await _payslipService.GeneratePayslipAsync(employeeId, month, year, cancellationToken);
         return HandleResponse(response);
     }

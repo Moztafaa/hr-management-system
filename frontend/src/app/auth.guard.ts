@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
   ): boolean | UrlTree {
     // 1) لو مش Logged in → روح للـ login
     if (!this.authService.isLoggedIn()) {
-      return this.router.createUrlTree(['/auth/login']);
+      return this.router.createUrlTree(['/pages/login']);
     }
 
     // 2) لو فيه أدوار مطلوبة على الـ route
@@ -35,8 +35,8 @@ export class AuthGuard implements CanActivate {
     const allowed = this.authService.hasAnyRole(requiredRoles);
 
     if (!allowed) {
-      alert('You are not authorized to access this page.');
-      return this.router.createUrlTree(['/pages/dashboard']);
+      // Redirect to unauthorized page instead of alert
+      return this.router.createUrlTree(['/pages/unauthorized']);
     }
 
     return true;

@@ -18,3 +18,4 @@ global using HRManagementSystem.Application.Interfaces.ILeaveServices;
 global using HRManagementSystem.Application.DTOs.Leaves.LeaveTypeDtos;
 global using HRManagementSystem.Application.DTOs.Attendance;
 global using HRManagementSystem.Application.DTOs.Employee;
+global using Microsoft.AspNetCore.Authorization;

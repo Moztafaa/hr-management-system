@@ -14,7 +14,6 @@ namespace HRManagementSystem.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class ESSController(IESSService essService, IResignationService resignationService) : ControllerBase
 {
     private int GetCurrentEmployeeId()

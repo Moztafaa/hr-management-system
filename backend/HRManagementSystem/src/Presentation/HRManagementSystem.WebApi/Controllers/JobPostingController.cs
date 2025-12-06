@@ -40,6 +40,7 @@ public class JobPostingController(IJobPostingService jobPostingService) : Contro
     /// <summary>
     /// Get all active job postings
     /// </summary>
+    [AllowAnonymous]
     [HttpGet("active")]
     public async Task<IActionResult> GetActiveJobPostings(CancellationToken cancellationToken)
     {

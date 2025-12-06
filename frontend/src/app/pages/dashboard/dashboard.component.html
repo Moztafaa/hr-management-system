@@ -1,5 +1,279 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-12">Hello world here</div>
+<div class="dashboard-container">
+  <!-- Page Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-1">
+          <i class="eva eva-pie-chart-outline me-2"></i>Dashboard Overview
+        </h2>
+        <p class="text-muted mb-0">Welcome back! Here's what's happening today.</p>
+      </div>
+      <div class="text-end">
+        <small class="text-muted">Last updated: {{ 'now' }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3 text-muted">Loading dashboard data...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading">
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+      <!-- Total Employees -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-gradient-blue">
+          <div class="stat-icon">
+            <i class="eva eva-people-outline"></i>
+          </div>
+          <div class="stat-content">
+            <h6 class="stat-label">Total Employees</h6>
+            <h2 class="stat-value">{{ stats.totalEmployees }}</h2>
+            <p class="stat-change positive">
+              <i class="eva eva-trending-up-outline"></i> Active workforce
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Departments -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-gradient-green">
+          <div class="stat-icon">
+            <i class="eva eva-grid-outline"></i>
+          </div>
+          <div class="stat-content">
+            <h6 class="stat-label">Departments</h6>
+            <h2 class="stat-value">{{ stats.totalDepartments }}</h2>
+            <p class="stat-change neutral">
+              <i class="eva eva-minus-outline"></i> Active departments
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leave Requests -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-gradient-orange">
+          <div class="stat-icon">
+            <i class="eva eva-calendar-outline"></i>
+          </div>
+          <div class="stat-content">
+            <h6 class="stat-label">Leave Requests</h6>
+            <h2 class="stat-value">{{ stats.activeLeaveRequests }}</h2>
+            <p class="stat-change warning">
+              <i class="eva eva-alert-circle-outline"></i> Total requests
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Job Postings -->
+      <div class="col-xl-3 col-md-6">
+        <div class="stat-card card-gradient-purple">
+          <div class="stat-icon">
+            <i class="eva eva-briefcase-outline"></i>
+          </div>
+          <div class="stat-content">
+            <h6 class="stat-label">Job Postings</h6>
+            <h2 class="stat-value">{{ stats.activeJobPostings }}</h2>
+            <p class="stat-change positive">
+              <i class="eva eva-trending-up-outline"></i> Open positions
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section - First Row -->
+    <div class="row g-4 mb-4">
+      <!-- Department Chart -->
+      <div class="col-xl-8 col-lg-7">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5 class="card-title">
+              <i class="eva eva-bar-chart-outline me-2"></i>Employees by Department
+            </h5>
+            <span class="badge bg-primary">Live Data</span>
+          </div>
+          <div class="chart-container" style="height: 350px">
+            <canvas id="departmentChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Designation Donut Chart -->
+      <div class="col-xl-4 col-lg-5">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5 class="card-title">
+              <i class="eva eva-pie-chart-outline me-2"></i>By Designation
+            </h5>
+          </div>
+          <div class="chart-container" style="height: 350px">
+            <canvas id="designationChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section - Second Row -->
+    <div class="row g-4 mb-4">
+      <!-- Leave Trend Chart -->
+      <div class="col-xl-8 col-lg-7">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5 class="card-title">
+              <i class="eva eva-activity-outline me-2"></i>Monthly Leave Trend
+            </h5>
+            <span class="badge bg-info">{{ currentYear }}</span>
+          </div>
+          <div class="chart-container" style="height: 300px">
+            <canvas id="attendanceTrendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leave Status Chart -->
+      <div class="col-xl-4 col-lg-5">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5 class="card-title">
+              <i class="eva eva-inbox-outline me-2"></i>Leave Status
+            </h5>
+          </div>
+          <div class="chart-container" style="height: 300px">
+            <canvas id="leaveStatusChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activities & Quick Actions -->
+    <div class="row g-4">
+      <!-- Recent Activities -->
+      <div class="col-xl-8">
+        <div class="activity-card">
+          <div class="activity-header">
+            <h5 class="card-title">
+              <i class="eva eva-clock-outline me-2"></i>Recent Activities
+            </h5>
+            <a href="#" class="view-all-link">View All</a>
+          </div>
+          <div class="activity-list">
+            <div *ngFor="let activity of recentActivities" class="activity-item">
+              <div class="activity-icon" [class]="'bg-' + activity.color">
+                <i class="eva" [class]="'eva-' + activity.icon"></i>
+              </div>
+              <div class="activity-content">
+                <p class="activity-description">{{ activity.description }}</p>
+                <small class="activity-time">
+                  <i class="eva eva-clock-outline"></i> {{ getTimeAgo(activity.timestamp) }}
+                </small>
+              </div>
+            </div>
+
+            <div *ngIf="recentActivities.length === 0" class="text-center py-4">
+              <i class="eva eva-inbox-outline" style="font-size: 48px; opacity: 0.5"></i>
+              <p class="mt-2 text-muted">No recent activities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-xl-4">
+        <div class="quick-actions-card">
+          <div class="quick-actions-header">
+            <h5 class="card-title">
+              <i class="eva eva-flash-outline me-2"></i>Quick Actions
+            </h5>
+          </div>
+          <div class="quick-actions-grid">
+            <a href="/pages/employees" class="quick-action-item">
+              <div class="action-icon bg-primary">
+                <i class="eva eva-person-add-outline"></i>
+              </div>
+              <span>Employees</span>
+            </a>
+
+            <a href="/pages/leave/requests" class="quick-action-item">
+              <div class="action-icon bg-warning">
+                <i class="eva eva-calendar-outline"></i>
+              </div>
+              <span>Leave Requests</span>
+            </a>
+
+            <a href="/pages/payroll/payslips" class="quick-action-item">
+              <div class="action-icon bg-success">
+                <i class="eva eva-credit-card-outline"></i>
+              </div>
+              <span>Payslips</span>
+            </a>
+
+            <a href="/pages/recruitment/jobs" class="quick-action-item">
+              <div class="action-icon bg-info">
+                <i class="eva eva-briefcase-outline"></i>
+              </div>
+              <span>Job Postings</span>
+            </a>
+
+            <a href="/pages/reports/dashboard" class="quick-action-item">
+              <div class="action-icon bg-danger">
+                <i class="eva eva-file-text-outline"></i>
+              </div>
+              <span>Reports</span>
+            </a>
+
+            <a href="/pages/attendance/check" class="quick-action-item">
+              <div class="action-icon bg-secondary">
+                <i class="eva eva-checkmark-circle-2-outline"></i>
+              </div>
+              <span>Attendance</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="system-status-card mt-4">
+          <h6 class="status-title">
+            <i class="eva eva-activity-outline me-2"></i>System Status
+          </h6>
+          <div class="status-item">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="status-label">Database</span>
+              <span class="badge bg-success">Active</span>
+            </div>
+            <div class="progress" style="height: 4px">
+              <div class="progress-bar bg-success" style="width: 100%"></div>
+            </div>
+          </div>
+          <div class="status-item">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="status-label">API Server</span>
+              <span class="badge bg-success">Running</span>
+            </div>
+            <div class="progress" style="height: 4px">
+              <div class="progress-bar bg-success" style="width: 100%"></div>
+            </div>
+          </div>
+          <div class="status-item">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="status-label">Storage</span>
+              <span class="text-muted small">65% used</span>
+            </div>
+            <div class="progress" style="height: 4px">
+              <div class="progress-bar bg-info" style="width: 65%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

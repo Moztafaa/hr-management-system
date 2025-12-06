@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../Services/auth.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class LoginModalComponent {
   @Output() loginSuccess = new EventEmitter<void>();
 
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   email = '';
   password = '';
@@ -53,7 +55,17 @@ export class LoginModalComponent {
           if (response.data.employeeId != null) {
             this.authService.saveEmployeeId(response.data.employeeId);
           }
+
           this.loginSuccess.emit();
+
+          // Redirect based on role
+          const roles = response.data.roles || [];
+          if (roles.includes('HR') || roles.includes('Manager')) {
+            this.router.navigate(['/pages/dashboard']);
+          } else {
+            // Employee or other roles go to ESS dashboard
+            this.router.navigate(['/pages/ess/dashboard']);
+          }
         }
       },
       error: (err) => {

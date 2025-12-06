@@ -26,12 +26,22 @@ export const routes: Routes = [
       { path: 'register', component: RegisterComponent },
       { path: 'register2', component: Register }, // nada a7med register
 
+      // Unauthorized page
+      {
+        path: 'unauthorized',
+        loadComponent: () =>
+          import('./pages/unauthorized/unauthorized.component').then(
+            (m) => m.UnauthorizedComponent
+          ),
+        title: 'Access Denied',
+      },
+
 
       {
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [AuthGuard],
-        data: { roles: ['HR', 'Manager', 'Employee'] },
+        data: { roles: ['HR', 'Manager'] },
       },
 
       // ================= EMPLOYEES =================
