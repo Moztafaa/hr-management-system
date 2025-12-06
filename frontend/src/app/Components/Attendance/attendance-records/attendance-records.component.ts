@@ -12,18 +12,18 @@ import { ApiResponse } from '../../../models/api-response';
     <div class="container-fluid p-4">
       <h2>Attendance Records</h2>
       <div class="card shadow-sm mt-4">
-        <div class="card-body">
-            <div *ngIf="isLoading" class="text-center">
+        <div class="card-body p-0">
+            <div *ngIf="isLoading" class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
-            <div *ngIf="!isLoading && records.length === 0" class="alert alert-info">
+            <div *ngIf="!isLoading && records.length === 0" class="alert alert-info m-3">
                 No attendance records found.
             </div>
             <div *ngIf="!isLoading && records.length > 0" class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
                         <tr>
                             <th>Date</th>
                             <th>Check In</th>
@@ -48,7 +48,56 @@ import { ApiResponse } from '../../../models/api-response';
         </div>
       </div>
     </div>
-  `
+  `,
+    styles: [`
+    /* Table Styling from employee-list.css */
+    :host ::ng-deep .card {
+      background-color: var(--card-bg) !important;
+      border: 1px solid var(--border-basic) !important;
+      color: var(--text-color) !important;
+    }
+    
+    :host ::ng-deep .table {
+      color: var(--text-color) !important;
+      margin-bottom: 0;
+      background-color: transparent !important;
+    }
+
+    :host ::ng-deep .table thead th {
+      background-color: var(--header-bg) !important;
+      color: var(--text-hint) !important;
+      border-bottom: 1px solid var(--border-basic) !important;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      padding: 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    :host ::ng-deep .table-light {
+      background-color: var(--header-bg) !important;
+    }
+
+    :host ::ng-deep .table tbody td {
+      border-bottom: 1px solid var(--border-basic) !important;
+      padding: 1rem;
+      vertical-align: middle;
+      color: var(--text-color) !important;
+      background-color: transparent !important;
+    }
+
+    :host ::ng-deep .table-hover tbody tr:hover {
+      background-color: var(--hover-bg) !important;
+      color: var(--text-color) !important;
+    }
+
+    :host ::ng-deep .table-hover tbody tr:hover td {
+      background-color: transparent !important;
+      color: var(--text-color) !important;
+    }
+    
+    h2 { color: var(--text-color); }
+  `]
 })
 export class AttendanceRecordsComponent implements OnInit {
     private http = inject(HttpClient);

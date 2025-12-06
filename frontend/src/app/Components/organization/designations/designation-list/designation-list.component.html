@@ -46,7 +46,7 @@
           <thead class="table-light">
             <tr>
               <th>Designation</th>
-              <th>Description</th>
+              <th style="width: 30%; max-width: 300px;">Description</th>
               <th>Created</th>
               <th>Last Updated</th>
               <th class="text-end">Actions</th>
@@ -57,10 +57,8 @@
             <tr>
               <td>
                 <div class="d-flex align-items-center">
-                  <div
-                    class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px"
-                  >
+                  <div class="avatar-initial rounded-circle me-3 d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px">
                     <i class="eva eva-award-outline"></i>
                   </div>
                   <div>
@@ -78,25 +76,13 @@
                 <span class="text-muted">{{ formatDate(designation.updatedAt) }}</span>
               </td>
               <td class="text-end">
-                <button
-                  class="btn btn-sm btn-light me-1"
-                  title="View Details"
-                  (click)="viewDetail(designation)"
-                >
+                <button class="btn btn-sm btn-light me-1" title="View Details" (click)="viewDetail(designation)">
                   <i class="eva eva-eye-outline"></i>
                 </button>
-                <button
-                  class="btn btn-sm btn-light me-1"
-                  title="Edit"
-                  (click)="openEditModal(designation)"
-                >
+                <button class="btn btn-sm btn-light me-1" title="Edit" (click)="openEditModal(designation)">
                   <i class="eva eva-edit-outline"></i>
                 </button>
-                <button
-                  class="btn btn-sm btn-light text-danger"
-                  title="Delete"
-                  (click)="openDeleteModal(designation)"
-                >
+                <button class="btn btn-sm btn-light text-danger" title="Delete" (click)="openDeleteModal(designation)">
                   <i class="eva eva-trash-2-outline"></i>
                 </button>
               </td>
@@ -154,42 +140,21 @@
         <form (ngSubmit)="saveDesignation()">
           <div class="mb-3">
             <label class="form-label">Title <span class="text-danger">*</span></label>
-            <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="formData.title"
-              name="title"
-              placeholder="Enter designation title (e.g., Software Engineer)"
-              required
-            />
+            <input type="text" class="form-control" [(ngModel)]="formData.title" name="title"
+              placeholder="Enter designation title (e.g., Software Engineer)" required />
           </div>
           <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea
-              class="form-control"
-              [(ngModel)]="formData.description"
-              name="description"
-              rows="3"
-              placeholder="Enter designation description (optional)"
-            ></textarea>
+            <textarea class="form-control" [(ngModel)]="formData.description" name="description" rows="3"
+              placeholder="Enter designation description (optional)"></textarea>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="closeModal()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-secondary" (click)="closeModal()" [disabled]="isSaving">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="saveDesignation()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-primary" (click)="saveDesignation()" [disabled]="isSaving">
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm me-1"></span>
           Saving... } @else {
@@ -240,7 +205,7 @@
                   <td>
                     <span class="badge bg-primary">{{
                       designationDetail.employees.length || 0
-                    }}</span>
+                      }}</span>
                   </td>
                 </tr>
                 <tr>
@@ -257,17 +222,15 @@
           <div class="col-md-6">
             <h6 class="text-primary mb-3">
               <i class="eva eva-people-outline me-2"></i>Employees ({{
-                designationDetail.employees.length || 0
+              designationDetail.employees.length || 0
               }})
             </h6>
             @if (designationDetail.employees && designationDetail.employees.length > 0) {
             <div class="employee-list" style="max-height: 250px; overflow-y: auto">
               @for (employee of designationDetail.employees; track employee.id) {
               <div class="d-flex align-items-center p-2 rounded mb-2 bg-light">
-                <div
-                  class="avatar-initial rounded-circle me-2 d-flex align-items-center justify-content-center"
-                  style="width: 32px; height: 32px; font-size: 0.75rem"
-                >
+                <div class="avatar-initial rounded-circle me-2 d-flex align-items-center justify-content-center"
+                  style="width: 32px; height: 32px; font-size: 0.75rem">
                   {{ getInitials(employee.firstName, employee.lastName) }}
                 </div>
                 <div>
@@ -306,26 +269,15 @@
       <div class="modal-body">
         <p>
           Are you sure you want to delete the designation
-          <strong>{{ designationToDelete?.title }}</strong
-          >?
+          <strong>{{ designationToDelete?.title }}</strong>?
         </p>
         <p class="text-muted small mb-0">This action cannot be undone.</p>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="closeDeleteModal()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()" [disabled]="isSaving">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          (click)="confirmDelete()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()" [disabled]="isSaving">
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm me-1"></span>
           Deleting... } @else { Delete }

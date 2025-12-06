@@ -91,6 +91,11 @@ export class AllowanceListComponent implements OnInit {
             return;
         }
 
+        if (this.formData.amount <= 0) {
+            this.toastService.error('Amount must be greater than 0');
+            return;
+        }
+
         this.isSaving = true;
         if (this.isEditing && this.selectedAllowance) {
             this.service.update(this.selectedAllowance.id, this.formData).subscribe({

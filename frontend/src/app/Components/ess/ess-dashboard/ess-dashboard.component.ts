@@ -5,7 +5,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ESSService } from '../../../Services/ess.service';
 import { ToastService } from '../../../Services/toast.service';
 import { AuthService } from '../../../Services/auth.service';
-import { ESSDashboard, LeaveStatus, LeaveStatusLabels } from '../../../models/ess';
+import { ESSDashboard, LeaveStatus, LeaveStatusLabels, LeaveType } from '../../../models/ess';
+import { LeaveTypeService } from '../../../Services/leave-type.service';
 
 @Component({
   selector: 'app-ess-dashboard',
@@ -16,11 +17,13 @@ import { ESSDashboard, LeaveStatus, LeaveStatusLabels } from '../../../models/es
 })
 export class EssDashboardComponent implements OnInit {
   private essService = inject(ESSService);
+  private leaveTypeService = inject(LeaveTypeService);
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   dashboard: ESSDashboard | null = null;
+  leaveTypes: LeaveType[] = [];
   isLoading = true;
   error: string | null = null;
 
@@ -36,42 +39,71 @@ export class EssDashboardComponent implements OnInit {
       this.router.navigate(['/pages/login']);
       return;
     }
-    this.loadDashboard();
+    this.loadData();
   }
 
-  loadDashboard(): void {
+  loadData(): void {
     this.isLoading = true;
     this.error = null;
 
-    this.essService.getDashboard().subscribe({
-      next: (response) => {
-        if (!response.hasError && response.data) {
-          this.dashboard = response.data;
-        } else {
-          this.error = response.errorMessage || 'Failed to load dashboard';
-          this.toastService.error(this.error);
-        }
-        this.isLoading = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Dashboard load error:', err);
-        if (err.status === 401) {
-          this.error = 'Session expired. Please login again.';
-          this.toastService.error(this.error);
-          this.authService.logout();
-          this.router.navigate(['/pages/login']);
-        } else if (err.status === 0) {
-          this.error = 'Cannot connect to server. Please check if the backend is running.';
-          this.toastService.error(this.error);
-        } else {
-          this.error = `Error ${err.status}: ${
-            err.message || 'An error occurred while loading the dashboard'
-          }`;
-          this.toastService.error(this.error);
-        }
-        this.isLoading = false;
-      },
+    Promise.all([
+      this.loadDashboard(),
+      this.loadLeaveTypes()
+    ]).finally(() => {
+      this.isLoading = false;
     });
+  }
+
+  loadDashboard(): Promise<void> {
+    return new Promise((resolve) => {
+      this.essService.getDashboard().subscribe({
+        next: (response) => {
+          if (!response.hasError && response.data) {
+            this.dashboard = response.data;
+          } else {
+            this.error = response.errorMessage || 'Failed to load dashboard';
+            this.toastService.error(this.error);
+          }
+          resolve();
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Dashboard load error:', err);
+          if (err.status === 401) {
+            this.error = 'Session expired. Please login again.';
+            this.toastService.error(this.error);
+            this.authService.logout();
+            this.router.navigate(['/pages/login']);
+          } else if (err.status === 0) {
+            this.error = 'Cannot connect to server. Please check if the backend is running.';
+            this.toastService.error(this.error);
+          } else {
+            this.error = `Error ${err.status}: ${err.message || 'An error occurred while loading the dashboard'
+              }`;
+            this.toastService.error(this.error);
+          }
+          resolve();
+        },
+      });
+    });
+  }
+
+  loadLeaveTypes(): Promise<void> {
+    return new Promise((resolve) => {
+      this.leaveTypeService.getAll().subscribe({
+        next: (response) => {
+          if (!response.hasError && response.data) {
+            this.leaveTypes = response.data;
+          }
+          resolve();
+        },
+        error: () => resolve(),
+      });
+    });
+  }
+
+  getLeaveTypeName(leaveTypeId: number): string {
+    const leaveType = this.leaveTypes.find((lt) => lt.id === leaveTypeId);
+    return leaveType?.name || `Leave Type ${leaveTypeId}`;
   }
 
   getMonthName(month: number): string {

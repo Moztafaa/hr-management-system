@@ -95,7 +95,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Amount</label>
-                    <input type="number" class="form-control" [(ngModel)]="formData.amount" placeholder="Enter amount">
+                    <input type="number" class="form-control" [(ngModel)]="formData.amount" placeholder="Enter amount"
+                        min="0.01">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Type</label>

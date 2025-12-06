@@ -91,6 +91,11 @@ export class DeductionListComponent implements OnInit {
             return;
         }
 
+        if (this.formData.amount <= 0) {
+            this.toastService.error('Amount must be greater than 0');
+            return;
+        }
+
         this.isSaving = true;
         if (this.isEditing && this.selectedDeduction) {
             this.service.update(this.selectedDeduction.id, this.formData).subscribe({

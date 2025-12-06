@@ -19,7 +19,7 @@ import { LeaveType } from '../../../models/leaveType';
         <!-- Actions Card -->
         <div class="col-md-12 mb-4">
             <div class="card shadow-sm">
-                <div class="card-header bg-light">
+                <div class="card-header">
                     <h5 class="mb-0">Actions</h5>
                 </div>
                 <div class="card-body">
@@ -35,7 +35,7 @@ import { LeaveType } from '../../../models/leaveType';
         <!-- Allocate / Deduct Form -->
         <div class="col-md-6">
             <div class="card shadow-sm">
-                <div class="card-header bg-light">
+                <div class="card-header">
                     <h5 class="mb-0">Allocate / Deduct Leave</h5>
                 </div>
                 <div class="card-body">
@@ -85,7 +85,41 @@ import { LeaveType } from '../../../models/leaveType';
         </div>
       </div>
     </div>
-  `
+  `,
+    styles: [`
+    /* Card Styling from employee-list.css */
+    :host ::ng-deep .card {
+      background-color: var(--card-bg) !important;
+      border: 1px solid var(--border-basic) !important;
+      color: var(--text-color) !important;
+    }
+    
+    :host ::ng-deep .card-header {
+      background-color: var(--header-bg) !important;
+      border-bottom: 1px solid var(--border-basic) !important;
+      color: var(--text-color) !important;
+      padding: 1rem;
+    }
+
+    h2, h5 { color: var(--text-color); }
+    
+    /* Form Controls */
+    :host ::ng-deep .form-control,
+    :host ::ng-deep .form-select {
+      background-color: var(--input-bg) !important;
+      color: var(--text-color) !important;
+      border-color: var(--border-basic) !important;
+    }
+    
+    :host ::ng-deep .form-label {
+      color: var(--text-hint) !important;
+    }
+    
+    :host ::ng-deep .form-select option {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+    }
+  `]
 })
 export class LeaveBalanceManagementComponent implements OnInit {
     private leaveBalanceService = inject(LeaveBalanceService);

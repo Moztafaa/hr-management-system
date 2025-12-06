@@ -55,7 +55,7 @@
               <span class="detail-label">Hire Date</span>
               <span class="detail-value">{{
                 dashboard.profile?.hireDate ? formatDate(dashboard.profile!.hireDate!) : 'N/A'
-              }}</span>
+                }}</span>
             </div>
           </div>
           <a routerLink="/pages/ess/profile" class="btn btn-sm btn-outline-primary mt-3 w-100">
@@ -90,10 +90,7 @@
               <div class="leave-stat-label">Approved</div>
             </div>
           </div>
-          <a
-            routerLink="/pages/ess/leave-requests"
-            class="btn btn-sm btn-outline-warning mt-3 w-100"
-          >
+          <a routerLink="/pages/ess/leave-requests" class="btn btn-sm btn-outline-warning mt-3 w-100">
             <i class="eva eva-plus-outline me-1"></i> Manage Leave Requests
           </a>
         </div>
@@ -126,23 +123,19 @@
               <span class="amount-label">Net Salary</span>
               <span class="amount-value">{{
                 formatCurrency(dashboard.recentPayslips[0].netSalary)
-              }}</span>
+                }}</span>
             </div>
             <div class="payslip-breakdown">
               <div class="breakdown-item">
                 <span>Basic: {{ formatCurrency(dashboard.recentPayslips[0].basicSalary) }}</span>
               </div>
               <div class="breakdown-item text-success">
-                <span
-                  >+ Allowances:
-                  {{ formatCurrency(dashboard.recentPayslips[0].totalAllowances) }}</span
-                >
+                <span>+ Allowances:
+                  {{ formatCurrency(dashboard.recentPayslips[0].totalAllowances) }}</span>
               </div>
               <div class="breakdown-item text-danger">
-                <span
-                  >- Deductions:
-                  {{ formatCurrency(dashboard.recentPayslips[0].totalDeductions) }}</span
-                >
+                <span>- Deductions:
+                  {{ formatCurrency(dashboard.recentPayslips[0].totalDeductions) }}</span>
               </div>
             </div>
           </div>
@@ -169,22 +162,17 @@
           <div class="leave-balance-card">
             <div class="balance-header">
               <span class="balance-type">{{
-                balance.leaveTypeName || 'Leave Type ' + balance.leaveTypeId
-              }}</span>
+                getLeaveTypeName(balance.leaveTypeId)
+                }}</span>
             </div>
             <div class="balance-progress">
               <div class="progress" style="height: 8px">
-                <div
-                  class="progress-bar"
-                  [class.bg-success]="balance.remainingDays > balance.totalAllocated * 0.5"
+                <div class="progress-bar" [class.bg-success]="balance.remainingDays > balance.totalAllocated * 0.5"
                   [class.bg-warning]="
                     balance.remainingDays <= balance.totalAllocated * 0.5 &&
                     balance.remainingDays > balance.totalAllocated * 0.2
-                  "
-                  [class.bg-danger]="balance.remainingDays <= balance.totalAllocated * 0.2"
-                  [style.width.%]="(balance.remainingDays / balance.totalAllocated) * 100"
-                  role="progressbar"
-                ></div>
+                  " [class.bg-danger]="balance.remainingDays <= balance.totalAllocated * 0.2"
+                  [style.width.%]="(balance.remainingDays / balance.totalAllocated) * 100" role="progressbar"></div>
               </div>
             </div>
             <div class="balance-details">
@@ -217,11 +205,7 @@
     <div class="card-body">
       <div class="row g-3">
         <div class="col-lg-3 col-md-6">
-          <a
-            routerLink="/pages/ess/leave-requests"
-            [queryParams]="{ action: 'new' }"
-            class="quick-action-btn"
-          >
+          <a routerLink="/pages/ess/leave-requests" [queryParams]="{ action: 'new' }" class="quick-action-btn">
             <i class="eva eva-plus-circle-outline"></i>
             <span>Request Leave</span>
           </a>
