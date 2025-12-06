@@ -9,6 +9,7 @@ import {
   RegisterEmployeeResponseDto,
 } from '../models/employee';
 import { ApiResponse } from '../models/api-response';
+import { PagedResult } from '../models/paged-result';
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +57,11 @@ export class EmployeeService {
       `${this.apiUrl}/${employeeId}/update-image`,
       formData
     );
+  }
+
+  getPagedEmployees(pageNumber: number = 1, pageSize: number = 10): Observable<ApiResponse<PagedResult<EmployeeModel>>> {
+    const params = `?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    return this.http.get<ApiResponse<PagedResult<EmployeeModel>>>(`${this.apiUrl}/paged${params}`);
   }
 }
 

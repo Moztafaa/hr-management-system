@@ -21,6 +21,8 @@ import { ChatService } from '../../../Services/chat.service';
   templateUrl: './employee-list.html',
   styleUrls: ['./employee-list.css'],
 })
+
+
 export class EmployeeList implements OnInit {
   private employeeService = inject(EmployeeService);
   private departmentService = inject(DepartmentService);
@@ -33,6 +35,12 @@ export class EmployeeList implements OnInit {
   designations: Designation[] = [];
   isLoading = true;
   error: string | null = null;
+
+  // Pagination
+  pageNumber: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 1;
+  totalItems: number = 0;
 
   // Search and filter
   searchTerm = '';
@@ -106,10 +114,15 @@ export class EmployeeList implements OnInit {
   loadEmployees() {
     this.isLoading = true;
     this.error = null;
-    this.employeeService.getEmployees().subscribe({
+    this.employeeService.getPagedEmployees(this.pageNumber, this.pageSize).subscribe({
       next: (response) => {
         if (!response.hasError && response.data) {
-          this.employees = response.data;
+          // response.data is expected to be a PagedResult
+          this.employees = response.data.items || [];
+          this.totalItems = response.data.totalCount || 0;
+          this.pageSize = response.data.pageSize || this.pageSize;
+          this.pageNumber = response.data.pageNumber || this.pageNumber;
+          this.totalPages = Math.max(1, Math.ceil(this.totalItems / this.pageSize));
         } else {
           this.error = response.errorMessage || 'Failed to load employees';
         }
@@ -121,6 +134,48 @@ export class EmployeeList implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.pageNumber = page;
+    this.loadEmployees();
+  }
+
+  nextPage() {
+    if (this.pageNumber < this.totalPages) {
+      this.pageNumber++;
+      this.loadEmployees();
+    }
+  }
+
+  prevPage() {
+    if (this.pageNumber > 1) {
+      this.pageNumber--;
+      this.loadEmployees();
+    }
+  }
+
+  // Return array of page numbers for template iteration
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  getShowingStart(): number {
+    if (this.totalItems === 0) return 0;
+    return (this.pageNumber - 1) * this.pageSize + 1;
+  }
+
+  getShowingEnd(): number {
+    return Math.min(this.pageNumber * this.pageSize, this.totalItems);
+  }
+
+  disabledPrev(): boolean {
+    return this.pageNumber === 1;
+  }
+
+  disabledNext(): boolean {
+    return this.pageNumber === this.totalPages;
   }
 
   loadDepartments() {

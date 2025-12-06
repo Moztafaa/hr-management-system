@@ -157,6 +157,37 @@
             }
           </tbody>
         </table>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center p-3 border-top">
+          <div class="text-muted small fw-500">
+            Showing <strong>{{ getShowingStart() }}</strong> - <strong>{{ getShowingEnd() }}</strong> of <strong>{{ totalItems }}</strong>
+          </div>
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="pageNumber === 1">
+                <a class="page-link" (click)="!disabledPrev() && prevPage()" 
+                   [class.disabled]="pageNumber === 1"
+                   title="Previous page">
+                  <i class="eva eva-chevron-left-outline"></i>
+                </a>
+              </li>
+              @for (page of pageNumbers; track page) {
+              <li class="page-item" [class.active]="pageNumber === page">
+                <a class="page-link" (click)="goToPage(page)" 
+                   title="Go to page {{ page }}">{{ page }}</a>
+              </li>
+              }
+              <li class="page-item" [class.disabled]="pageNumber === totalPages">
+                <a class="page-link" (click)="!disabledNext() && nextPage()" 
+                   [class.disabled]="pageNumber === totalPages"
+                   title="Next page">
+                  <i class="eva eva-chevron-right-outline"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
       }
     </div>
@@ -167,7 +198,7 @@
     <div class="col-md-4">
       <div class="card border-0 shadow-sm">
         <div class="card-body text-center">
-          <div class="h4 mb-1 text-primary">{{ filteredEmployees.length }}</div>
+          <div class="h4 mb-1 text-primary">{{ totalItems }}</div>
           <small class="text-muted">Total Employees</small>
         </div>
       </div>
