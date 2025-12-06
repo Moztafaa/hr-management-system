@@ -210,7 +210,10 @@ The application will be available at: `http://localhost:4200`
 
 ### Default Access
 
-After setup, you can access the application at `http://localhost:4200`. Check the backend documentation for default admin credentials or user registration process.
+After setup, you can access the application at `http://localhost:4200`. You can either:
+- Register a new user account through the registration page
+- Use default admin credentials (if configured in the backend's `appsettings.json`)
+- Check `/backend/HRManagementSystem/README.md` for additional authentication setup details
 
 ## 📝 Development Workflow
 
@@ -271,12 +274,30 @@ ng test
 
 ## 🤝 Contributing
 
+We welcome contributions to the HR Management System! Please follow these guidelines:
+
+### Code Standards
 1. Follow Clean Architecture principles
 2. Keep dependencies pointing inward (Domain has no dependencies)
 3. Use interfaces for external dependencies
-4. Write meaningful commit messages
-5. Maintain code consistency with existing patterns
-6. Update documentation when adding new features
+4. Maintain code consistency with existing patterns
+5. Update documentation when adding new features
+
+### Contribution Process
+1. Fork the repository
+2. Create a feature branch (`feature/your-feature-name` or `bugfix/issue-description`)
+3. Make your changes following the code standards
+4. Write or update tests as needed
+5. Commit your changes with clear, descriptive messages
+6. Push to your fork and submit a Pull Request
+7. Wait for code review and address any feedback
+
+### Pull Request Guidelines
+- Provide a clear description of the changes
+- Reference any related issues
+- Ensure all tests pass
+- Update documentation if needed
+- Keep PRs focused on a single feature or fix
 
 ## 📄 License
 
