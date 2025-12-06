@@ -165,15 +165,20 @@ export class JobPostingListComponent implements OnInit {
 
       this.jobPostingService.update(this.editingId, updateData).subscribe({
         next: (response) => {
-          if (!response.hasError) {
+          if (response && !response.hasError) {
             this.toastService.show('Job posting updated successfully', 'success');
             this.closeModal();
             this.loadJobPostings();
-          } else {
+          } else if (response && response.hasError) {
             this.toastService.show(
               response.errorMessage || 'Failed to update job posting',
               'error'
             );
+          } else {
+            // Handle null response (likely 204 No Content)
+            this.toastService.show('Job posting updated successfully', 'success');
+            this.closeModal();
+            this.loadJobPostings();
           }
           this.isSubmitting = false;
         },
@@ -191,15 +196,20 @@ export class JobPostingListComponent implements OnInit {
 
       this.jobPostingService.create(createData).subscribe({
         next: (response) => {
-          if (!response.hasError) {
+          if (response && !response.hasError) {
             this.toastService.show('Job posting created successfully', 'success');
             this.closeModal();
             this.loadJobPostings();
-          } else {
+          } else if (response && response.hasError) {
             this.toastService.show(
               response.errorMessage || 'Failed to create job posting',
               'error'
             );
+          } else {
+            // Handle null response
+            this.toastService.show('Job posting created successfully', 'success');
+            this.closeModal();
+            this.loadJobPostings();
           }
           this.isSubmitting = false;
         },
@@ -227,12 +237,17 @@ export class JobPostingListComponent implements OnInit {
     this.isDeleting = true;
     this.jobPostingService.delete(this.deletingJob.id).subscribe({
       next: (response) => {
-        if (!response.hasError) {
+        if (response && !response.hasError) {
           this.toastService.show('Job posting deleted successfully', 'success');
           this.closeDeleteModal();
           this.loadJobPostings();
-        } else {
+        } else if (response && response.hasError) {
           this.toastService.show(response.errorMessage || 'Failed to delete job posting', 'error');
+        } else {
+          // Handle null response
+          this.toastService.show('Job posting deleted successfully', 'success');
+          this.closeDeleteModal();
+          this.loadJobPostings();
         }
         this.isDeleting = false;
       },

@@ -234,12 +234,17 @@ export class CandidateListComponent implements OnInit {
     if (this.isEditing && this.editingId) {
       this.candidateService.update(this.editingId, cleanData).subscribe({
         next: (response) => {
-          if (!response.hasError) {
+          if (response && !response.hasError) {
             this.toastService.show('Candidate updated successfully', 'success');
             this.closeModal();
             this.loadCandidates();
-          } else {
+          } else if (response && response.hasError) {
             this.toastService.show(response.errorMessage || 'Failed to update candidate', 'error');
+          } else {
+            // Handle null response (likely 204 No Content)
+            this.toastService.show('Candidate updated successfully', 'success');
+            this.closeModal();
+            this.loadCandidates();
           }
           this.isSubmitting = false;
         },
@@ -251,12 +256,17 @@ export class CandidateListComponent implements OnInit {
     } else {
       this.candidateService.create(cleanData).subscribe({
         next: (response) => {
-          if (!response.hasError) {
+          if (response && !response.hasError) {
             this.toastService.show('Candidate created successfully', 'success');
             this.closeModal();
             this.loadCandidates();
-          } else {
+          } else if (response && response.hasError) {
             this.toastService.show(response.errorMessage || 'Failed to create candidate', 'error');
+          } else {
+            // Handle null response
+            this.toastService.show('Candidate created successfully', 'success');
+            this.closeModal();
+            this.loadCandidates();
           }
           this.isSubmitting = false;
         },
@@ -284,12 +294,17 @@ export class CandidateListComponent implements OnInit {
     this.isDeleting = true;
     this.candidateService.delete(this.deletingCandidate.id).subscribe({
       next: (response) => {
-        if (!response.hasError) {
+        if (response && !response.hasError) {
           this.toastService.show('Candidate deleted successfully', 'success');
           this.closeDeleteModal();
           this.loadCandidates();
-        } else {
+        } else if (response && response.hasError) {
           this.toastService.show(response.errorMessage || 'Failed to delete candidate', 'error');
+        } else {
+          // Handle null response
+          this.toastService.show('Candidate deleted successfully', 'success');
+          this.closeDeleteModal();
+          this.loadCandidates();
         }
         this.isDeleting = false;
       },

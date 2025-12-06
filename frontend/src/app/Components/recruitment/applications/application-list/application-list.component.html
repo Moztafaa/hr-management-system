@@ -16,12 +16,8 @@
       <div class="row g-3 align-items-end">
         <div class="col-md-3">
           <label class="form-label small text-muted">Filter by Job</label>
-          <select
-            class="form-select"
-            [(ngModel)]="filterJobId"
-            (change)="onFilterChange()"
-            [ngModelOptions]="{ standalone: true }"
-          >
+          <select class="form-select" [(ngModel)]="filterJobId" (change)="onFilterChange()"
+            [ngModelOptions]="{ standalone: true }">
             <option [ngValue]="null">All Jobs</option>
             @for (job of jobPostings; track job.id) {
             <option [ngValue]="job.id">{{ job.title }}</option>
@@ -30,12 +26,8 @@
         </div>
         <div class="col-md-3">
           <label class="form-label small text-muted">Filter by Candidate</label>
-          <select
-            class="form-select"
-            [(ngModel)]="filterCandidateId"
-            (change)="onFilterChange()"
-            [ngModelOptions]="{ standalone: true }"
-          >
+          <select class="form-select" [(ngModel)]="filterCandidateId" (change)="onFilterChange()"
+            [ngModelOptions]="{ standalone: true }">
             <option [ngValue]="null">All Candidates</option>
             @for (candidate of candidates; track candidate.id) {
             <option [ngValue]="candidate.id">
@@ -46,12 +38,8 @@
         </div>
         <div class="col-md-3">
           <label class="form-label small text-muted">Filter by Status</label>
-          <select
-            class="form-select"
-            [(ngModel)]="filterStatus"
-            (change)="onFilterChange()"
-            [ngModelOptions]="{ standalone: true }"
-          >
+          <select class="form-select" [(ngModel)]="filterStatus" (change)="onFilterChange()"
+            [ngModelOptions]="{ standalone: true }">
             <option value="">All Statuses</option>
             @for (status of statusOptions; track status) {
             <option [value]="status">{{ getStatusLabel(status) }}</option>
@@ -104,13 +92,12 @@
                 <div class="d-flex align-items-center">
                   <div
                     class="avatar-initial rounded-circle text-primary fw-bold me-3 d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px"
-                  >
+                    style="width: 40px; height: 40px">
                     {{
-                      getInitials(
-                        getCandidateName(app.candidateId).split(' ')[0],
-                        getCandidateName(app.candidateId).split(' ')[1] || ''
-                      )
+                    getInitials(
+                    getCandidateName(app.candidateId).split(' ')[0],
+                    getCandidateName(app.candidateId).split(' ')[1] || ''
+                    )
                     }}
                   </div>
                   <div>
@@ -139,18 +126,11 @@
                 }
               </td>
               <td class="text-end pe-4">
-                <button
-                  class="btn btn-sm btn-light text-primary me-1"
-                  (click)="openStatusModal(app)"
-                  title="View & Update"
-                >
+                <button class="btn btn-sm btn-light text-primary me-1" (click)="openStatusModal(app)"
+                  title="View & Update">
                   <i class="eva eva-edit-2-outline"></i>
                 </button>
-                <button
-                  class="btn btn-sm btn-light text-danger"
-                  (click)="confirmDelete(app)"
-                  title="Delete"
-                >
+                <button class="btn btn-sm btn-light text-danger" (click)="confirmDelete(app)" title="Delete">
                   <i class="eva eva-trash-2-outline"></i>
                 </button>
               </td>
@@ -177,7 +157,7 @@
     <div class="col-6 col-md-3 col-lg">
       <div class="card border-0 shadow-sm">
         <div class="card-body text-center py-3">
-          <div class="h4 mb-1">{{ (applications | filter : 'status' : status).length || 0 }}</div>
+          <div class="h4 mb-1 text-white">{{ (applications | filter : 'status' : status).length || 0 }}</div>
           <small class="text-muted">{{ getStatusLabel(status) }}</small>
         </div>
       </div>
@@ -204,14 +184,10 @@
           <!-- Job Selection -->
           <div class="mb-4">
             <label class="form-label">Job Position <span class="text-danger">*</span></label>
-            <select
-              class="form-select"
-              formControlName="jobPostingId"
-              [class.is-invalid]="
+            <select class="form-select" formControlName="jobPostingId" [class.is-invalid]="
                 applicationForm.get('jobPostingId')?.invalid &&
                 applicationForm.get('jobPostingId')?.touched
-              "
-            >
+              ">
               <option value="">Select Job Position</option>
               @for (job of jobPostings; track job.id) {
               <option [value]="job.id">{{ job.title }} - {{ job.departmentName }}</option>
@@ -227,23 +203,13 @@
           <div class="mb-4">
             <div class="d-flex gap-3">
               <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  id="existingCandidate"
-                  [checked]="useExistingCandidate"
-                  (change)="toggleCandidateMode()"
-                />
+                <input class="form-check-input" type="radio" id="existingCandidate" [checked]="useExistingCandidate"
+                  (change)="toggleCandidateMode()" />
                 <label class="form-check-label" for="existingCandidate">Existing Candidate</label>
               </div>
               <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  id="newCandidate"
-                  [checked]="!useExistingCandidate"
-                  (change)="toggleCandidateMode()"
-                />
+                <input class="form-check-input" type="radio" id="newCandidate" [checked]="!useExistingCandidate"
+                  (change)="toggleCandidateMode()" />
                 <label class="form-check-label" for="newCandidate">New Candidate</label>
               </div>
             </div>
@@ -253,14 +219,10 @@
           @if (useExistingCandidate) {
           <div class="mb-4">
             <label class="form-label">Select Candidate <span class="text-danger">*</span></label>
-            <select
-              class="form-select"
-              formControlName="candidateId"
-              [class.is-invalid]="
+            <select class="form-select" formControlName="candidateId" [class.is-invalid]="
                 applicationForm.get('candidateId')?.invalid &&
                 applicationForm.get('candidateId')?.touched
-              "
-            >
+              ">
               <option value="">Select Candidate</option>
               @for (candidate of candidates; track candidate.id) {
               <option [value]="candidate.id">
@@ -283,38 +245,23 @@
             </div>
             <div class="col-md-4">
               <label class="form-label">First Name <span class="text-danger">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="firstName"
-                [class.is-invalid]="
+              <input type="text" class="form-control" formControlName="firstName" [class.is-invalid]="
                   applicationForm.get('firstName')?.invalid &&
                   applicationForm.get('firstName')?.touched
-                "
-              />
+                " />
             </div>
             <div class="col-md-4">
               <label class="form-label">Last Name <span class="text-danger">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="lastName"
-                [class.is-invalid]="
+              <input type="text" class="form-control" formControlName="lastName" [class.is-invalid]="
                   applicationForm.get('lastName')?.invalid &&
                   applicationForm.get('lastName')?.touched
-                "
-              />
+                " />
             </div>
             <div class="col-md-4">
               <label class="form-label">Email <span class="text-danger">*</span></label>
-              <input
-                type="email"
-                class="form-control"
-                formControlName="email"
-                [class.is-invalid]="
+              <input type="email" class="form-control" formControlName="email" [class.is-invalid]="
                   applicationForm.get('email')?.invalid && applicationForm.get('email')?.touched
-                "
-              />
+                " />
             </div>
             <div class="col-md-6">
               <label class="form-label">Phone</label>
@@ -327,13 +274,9 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Source <span class="text-danger">*</span></label>
-              <select
-                class="form-select"
-                formControlName="source"
-                [class.is-invalid]="
+              <select class="form-select" formControlName="source" [class.is-invalid]="
                   applicationForm.get('source')?.invalid && applicationForm.get('source')?.touched
-                "
-              >
+                ">
                 @for (source of applicationSources; track source) {
                 <option [value]="source">{{ source }}</option>
                 }
@@ -345,21 +288,13 @@
             </div>
             <div class="col-12">
               <label class="form-label">Cover Letter</label>
-              <textarea
-                class="form-control"
-                formControlName="coverLetter"
-                rows="4"
-                placeholder="Cover letter content..."
-              ></textarea>
+              <textarea class="form-control" formControlName="coverLetter" rows="4"
+                placeholder="Cover letter content..."></textarea>
             </div>
             <div class="col-12">
               <label class="form-label">Notes</label>
-              <textarea
-                class="form-control"
-                formControlName="notes"
-                rows="2"
-                placeholder="Internal notes about this application..."
-              ></textarea>
+              <textarea class="form-control" formControlName="notes" rows="2"
+                placeholder="Internal notes about this application..."></textarea>
             </div>
           </div>
         </div>
@@ -408,13 +343,12 @@
                 <div class="d-flex align-items-center">
                   <div
                     class="avatar-initial rounded-circle text-primary fw-bold me-3 d-flex align-items-center justify-content-center"
-                    style="width: 50px; height: 50px"
-                  >
+                    style="width: 50px; height: 50px">
                     {{
-                      getInitials(
-                        selectedApplication.candidate.firstName,
-                        selectedApplication.candidate.lastName
-                      )
+                    getInitials(
+                    selectedApplication.candidate.firstName,
+                    selectedApplication.candidate.lastName
+                    )
                     }}
                   </div>
                   <div>
@@ -426,7 +360,7 @@
                     @if (selectedApplication.candidate.phone) {
                     <small class="text-muted d-block">{{
                       selectedApplication.candidate.phone
-                    }}</small>
+                      }}</small>
                     }
                   </div>
                 </div>
@@ -440,11 +374,9 @@
                 <div class="fw-semibold">{{ selectedApplication.jobPosting.title }}</div>
                 <small class="text-muted">{{
                   selectedApplication.jobPosting.departmentName
-                }}</small>
+                  }}</small>
                 <div class="mt-2">
-                  <small class="text-muted"
-                    >Applied: {{ formatDate(selectedApplication.applicationDate) }}</small
-                  >
+                  <small class="text-muted">Applied: {{ formatDate(selectedApplication.applicationDate) }}</small>
                 </div>
               </div>
             </div>
@@ -461,9 +393,9 @@
             <label class="form-label text-muted small">Expected Salary</label>
             <div>
               {{
-                selectedApplication.expectedSalary
-                  ? (selectedApplication.expectedSalary | currency)
-                  : '-'
+              selectedApplication.expectedSalary
+              ? (selectedApplication.expectedSalary | currency)
+              : '-'
               }}
             </div>
           </div>
@@ -500,12 +432,8 @@
             </div>
             <div class="col-md-6">
               <label class="form-label">Current Stage</label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="currentStage"
-                placeholder="e.g., Technical Interview"
-              />
+              <input type="text" class="form-control" formControlName="currentStage"
+                placeholder="e.g., Technical Interview" />
             </div>
 
             <!-- Interview Fields -->
@@ -518,13 +446,7 @@
             </div>
             <div class="col-md-4">
               <label class="form-label">Rating (1-10)</label>
-              <input
-                type="number"
-                class="form-control"
-                formControlName="interviewRating"
-                min="1"
-                max="10"
-              />
+              <input type="number" class="form-control" formControlName="interviewRating" min="1" max="10" />
             </div>
             <div class="col-md-4">
               <label class="form-label">Offered Salary</label>
@@ -532,23 +454,15 @@
             </div>
             <div class="col-12">
               <label class="form-label">Interview Feedback</label>
-              <textarea
-                class="form-control"
-                formControlName="interviewFeedback"
-                rows="2"
-              ></textarea>
+              <textarea class="form-control" formControlName="interviewFeedback" rows="2"></textarea>
             </div>
 
             <!-- Rejection Reason -->
             @if (statusForm.get('status')?.value === 'Rejected') {
             <div class="col-12">
               <label class="form-label">Rejection Reason</label>
-              <textarea
-                class="form-control"
-                formControlName="rejectionReason"
-                rows="2"
-                placeholder="Reason for rejection..."
-              ></textarea>
+              <textarea class="form-control" formControlName="rejectionReason" rows="2"
+                placeholder="Reason for rejection..."></textarea>
             </div>
             }
 
@@ -564,12 +478,7 @@
         <button type="button" class="btn btn-outline-secondary" (click)="closeStatusModal()">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="updateStatus()"
-          [disabled]="isSubmitting"
-        >
+        <button type="button" class="btn btn-primary" (click)="updateStatus()" [disabled]="isSubmitting">
           @if (isSubmitting) {
           <span class="spinner-border spinner-border-sm me-2"></span>
           } Update Status
@@ -601,12 +510,7 @@
         <button type="button" class="btn btn-outline-secondary" (click)="closeDeleteModal()">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          (click)="deleteApplication()"
-          [disabled]="isDeleting"
-        >
+        <button type="button" class="btn btn-danger" (click)="deleteApplication()" [disabled]="isDeleting">
           @if (isDeleting) {
           <span class="spinner-border spinner-border-sm me-2"></span>
           } Delete

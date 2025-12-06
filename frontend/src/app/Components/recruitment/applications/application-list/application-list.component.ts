@@ -250,13 +250,19 @@ export class ApplicationListComponent implements OnInit {
 
     this.applicationService.create(createDto).subscribe({
       next: (response) => {
-        if (!response.hasError) {
+        if (response && !response.hasError) {
           this.toastService.show('Application submitted successfully', 'success');
           this.closeCreateModal();
           this.loadApplications();
           this.loadCandidates(); // Refresh candidates if new one was created
-        } else {
+        } else if (response && response.hasError) {
           this.toastService.show(response.errorMessage || 'Failed to submit application', 'error');
+        } else {
+          // Handle null response
+          this.toastService.show('Application submitted successfully', 'success');
+          this.closeCreateModal();
+          this.loadApplications();
+          this.loadCandidates();
         }
         this.isSubmitting = false;
       },
@@ -328,12 +334,17 @@ export class ApplicationListComponent implements OnInit {
 
     this.applicationService.updateStatus(this.selectedApplication.id, updateDto).subscribe({
       next: (response) => {
-        if (!response.hasError) {
+        if (response && !response.hasError) {
           this.toastService.show('Status updated successfully', 'success');
           this.closeStatusModal();
           this.loadApplications();
-        } else {
+        } else if (response && response.hasError) {
           this.toastService.show(response.errorMessage || 'Failed to update status', 'error');
+        } else {
+          // Handle null response
+          this.toastService.show('Status updated successfully', 'success');
+          this.closeStatusModal();
+          this.loadApplications();
         }
         this.isSubmitting = false;
       },
@@ -361,12 +372,17 @@ export class ApplicationListComponent implements OnInit {
     this.isDeleting = true;
     this.applicationService.delete(this.deletingApplication.id).subscribe({
       next: (response) => {
-        if (!response.hasError) {
+        if (response && !response.hasError) {
           this.toastService.show('Application deleted successfully', 'success');
           this.closeDeleteModal();
           this.loadApplications();
-        } else {
+        } else if (response && response.hasError) {
           this.toastService.show(response.errorMessage || 'Failed to delete application', 'error');
+        } else {
+          // Handle null response
+          this.toastService.show('Application deleted successfully', 'success');
+          this.closeDeleteModal();
+          this.loadApplications();
         }
         this.isDeleting = false;
       },
