@@ -7,6 +7,10 @@ A comprehensive, full-stack Human Resource Management System built with modern t
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-blue?logo=microsoftsqlserver)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple?logo=bootstrap)
 
+## 📋 Project Overview
+
+This HR Management System is a full-stack web application that provides a complete solution for managing human resources, including employee management, attendance tracking, leave management, payroll processing, performance management, recruitment, and training. The system follows industry best practices with a clean architecture approach on the backend and a modern, responsive Angular frontend.
+
 ## ✨ Features
 
 ### 👥 Employee Management
@@ -62,6 +66,84 @@ A comprehensive, full-stack Human Resource Management System built with modern t
 - Natural language employee queries
 - Intelligent data synchronization
 
+### Additional Features
+- **Notifications**: Real-time notification system
+- **Chat/Messaging**: Internal communication system
+- **Resignation Management**: Employee exit process management
+- **Authentication & Authorization**: Secure login with role-based access control
+
+## 🏗️ Architecture
+
+This project follows a **Clean Architecture** pattern with clear separation of concerns:
+
+### Backend Architecture (ASP.NET Core)
+
+The backend is structured in layers following Clean Architecture principles:
+
+```
+backend/HRManagementSystem/
+├── src/
+│   ├── Core/
+│   │   ├── Domain/                    # Enterprise business rules
+│   │   │   ├── Entities/              # Core business entities
+│   │   │   ├── ValueObjects/          # Domain value objects
+│   │   │   └── Interfaces/            # Domain contracts
+│   │   └── Application/               # Application business rules
+│   │       ├── DTOs/                  # Data Transfer Objects
+│   │       ├── Services/              # Business logic services
+│   │       ├── Interfaces/            # Application contracts
+│   │       └── Validators/            # FluentValidation rules
+│   ├── Infrastructure/
+│   │   └── Infrastructure/            # External concerns & data access
+│   │       ├── Data/                  # EF Core DbContext
+│   │       ├── Repositories/          # Data access implementations
+│   │       └── Services/              # External service implementations
+│   └── Presentation/
+│       └── WebApi/                    # REST API layer
+│           ├── Controllers/           # API endpoints
+│           └── Middleware/            # HTTP pipeline components
+```
+
+**Architecture Principles:**
+- **Dependency Rule**: Dependencies point inward (Domain has no dependencies)
+- **Separation of Concerns**: Each layer has a specific responsibility
+- **Dependency Inversion**: High-level modules don't depend on low-level modules
+- **Clean Code**: Testable, maintainable, and scalable codebase
+
+### Frontend Architecture (Angular)
+
+The frontend follows Angular best practices with a modular, component-based architecture:
+
+```
+frontend/src/
+├── app/
+│   ├── Components/              # Feature components
+│   │   ├── auth/               # Authentication components
+│   │   ├── employees/          # Employee management
+│   │   ├── Attendance/         # Attendance tracking
+│   │   ├── Leaves/             # Leave management
+│   │   ├── payroll/            # Payroll components
+│   │   ├── performance/        # Performance management
+│   │   ├── recruitment/        # Recruitment components
+│   │   ├── training/           # Training components
+│   │   ├── organization/       # Org structure components
+│   │   ├── ess/                # Employee self-service
+│   │   └── landing/            # Landing pages
+│   ├── Services/               # Business logic services
+│   ├── models/                 # TypeScript interfaces/models
+│   ├── interceptors/           # HTTP interceptors
+│   ├── layouts/                # Application layouts
+│   ├── pages/                  # Page components
+│   └── pipes/                  # Custom Angular pipes
+```
+
+**Frontend Patterns:**
+- **Component-Based Architecture**: Reusable, modular components
+- **Service Layer**: Centralized business logic and API communication
+- **Reactive Programming**: RxJS for asynchronous operations
+- **Route Guards**: Protected routes with authentication
+- **HTTP Interceptors**: Centralized HTTP request/response handling
+
 ## 🛠️ Technology Stack
 
 | Layer | Technology | Version |
@@ -78,88 +160,76 @@ A comprehensive, full-stack Human Resource Management System built with modern t
 | **Validation** | FluentValidation | 11.9 |
 | **AI/RAG** | LangChain + MongoDB | - |
 
-## 📁 Project Structure
-
-```
-hr-management-system/
-├── backend/
-│   └── HRManagementSystem/
-│       └── src/
-│           ├── Core/
-│           │   ├── HRManagementSystem.Application/    # Business logic, DTOs, Services
-│           │   └── HRManagementSystem.Domain/         # Entities, Interfaces
-│           ├── Infrastructure/
-│           │   └── HRManagementSystem.Infrastructure/ # EF Core, Repositories
-│           └── Presentation/
-│               └── HRManagementSystem.WebApi/         # Controllers, Program.cs
-├── frontend/
-│   └── src/
-│       ├── app/
-│       │   ├── Components/     # Reusable UI components
-│       │   ├── pages/          # Page components
-│       │   ├── Services/       # API services
-│       │   ├── models/         # TypeScript interfaces
-│       │   └── guards/         # Route guards
-│       ├── assets/             # Static assets
-│       └── styles.css          # Global styles
-└── README.md
-```
-
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- **Node.js** 18+ and npm
-- **.NET SDK** 8.0
-- **SQL Server** 2019+ (or LocalDB)
-- **MongoDB** (for RAG features)
+Before you begin, ensure you have the following installed:
 
-### Backend Setup
+#### For Backend:
+- **.NET SDK 8.0** or later - [Download here](https://dotnet.microsoft.com/download)
+- **SQL Server** (2019 or later) or **SQL Server LocalDB** - [Download here](https://www.microsoft.com/sql-server/sql-server-downloads)
+- **MongoDB** (for RAG features) - [Download here](https://www.mongodb.com/try/download/community)
+- **Git** - [Download here](https://git-scm.com/downloads)
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend/HRManagementSystem/src/Presentation/HRManagementSystem.WebApi
-   ```
+#### For Frontend:
+- **Node.js** (v18 or later) and **npm** - [Download here](https://nodejs.org/)
+- **Angular CLI** - Install globally: `npm install -g @angular/cli`
 
-2. Update connection string in `appsettings.json`:
-   ```json
-   {
-     "ConnectionStrings": {
-       "DefaultConnection": "Server=.;Database=HRManagementSystem;Trusted_Connection=True;TrustServerCertificate=True;"
-     }
-   }
-   ```
+### Installation & Setup
 
-3. Run database migrations:
-   ```bash
-   dotnet ef database update
-   ```
+#### 1. Clone the Repository
 
-4. Start the API server:
-   ```bash
-   dotnet run
-   ```
-   
-   API will be available at `http://localhost:5093`
+```bash
+git clone https://github.com/Moztafaa/hr-management-system.git
+cd hr-management-system
+```
 
-### Frontend Setup
+#### 2. Backend Setup
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
+```bash
+# Navigate to the backend directory
+cd backend/HRManagementSystem
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+# Restore NuGet packages
+dotnet restore
 
-3. Start the development server:
-   ```bash
-   ng serve
-   ```
-   
-   Application will be available at `http://localhost:4200`
+# Update the connection string in appsettings.json
+# Edit: src/Presentation/HRManagementSystem.WebApi/appsettings.json
+# Update the "DefaultConnection" string to match your SQL Server instance
+
+# Apply database migrations
+dotnet ef database update --project src/Infrastructure/HRManagementSystem.Infrastructure --startup-project src/Presentation/HRManagementSystem.WebApi
+
+# Run the backend API
+dotnet run --project src/Presentation/HRManagementSystem.WebApi
+```
+
+The API will be available at `http://localhost:5093`
+
+#### 3. Frontend Setup
+
+```bash
+# Open a new terminal and navigate to the frontend directory
+cd frontend
+
+# Install npm dependencies
+npm install
+
+# Start the development server
+npm start
+# or
+ng serve
+```
+
+The application will be available at: `http://localhost:4200`
+
+### Default Access
+
+After setup, you can access the application at `http://localhost:4200`. You can either:
+- Register a new user account through the registration page
+- Use default admin credentials (if configured in the backend's `appsettings.json`)
+- Check `/backend/HRManagementSystem/README.md` for additional authentication setup details
 
 ## 🔐 Authentication
 
@@ -239,6 +309,47 @@ The dashboard provides real-time insights:
 - **Recent Activities**: Latest system events
 - **System Status**: API and database health
 
+## 📝 Development Workflow
+
+### Backend Development
+
+#### Adding a New Feature
+1. Create entity in `Domain/Entities/`
+2. Add repository interface in `Domain/Interfaces/`
+3. Create DTOs in `Application/DTOs/`
+4. Implement service in `Application/Services/`
+5. Add repository implementation in `Infrastructure/Repositories/`
+6. Create controller in `WebApi/Controllers/`
+
+#### Database Migrations
+```bash
+# Create a new migration
+dotnet ef migrations add MigrationName --project src/Infrastructure/HRManagementSystem.Infrastructure --startup-project src/Presentation/HRManagementSystem.WebApi
+
+# Update database
+dotnet ef database update --project src/Infrastructure/HRManagementSystem.Infrastructure --startup-project src/Presentation/HRManagementSystem.WebApi
+```
+
+### Frontend Development
+
+#### Generate New Components
+```bash
+ng generate component components/feature-name
+ng generate service services/feature-name
+ng generate interface models/feature-name
+```
+
+#### Build for Production
+```bash
+# Backend
+cd backend/HRManagementSystem
+dotnet build --configuration Release
+
+# Frontend
+cd frontend
+ng build --configuration production
+```
+
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -303,13 +414,39 @@ docker-compose up -d
    dotnet publish -c Release
    ```
 
+## 📚 Project Structure
+
+- **/backend** - ASP.NET Core Web API following Clean Architecture
+- **/frontend** - Angular application with Bootstrap UI
+- **/backend/HRManagementSystem/README.md** - Detailed backend documentation
+- **/frontend/README.md** - Detailed frontend documentation
+
 ## 🤝 Contributing
 
+We welcome contributions to the HR Management System! Please follow these guidelines:
+
+### Code Standards
+1. Follow Clean Architecture principles
+2. Keep dependencies pointing inward (Domain has no dependencies)
+3. Use interfaces for external dependencies
+4. Maintain code consistency with existing patterns
+5. Update documentation when adding new features
+
+### Contribution Process
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+2. Create a feature branch (`feature/your-feature-name` or `bugfix/issue-description`)
+3. Make your changes following the code standards
+4. Write or update tests as needed
+5. Commit your changes with clear, descriptive messages
+6. Push to your fork and submit a Pull Request
+7. Wait for code review and address any feedback
+
+### Pull Request Guidelines
+- Provide a clear description of the changes
+- Reference any related issues
+- Ensure all tests pass
+- Update documentation if needed
+- Keep PRs focused on a single feature or fix
 
 ## 📄 License
 
@@ -318,6 +455,10 @@ This project is licensed under the MIT License.
 ## 👥 Authors
 
 - **Mohamed Wazery** - *Initial work*
+
+## 📧 Contact
+
+For questions or support, please open an issue in the GitHub repository.
 
 ## 🙏 Acknowledgments
 
