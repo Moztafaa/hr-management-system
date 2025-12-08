@@ -14,6 +14,7 @@ This HR Management System is a full-stack web application that provides a comple
 ## ✨ Features
 
 ### 👥 Employee Management
+
 - Complete employee lifecycle management
 - Employee profiles with detailed information
 - Department and designation assignments
@@ -21,6 +22,7 @@ This HR Management System is a full-stack web application that provides a comple
 - Employee self-service portal
 
 ### 💰 Payroll Management
+
 - Automated payslip generation
 - Allowances and deductions configuration
 - Monthly/yearly payroll processing
@@ -28,6 +30,7 @@ This HR Management System is a full-stack web application that provides a comple
 - Salary comparison reports
 
 ### 📅 Leave Management
+
 - Multiple leave types (Annual, Sick, Maternity, etc.)
 - Leave request workflow with approvals
 - Leave balance tracking
@@ -35,6 +38,7 @@ This HR Management System is a full-stack web application that provides a comple
 - Monthly leave trend analytics
 
 ### 🎯 Recruitment
+
 - Job posting management
 - Candidate tracking system
 - Application pipeline management
@@ -42,6 +46,7 @@ This HR Management System is a full-stack web application that provides a comple
 - Application status workflow
 
 ### 📊 Performance Management
+
 - Review cycles configuration
 - KPI tracking and management
 - Competency assessments
@@ -49,12 +54,14 @@ This HR Management System is a full-stack web application that provides a comple
 - Goal setting and tracking
 
 ### 🎓 Training & Development
+
 - Training course management
 - Employee enrollment tracking
 - Course completion tracking
 - Skills development monitoring
 
 ### 📈 Reports & Analytics
+
 - Interactive dashboard with real-time KPIs
 - Employee distribution charts
 - Payroll trend analysis
@@ -62,11 +69,13 @@ This HR Management System is a full-stack web application that provides a comple
 - Recruitment pipeline analytics
 
 ### 🤖 AI-Powered Features
+
 - RAG-based HR chatbot
 - Natural language employee queries
 - Intelligent data synchronization
 
 ### Additional Features
+
 - **Notifications**: Real-time notification system
 - **Chat/Messaging**: Internal communication system
 - **Resignation Management**: Employee exit process management
@@ -105,6 +114,7 @@ backend/HRManagementSystem/
 ```
 
 **Architecture Principles:**
+
 - **Dependency Rule**: Dependencies point inward (Domain has no dependencies)
 - **Separation of Concerns**: Each layer has a specific responsibility
 - **Dependency Inversion**: High-level modules don't depend on low-level modules
@@ -138,6 +148,7 @@ frontend/src/
 ```
 
 **Frontend Patterns:**
+
 - **Component-Based Architecture**: Reusable, modular components
 - **Service Layer**: Centralized business logic and API communication
 - **Reactive Programming**: RxJS for asynchronous operations
@@ -146,19 +157,19 @@ frontend/src/
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Frontend** | Angular | 20.3 |
-| **UI Framework** | Bootstrap | 5.3 |
-| **Icons** | Eva Icons | 1.1 |
-| **Charts** | Chart.js | 4.x |
-| **Backend** | ASP.NET Core | 8.0 |
-| **ORM** | Entity Framework Core | 8.0 |
-| **Database** | SQL Server | 2022 |
-| **Authentication** | JWT + ASP.NET Identity | - |
-| **Mapping** | AutoMapper | 15.1 |
-| **Validation** | FluentValidation | 11.9 |
-| **AI/RAG** | LangChain + MongoDB | - |
+| Layer              | Technology             | Version |
+| ------------------ | ---------------------- | ------- |
+| **Frontend**       | Angular                | 20.3    |
+| **UI Framework**   | Bootstrap              | 5.3     |
+| **Icons**          | Eva Icons              | 1.1     |
+| **Charts**         | Chart.js               | 4.x     |
+| **Backend**        | ASP.NET Core           | 8.0     |
+| **ORM**            | Entity Framework Core  | 8.0     |
+| **Database**       | SQL Server             | 2022    |
+| **Authentication** | JWT + ASP.NET Identity | -       |
+| **Mapping**        | AutoMapper             | 15.1    |
+| **Validation**     | FluentValidation       | 11.9    |
+| **AI/RAG**         | LangChain + MongoDB    | -       |
 
 ## 🚀 Getting Started
 
@@ -167,12 +178,14 @@ frontend/src/
 Before you begin, ensure you have the following installed:
 
 #### For Backend:
+
 - **.NET SDK 8.0** or later - [Download here](https://dotnet.microsoft.com/download)
 - **SQL Server** (2019 or later) or **SQL Server LocalDB** - [Download here](https://www.microsoft.com/sql-server/sql-server-downloads)
 - **MongoDB** (for RAG features) - [Download here](https://www.mongodb.com/try/download/community)
 - **Git** - [Download here](https://git-scm.com/downloads)
 
 #### For Frontend:
+
 - **Node.js** (v18 or later) and **npm** - [Download here](https://nodejs.org/)
 - **Angular CLI** - Install globally: `npm install -g @angular/cli`
 
@@ -227,6 +240,7 @@ The application will be available at: `http://localhost:4200`
 ### Default Access
 
 After setup, you can access the application at `http://localhost:4200`. You can either:
+
 - Register a new user account through the registration page
 - Use default admin credentials (if configured in the backend's `appsettings.json`)
 - Check `/backend/HRManagementSystem/README.md` for additional authentication setup details
@@ -236,11 +250,13 @@ After setup, you can access the application at `http://localhost:4200`. You can 
 The system uses JWT-based authentication with role-based access control.
 
 ### Default Roles
+
 - **HR** - Full system access
 - **Manager** - Team management, approvals
 - **Employee** - Self-service features
 
 ### Login Flow
+
 1. POST to `/api/Account/login` with credentials
 2. Receive JWT token in response
 3. Include token in Authorization header: `Bearer {token}`
@@ -250,6 +266,7 @@ The system uses JWT-based authentication with role-based access control.
 Base URL: `http://localhost:5093/api`
 
 All responses follow the format:
+
 ```json
 {
   "data": <T>,
@@ -260,47 +277,47 @@ All responses follow the format:
 
 ### Core Endpoints
 
-| Module | Endpoint | Description |
-|--------|----------|-------------|
-| **Account** | `/api/Account` | Authentication & registration |
-| **Employee** | `/api/Employee` | Employee CRUD operations |
-| **Department** | `/api/Department` | Department management |
-| **Designation** | `/api/Designation` | Job titles/positions |
-| **Attendance** | `/api/Attendance` | Check-in/out with face recognition |
-| **Leave** | `/api/LeaveRequest` | Leave request management |
-| **LeaveType** | `/api/LeaveType` | Leave type configuration |
-| **Payroll** | `/api/payslips` | Payslip generation & management |
-| **Allowance** | `/api/Allowance` | Salary allowances |
-| **Deduction** | `/api/Deduction` | Salary deductions |
-| **JobPosting** | `/api/JobPosting` | Recruitment postings |
-| **Candidate** | `/api/Candidate` | Candidate management |
-| **JobApplication** | `/api/JobApplication` | Application tracking |
-| **Performance** | `/api/Performance` | Reviews, KPIs, goals |
-| **Training** | `/api/TrainingCourse` | Training courses |
-| **Reporting** | `/api/Reporting` | Analytics & dashboards |
-| **Notification** | `/api/Notification` | User notifications |
-| **ESS** | `/api/ESS` | Employee self-service |
+| Module             | Endpoint              | Description                        |
+| ------------------ | --------------------- | ---------------------------------- |
+| **Account**        | `/api/Account`        | Authentication & registration      |
+| **Employee**       | `/api/Employee`       | Employee CRUD operations           |
+| **Department**     | `/api/Department`     | Department management              |
+| **Designation**    | `/api/Designation`    | Job titles/positions               |
+| **Attendance**     | `/api/Attendance`     | Check-in/out with face recognition |
+| **Leave**          | `/api/LeaveRequest`   | Leave request management           |
+| **LeaveType**      | `/api/LeaveType`      | Leave type configuration           |
+| **Payroll**        | `/api/payslips`       | Payslip generation & management    |
+| **Allowance**      | `/api/Allowance`      | Salary allowances                  |
+| **Deduction**      | `/api/Deduction`      | Salary deductions                  |
+| **JobPosting**     | `/api/JobPosting`     | Recruitment postings               |
+| **Candidate**      | `/api/Candidate`      | Candidate management               |
+| **JobApplication** | `/api/JobApplication` | Application tracking               |
+| **Performance**    | `/api/Performance`    | Reviews, KPIs, goals               |
+| **Training**       | `/api/TrainingCourse` | Training courses                   |
+| **Reporting**      | `/api/Reporting`      | Analytics & dashboards             |
+| **Notification**   | `/api/Notification`   | User notifications                 |
+| **ESS**            | `/api/ESS`            | Employee self-service              |
 
 ## 🎨 UI Theme
 
 The application uses a modern dark theme with the following color palette:
 
-| Variable | Color | Usage |
-|----------|-------|-------|
-| `--color-primary` | #3366ff | Primary actions |
-| `--color-success` | #00d68f | Success states |
-| `--color-warning` | #ffaa00 | Warnings |
-| `--color-danger` | #ff3d71 | Errors/deletions |
-| `--color-info` | #0095ff | Information |
-| `--card-bg` | #222b45 | Card backgrounds |
-| `--body-bg` | #151a30 | Page background |
+| Variable          | Color   | Usage            |
+| ----------------- | ------- | ---------------- |
+| `--color-primary` | #3366ff | Primary actions  |
+| `--color-success` | #00d68f | Success states   |
+| `--color-warning` | #ffaa00 | Warnings         |
+| `--color-danger`  | #ff3d71 | Errors/deletions |
+| `--color-info`    | #0095ff | Information      |
+| `--card-bg`       | #222b45 | Card backgrounds |
+| `--body-bg`       | #151a30 | Page background  |
 
 ## 📊 Dashboard
 
 The dashboard provides real-time insights:
 
 - **Stats Cards**: Total employees, departments, leave requests, job postings
-- **Charts**: 
+- **Charts**:
   - Employees by Department (Bar)
   - Designation Distribution (Doughnut)
   - Leave Status Breakdown (Pie)
@@ -314,6 +331,7 @@ The dashboard provides real-time insights:
 ### Backend Development
 
 #### Adding a New Feature
+
 1. Create entity in `Domain/Entities/`
 2. Add repository interface in `Domain/Interfaces/`
 3. Create DTOs in `Application/DTOs/`
@@ -322,6 +340,7 @@ The dashboard provides real-time insights:
 6. Create controller in `WebApi/Controllers/`
 
 #### Database Migrations
+
 ```bash
 # Create a new migration
 dotnet ef migrations add MigrationName --project src/Infrastructure/HRManagementSystem.Infrastructure --startup-project src/Presentation/HRManagementSystem.WebApi
@@ -333,6 +352,7 @@ dotnet ef database update --project src/Infrastructure/HRManagementSystem.Infras
 ### Frontend Development
 
 #### Generate New Components
+
 ```bash
 ng generate component components/feature-name
 ng generate service services/feature-name
@@ -340,6 +360,7 @@ ng generate interface models/feature-name
 ```
 
 #### Build for Production
+
 ```bash
 # Backend
 cd backend/HRManagementSystem
@@ -354,11 +375,11 @@ ng build --configuration production
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `ASPNETCORE_ENVIRONMENT` | Environment mode | Development |
-| `JWT_SECRET` | JWT signing key | (set in appsettings) |
-| `ConnectionStrings__DefaultConnection` | Database connection | LocalDB |
+| Variable                               | Description         | Default              |
+| -------------------------------------- | ------------------- | -------------------- |
+| `ASPNETCORE_ENVIRONMENT`               | Environment mode    | Development          |
+| `JWT_SECRET`                           | JWT signing key     | (set in appsettings) |
+| `ConnectionStrings__DefaultConnection` | Database connection | LocalDB              |
 
 ### appsettings.json
 
@@ -377,43 +398,6 @@ ng build --configuration production
 }
 ```
 
-## 🧪 Testing
-
-### Backend Tests
-```bash
-cd backend/HRManagementSystem
-dotnet test
-```
-
-### Frontend Tests
-```bash
-cd frontend
-ng test
-```
-
-## 📦 Deployment
-
-### Docker (Recommended)
-
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-```
-
-### Manual Deployment
-
-1. Build frontend:
-   ```bash
-   cd frontend
-   ng build --configuration production
-   ```
-
-2. Publish backend:
-   ```bash
-   cd backend/HRManagementSystem
-   dotnet publish -c Release
-   ```
-
 ## 📚 Project Structure
 
 - **/backend** - ASP.NET Core Web API following Clean Architecture
@@ -426,6 +410,7 @@ docker-compose up -d
 We welcome contributions to the HR Management System! Please follow these guidelines:
 
 ### Code Standards
+
 1. Follow Clean Architecture principles
 2. Keep dependencies pointing inward (Domain has no dependencies)
 3. Use interfaces for external dependencies
@@ -433,6 +418,7 @@ We welcome contributions to the HR Management System! Please follow these guidel
 5. Update documentation when adding new features
 
 ### Contribution Process
+
 1. Fork the repository
 2. Create a feature branch (`feature/your-feature-name` or `bugfix/issue-description`)
 3. Make your changes following the code standards
@@ -442,6 +428,7 @@ We welcome contributions to the HR Management System! Please follow these guidel
 7. Wait for code review and address any feedback
 
 ### Pull Request Guidelines
+
 - Provide a clear description of the changes
 - Reference any related issues
 - Ensure all tests pass
@@ -452,21 +439,7 @@ We welcome contributions to the HR Management System! Please follow these guidel
 
 This project is licensed under the MIT License.
 
-## 👥 Authors
-
-- **Mohamed Wazery** - *Initial work*
 
 ## 📧 Contact
 
 For questions or support, please open an issue in the GitHub repository.
-
-## 🙏 Acknowledgments
-
-- Angular Team for the amazing framework
-- Microsoft for .NET Core and Entity Framework
-- Bootstrap team for the UI components
-- Eva Icons for beautiful iconography
-
----
-
-**Made with ❤️ for modern HR teams**
