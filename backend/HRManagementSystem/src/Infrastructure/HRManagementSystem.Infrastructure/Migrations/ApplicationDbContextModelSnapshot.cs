@@ -1649,7 +1649,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1658,7 +1659,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1667,7 +1669,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1676,7 +1679,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1685,7 +1689,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1694,7 +1699,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 200.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1703,7 +1709,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1712,7 +1719,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1721,7 +1729,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1730,7 +1739,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1739,7 +1749,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1748,7 +1759,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 1500.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1757,7 +1769,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 700.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1766,7 +1779,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1775,7 +1789,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 800.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1784,7 +1799,8 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 300.00m,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "Permanent",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -1793,7 +1809,28 @@ namespace HRManagementSystem.Infrastructure.Migrations
                             Amount = 2000.00m,
                             CreatedAt = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsPercentage = false,
-                            Recurrence = "OneTime"
+                            Recurrence = "OneTime",
+                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            EmployeeId = 1,
+                            AllowanceId = 9,
+                            Amount = 15.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = true,
+                            Recurrence = "Annual",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            EmployeeId = 6,
+                            AllowanceId = 9,
+                            Amount = 15.00m,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsPercentage = true,
+                            Recurrence = "Annual",
+                            StartDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
